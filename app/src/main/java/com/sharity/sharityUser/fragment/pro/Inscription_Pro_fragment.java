@@ -71,22 +71,13 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
         return inflate;
     }
 
-    private boolean validate(EditText[] fields){
-        for(int i=0; i<fields.length; i++){
-            EditText currentField=fields[i];
-            if(currentField.getText().toString().length()<=0){
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.done:{
-                boolean fieldsOK=validate(new EditText[]{username, password, RC3number,business_name,chief_name,phone,RIB,address,email});
-                if (fieldsOK){
+                    EditText[] fields={username,password,RC3number,business_name,chief_name,phone,RIB,address,email};
                     String _username= username.getText().toString();
                     String _password= password.getText().toString();
                     String _RC3number= RC3number.getText().toString();
@@ -96,11 +87,7 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
                     String _RIB= RIB.getText().toString();
                     String _address= address.getText().toString();
                     String _email= email.getText().toString();
-                    presenter.validateCredentials(_username,_password,_RC3number,_business_name,_chief_name, _phone, _RIB, _address,_email);
-
-                }else {
-
-                }
+                    presenter.validateCredentials(fields,_username,_password,_RC3number,_business_name,_chief_name, _phone, _RIB, _address,_email);
             }
         }
     }
@@ -158,7 +145,7 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void setRIBError() {
-        RIB.setError("usernameError");
+        RIB.setError("RIB Error");
 
     }
 

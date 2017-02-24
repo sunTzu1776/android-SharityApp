@@ -1,5 +1,9 @@
 package com.sharity.sharityUser.SignupPro;
 
+import android.widget.EditText;
+
+import static com.sharity.sharityUser.R.id.username;
+
 public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInteractor.OnLoginFinishedListener {
 
     private SignUpProView loginView;
@@ -11,12 +15,12 @@ public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInte
     }
 
     @Override
-    public void validateCredentials(String username, String password,String RC3number,String Businesname,String OwnerName,String Phone,String address,String RIB,String email) {
+    public void validateCredentials(EditText[] fields,String username, String password, String RC3number, String Businesname, String OwnerName, String Phone, String address, String RIB, String email) {
         if (loginView != null) {
             loginView.showProgress();
         }
 
-        loginInteractor.login(username, password,RC3number,Businesname,OwnerName,Phone,address,RIB,email, this);
+        loginInteractor.login(fields,username, password,RC3number,Businesname,OwnerName,Phone,address,RIB,email, this);
     }
 
     @Override public void onDestroy() {
