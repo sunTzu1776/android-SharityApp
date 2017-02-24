@@ -39,37 +39,51 @@ public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInte
 
     @Override
     public void onRC3Error() {
-
+        if (loginView != null) {
+            loginView.setRC3Error();
+        }
     }
 
     @Override
     public void onBusinessNameError() {
-
+        if (loginView != null) {
+            loginView.setBusinessNameError();
+        }
     }
 
     @Override
     public void onOwnerNameError() {
-
+        if (loginView != null) {
+            loginView.setOwnerNameError();
+        }
     }
 
     @Override
     public void onPhoneError() {
-
+        if (loginView != null) {
+            loginView.setPhoneError();
+        }
     }
 
     @Override
     public void onAddressError() {
-
+        if (loginView != null) {
+            loginView.setAddressError();
+        }
     }
 
     @Override
     public void onRIBError() {
-
+        if (loginView != null) {
+            loginView.setRIBError();
+        }
     }
 
     @Override
     public void onEmailError() {
-
+        if (loginView != null) {
+            loginView.setEmailError();
+        }
     }
 
     @Override public void onSuccess() {

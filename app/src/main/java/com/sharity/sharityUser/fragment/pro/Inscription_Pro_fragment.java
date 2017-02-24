@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sharity.sharityUser.LoginClient.LoginClientPresenterImpl;
 import com.sharity.sharityUser.LoginClient.LoginClientView;
@@ -18,6 +19,7 @@ import com.sharity.sharityUser.SignupPro.SignUpProView;
 import com.sharity.sharityUser.activity.LoginActivity;
 
 import static com.sharity.sharityUser.R.id.add;
+import static com.sharity.sharityUser.R.id.cancel_action;
 import static com.sharity.sharityUser.R.id.saisir_code;
 import static com.sharity.sharityUser.R.id.username;
 import static com.sharity.sharityUser.R.id.username_login;
@@ -115,51 +117,59 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void setUsernameError() {
-
+        username.setError("usernameError");
     }
 
     @Override
     public void setPasswordError() {
+        password.setError("usernameError");
 
     }
 
     @Override
     public void setRC3Error() {
+        RC3number.setError("usernameError");
 
     }
 
     @Override
     public void setBusinessNameError() {
+        business_name.setError("usernameError");
 
     }
 
     @Override
     public void setOwnerNameError() {
+        chief_name.setError("usernameError");
 
     }
 
     @Override
     public void setPhoneError() {
+        phone.setError("usernameError");
 
     }
 
     @Override
     public void setAddressError() {
+        address.setError("usernameError");
 
     }
 
     @Override
     public void setRIBError() {
+        RIB.setError("usernameError");
 
     }
 
     @Override
     public void setEmailError() {
+        email.setError("usernameError");
 
     }
 
     @Override
     public void navigateToHome() {
-
+        Toast.makeText(getActivity(),"ok inscrit",Toast.LENGTH_LONG).show();
     }
 }

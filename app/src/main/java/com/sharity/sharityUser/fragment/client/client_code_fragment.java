@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,23 @@ import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.TutorialActivity;
+
+import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.sharity.sharityUser.R.id.RIB;
+import static com.sharity.sharityUser.R.id.address;
+import static com.sharity.sharityUser.R.id.email;
+import static com.sharity.sharityUser.R.id.user;
+import static com.sharity.sharityUser.R.id.username;
 
 
 /**
@@ -82,10 +95,24 @@ public class client_code_fragment extends Fragment implements View.OnClickListen
                         edit.putString("client_numCode", saisie);
                         edit.commit();
 
-                        SaveCode_ToParse(saisie);
+                        if (Utils.isConnected(getContext())){
+                            SaveCode_ToParse(saisie);
+                            startActivity(new Intent(getActivity(), ProfilActivity.class));
+                            getActivity().finish();
+                        }else {
+                            Utils.showDialog3(getActivity(), getString(R.string.dialog_network),getString(R.string.network),true, new Utils.Click() {
+                            @Override
+                            public void Ok() {
 
-                        startActivity(new Intent(getActivity(), ProfilActivity.class));
-                        getActivity().finish();
+                            }
+                            @Override
+                            public void Cancel() {
+
+                            }
+                        });
+
+                        }
+
                     }else {
                         Toast.makeText(getActivity(),"Les codes entrés sont pas identiques",Toast.LENGTH_LONG).show();
                     }
@@ -97,15 +124,21 @@ public class client_code_fragment extends Fragment implements View.OnClickListen
     }
 
     private void SaveCode_ToParse(final String saisie){
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("User");
-        query.getInBackground(getUserObjectId(getActivity()), new GetCallback<ParseObject>() {
-            public void done(ParseObject user, ParseException e) {
-                if (e == null) {
-                    user.put("securityCode", saisie);
-                    user.saveInBackground();
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        parseUser.put("securityCode", saisie);
+        parseUser.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                // TODO Auto-generated method stub
+                if (e != null){
+                    e.printStackTrace();
+                }else{
+                    //updated successfully
                 }
             }
         });
+
     }
 
     private String getUserObjectId(Context context) {

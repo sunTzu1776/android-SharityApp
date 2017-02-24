@@ -21,8 +21,6 @@ public class LoginProInteractorImpl implements LoginInteractor {
                         if (user != null) {
                                 listener.onSuccess();
                         } else {
-
-                            // Signup failed. Look at the ParseException to see what happened.
                         }
                     }
                 });
