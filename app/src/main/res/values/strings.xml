@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Sharity</string>
+    <string name="facebook_id">674293942777647</string>
+    <string name="close">close</string>
+    <string name="open">open</string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+
+    <!-- Boite Confirmation -->
+    <string name="dialog_OK">OK</string>
+    <string name="dialog_BtnCancel">ANNULER</string>
+    <string name="dialog_network">Aucune connéxion réseau.\n Connectez-vous à un réseau et réessayer.</string>
+    <string name="network">Connectivité</string>
+
+    <string name="skip">SKIP</string>
+    <string name="next">NEXT</string>
+    <string name="done">DONE</string>
+
+    <string name="TwitterconsumerKey">qwEsZSc4qUHiDfQ7tKZn6T99a</string>
+    <string name="TwitterconsumerSecret">34Tgd35VwC0feJFOTYk88GCnZx1f9twmeBbc3nrQgBX67l9Uz6</string>
+    <string name="ParseAppId">ecfa853cf6485638f4ec57f58aad83410b514cb7</string>
+
+
+
+</resources>
