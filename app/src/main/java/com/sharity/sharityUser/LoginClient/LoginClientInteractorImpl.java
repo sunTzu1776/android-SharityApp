@@ -164,16 +164,6 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
 
 
 
-
-
-
-
-
-
-
-
-
-
     public static Bitmap DownloadImageBitmap(String url) {
         Bitmap bm = null;
         try {

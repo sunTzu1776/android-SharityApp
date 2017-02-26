@@ -36,6 +36,14 @@ public class LoginProPresenterImpl implements LoginPresenter, LoginInteractor.On
         }
     }
 
+    @Override
+    public void onUserError() {
+        if (loginView != null) {
+            loginView.setUserError();
+            loginView.hideProgress();
+        }
+    }
+
     @Override public void onSuccess() {
         if (loginView != null) {
             loginView.navigateToHome();

@@ -62,7 +62,7 @@ public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         textView.setTextSize(15);
 
         if (type.equals("month")){
-            textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.icon_partenaire,0);
+            textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.vertical_scroll,0);
         }
 
         textView.setText(String.valueOf(asr.get(i)));

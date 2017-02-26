@@ -7,9 +7,13 @@ import android.net.NetworkInfo;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.sharity.sharityUser.R;
+
+import static android.R.id.message;
+import static android.R.string.ok;
 
 
 /**
@@ -81,6 +85,50 @@ public class Utils {
             }
         });
 
+
+        dialog.show();
+
+    }
+
+    public interface ProcessEmail {
+        void SetEmail(String email);
+
+        void Cancel();
+    }
+
+    public static void ForgottenPasswordDialog(Context activity, Boolean hideCancel, final ProcessEmail processEmail) {
+
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_forgot_password);
+
+        final EditText email = (EditText) dialog.findViewById(R.id.email);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.cancel_btn);
+        if (hideCancel) {
+            cancelBtn.setVisibility(View.INVISIBLE);
+            cancelBtn.setClickable(false);
+        } else {
+            cancelBtn.setVisibility(View.VISIBLE);
+            cancelBtn.setClickable(true);
+        }
+
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processEmail.SetEmail(email.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processEmail.Cancel();
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
 

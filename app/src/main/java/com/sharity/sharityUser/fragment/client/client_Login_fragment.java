@@ -36,6 +36,8 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
     private ImageView twitter;
     private LoginClientPresenter presenter;
     private Button access_pro;
+    private Button access_charite;
+
 
     public static client_Login_fragment newInstance() {
         client_Login_fragment myFragment = new client_Login_fragment();
@@ -58,10 +60,14 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
         twitter = (ImageView) inflate.findViewById(R.id.twitter_login);
         facebook = (ImageView) inflate.findViewById(R.id.facebook_login);
         access_pro = (Button) inflate.findViewById(R.id.pro_login_acces);
+        access_charite = (Button) inflate.findViewById(R.id.charite_login_acces);
+
+
 
         twitter.setOnClickListener(this);
         facebook.setOnClickListener(this);
         access_pro.setOnClickListener(this);
+        access_charite.setOnClickListener(this);
 
         presenter = new LoginClientPresenterImpl(this);
 
@@ -77,9 +83,17 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
             case R.id.pro_login_acces:
                 ParseUser.logOut();
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.login, new Login_Pro_fragment(), "Login_Pro_fragment");
+                ft.replace(R.id.login, Login_Pro_fragment.newInstance("pro"), "Login_Pro_fragment");
                 ft.addToBackStack(null);
                 ft.commit();
+                break;
+
+            case R.id.charite_login_acces:
+                ParseUser.logOut();
+                final FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+                ft2.replace(R.id.login, Login_Pro_fragment.newInstance("charite"), "Login_Pro_fragment");
+                ft2.addToBackStack(null);
+                ft2.commit();
                 break;
 
             case R.id.twitter_login:

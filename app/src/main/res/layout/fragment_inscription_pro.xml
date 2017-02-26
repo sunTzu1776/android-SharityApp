@@ -47,7 +47,6 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -67,7 +66,6 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -87,18 +85,17 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
                 android:gravity="center"
-                android:hint="Numero RC3"
+                android:hint="Numéro SIRET"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/rc3number" />
+                android:inputType="numberPassword"
+                android:ems="14"
+                android:id="@+id/Siret" />
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +104,6 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -118,6 +114,7 @@
                 android:hint="Nom de l'entreprise"
                 android:layout_weight="2.5"
                 android:ems="10"
+
                 android:id="@+id/business_name" />
         </LinearLayout>
 
@@ -127,7 +124,6 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -147,17 +143,16 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
+                android:inputType="numberPassword"
+                android:ems="10"
                 android:gravity="center"
                 android:hint="N° de téléphone"
                 android:layout_weight="2.5"
-                android:ems="10"
                 android:id="@+id/phone_number" />
         </LinearLayout>
 
@@ -167,7 +162,6 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -187,18 +181,20 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
-            <EditText
+
+            <AutoCompleteTextView
+                android:id="@+id/address"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="Adresse"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/address" />
+                android:hint="Addresse"
+                android:gravity="center"
+                android:imeOptions="actionDone"
+                android:allowUndo="true" />
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -206,8 +202,30 @@
             android:layout_height="0dp"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:layout_marginBottom="4dp"
+            android:weightSum="4">
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0.9dp"
+                android:layout_weight="2.5"
+                android:background="@color/black"
+                android:gravity="center"
+               />
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginTop="7dp"
             android:weightSum="4">
 
             <EditText
@@ -215,7 +233,7 @@
                 android:layout_height="match_parent"
                 android:inputType="textPersonName"
                 android:gravity="center"
-                android:hint="Email"
+                android:hint="E-mail"
                 android:layout_weight="2.5"
                 android:ems="10"
                 android:id="@+id/email" />

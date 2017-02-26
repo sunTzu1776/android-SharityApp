@@ -16,11 +16,15 @@ public class LoginProInteractorImpl implements LoginInteractor {
             @Override public void run() {
                 boolean error = false;
 
+
                 ParseUser.logInInBackground(username, password, new LogInCallback() {
                     public void done(ParseUser user, ParseException e) {
                         if (user != null) {
                                 listener.onSuccess();
                         } else {
+                            if (e.getCode()==101){
+                                listener.onUserError();
+                            }
                         }
                     }
                 });

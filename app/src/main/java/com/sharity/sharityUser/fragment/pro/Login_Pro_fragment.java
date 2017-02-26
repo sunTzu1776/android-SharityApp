@@ -12,11 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.RequestPasswordResetCallback;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.LoginPro.LoginProPresenterImpl;
 import com.sharity.sharityUser.LoginPro.LoginProView;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
 
 
@@ -32,10 +37,15 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
     private Button login_BT;
     private TextView inscription;
     private LoginPresenter presenter;
+    private static String type;
+    private TextView forgot_password;
+    private Button icon_charite;
+    private Button icon_pro;
 
-    public static Login_Pro_fragment newInstance() {
+    public static Login_Pro_fragment newInstance(String type) {
         Login_Pro_fragment myFragment = new Login_Pro_fragment();
         Bundle args = new Bundle();
+        args.putString("type",type);
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -45,15 +55,28 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_login_pro, container, false);
 
+        type=getArguments().get("type").toString();
+        icon_charite = (Button) inflate.findViewById(R.id.charite_icon);
+        icon_pro = (Button) inflate.findViewById(R.id.pro_icon);
         progress = (ProgressBar) inflate.findViewById(R.id.progress);
         inscription=(TextView)inflate.findViewById(R.id.inscription);
+        forgot_password=(TextView)inflate.findViewById(R.id.forgotpassword);
         login_BT = (Button) inflate.findViewById(R.id.login_BT);
         username = (EditText) inflate.findViewById(R.id.username_login);
         password = (EditText) inflate.findViewById(R.id.password_login);
+
         inscription.setOnClickListener(this);
         login_BT.setOnClickListener(this);
-
+        forgot_password.setOnClickListener(this);
         presenter = new LoginProPresenterImpl(this);
+
+        if (type.equals("charite")){
+            icon_charite.setVisibility(View.VISIBLE);
+            icon_pro.setVisibility(View.INVISIBLE);
+        }else if (type.equals("pro")){
+            icon_charite.setVisibility(View.INVISIBLE);
+            icon_pro.setVisibility(View.VISIBLE);
+        }
 
         return inflate;
     }
@@ -63,13 +86,34 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
             switch(view.getId()) {
                 case R.id.inscription:
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.login, new Inscription_Pro_fragment(), "Inscription_Pro_fragment");
+                    ft.replace(R.id.login, Inscription_Pro_fragment.newInstance(type), "Inscription_Pro_fragment");
                     ft.addToBackStack(null);
                     ft.commit();
                     break;
 
                 case R.id.login_BT:
                     presenter.validateCredentials(username.getText().toString(), password.getText().toString());
+                    break;
+
+                case R.id.forgotpassword:
+                    Utils.ForgottenPasswordDialog(getActivity(), false, new Utils.ProcessEmail() {
+                        @Override
+                        public void SetEmail(String email) {
+                            ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        Toast.makeText(getActivity(),"email envoyé avec succés",Toast.LENGTH_LONG);
+                                    } else {
+                                        Toast.makeText(getActivity(),"erreur: l'email n'a pu être envoyé",Toast.LENGTH_LONG);
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void Cancel() {
+                        }
+                    });
                     break;
         }
     }
@@ -94,6 +138,11 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
 
     @Override public void setPasswordError() {
         password.setError("passwordError");
+    }
+
+    @Override
+    public void setUserError() {
+        Toast.makeText(getActivity(),"Username or password invalid",Toast.LENGTH_LONG).show();
     }
 
     @Override public void navigateToHome() {

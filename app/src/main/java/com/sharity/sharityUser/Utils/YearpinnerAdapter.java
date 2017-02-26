@@ -13,7 +13,6 @@ import com.sharity.sharityUser.R;
 
 import java.util.ArrayList;
 
-import static com.sharity.sharityUser.R.id.textView;
 
 /**
  * Created by Moi on 23/02/2017.
@@ -61,7 +60,7 @@ public class YearpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(16,16,16,16);
         textView.setTextSize(15);
-            textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.icon_option,0);
+            textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.vertical_scroll,0);
 
         textView.setText(String.valueOf(asr.get(i)));
         textView.setTextColor(Color.parseColor("#000000"));
