@@ -2,6 +2,7 @@ package com.sharity.sharityUser.fragment;
 
 
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.fragment.client.Profil_fragment;
 
 public enum SimpleBackPage {
 

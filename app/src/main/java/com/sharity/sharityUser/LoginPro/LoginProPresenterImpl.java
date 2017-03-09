@@ -1,5 +1,9 @@
 package com.sharity.sharityUser.LoginPro;
 
+import android.content.Context;
+
+import static com.sharity.sharityUser.R.id.username;
+
 public class LoginProPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
 
     private LoginProView loginView;
@@ -10,12 +14,12 @@ public class LoginProPresenterImpl implements LoginPresenter, LoginInteractor.On
         this.loginInteractor = new LoginProInteractorImpl();
     }
 
-    @Override public void validateCredentials(String username, String password) {
+    @Override public void validateCredentials(Context context,String username, String password) {
         if (loginView != null) {
             loginView.showProgress();
         }
 
-        loginInteractor.login(username, password, this);
+        loginInteractor.login(context,username, password, this);
     }
 
     @Override public void onDestroy() {

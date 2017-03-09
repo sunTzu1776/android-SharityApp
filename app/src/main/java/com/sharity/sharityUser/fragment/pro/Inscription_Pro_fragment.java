@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,7 +25,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -35,7 +36,7 @@ import com.sharity.sharityUser.SignupPro.SignUpProPresenter;
 import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProView;
 import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +46,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 
 /**
@@ -275,9 +278,17 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void navigateToHome() {
-        Toast.makeText(getActivity(),"ok inscrit",Toast.LENGTH_LONG).show();
-        startActivity(new Intent(getActivity(), ProfilActivity.class));
-        getActivity().finish();
+        IsPro();
+        if (db.getBusinessCount()>0 && getBusiness_numCode(getContext()).length()>0){
+            startActivity(new Intent(getActivity(), ProfilProActivity.class));
+            getActivity().finish();
+        }else {
+            final FragmentTransaction connexion = getFragmentManager().beginTransaction();
+            connexion.replace(R.id.login, new Pro_code_fragment(), "Pro_code_fragment");
+            connexion.addToBackStack(null);
+            connexion.commit();
+        }
+
     }
 
 
@@ -476,6 +487,19 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
         }catch (NullPointerException e){
 
         }
+    }
+
+    private void IsPro(){
+        SharedPreferences pref = getActivity().getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("status", "Business");
+        editor.commit();
+    }
+
+    private String getBusiness_numCode(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("Business_numCode", "");         // getting String
+        return accountDisconnect;
     }
 
 }

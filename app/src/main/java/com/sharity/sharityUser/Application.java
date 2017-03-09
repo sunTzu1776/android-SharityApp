@@ -1,28 +1,52 @@
 package com.sharity.sharityUser;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
+import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.onesignal.OneSignal;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.interceptors.ParseLogInterceptor;
+import com.sharity.sharityUser.ParsePushNotification.MyCustomReceiver;
+import com.sharity.sharityUser.ParsePushNotification.MyNotificationOpenedHandler;
+import com.sharity.sharityUser.ParsePushNotification.MyNotificationReceivedHandler;
 
 public class Application extends android.app.Application {
 
     public static final String TAG = Application.class.getSimpleName();
+    private static Context context;
     private static Application mInstance;
     public static ParseUser parseUser;
+
+
+    public static Context getContext() {
+        return context;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Parse.enableLocalDatastore(getApplicationContext());
+        context = getApplicationContext();
+        MultiDex.install(this);
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
+
+        OneSignal.startInit(this)
+                .setNotificationOpenedHandler(new MyNotificationOpenedHandler())
+                .setNotificationReceivedHandler( new MyNotificationReceivedHandler() )
+                .init();
 
         mInstance = this;
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -31,15 +55,16 @@ public class Application extends android.app.Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.ParseAppId)) // correspond to APP_ID
                 .clientKey("")
-                .enableLocalDataStore()
                 .addNetworkInterceptor(new ParseLogInterceptor())
-                .server("http://ec2-52-56-75-51.eu-west-2.compute.amazonaws.com:80/parse").build());
+                .server("http://ec2-52-56-157-252.eu-west-2.compute.amazonaws.com:80/parse").build());
 
         ParseFacebookUtils.initialize(this);
         ParseTwitterUtils.initialize(getString(R.string.TwitterconsumerKey), getString(R.string.TwitterconsumerSecret));
         parseUser= ParseUser.getCurrentUser();
 
+
     }
+
 
 
     public static synchronized Application getInstance() {
@@ -85,5 +110,6 @@ public class Application extends android.app.Application {
 
         }
     };
+
 }
 

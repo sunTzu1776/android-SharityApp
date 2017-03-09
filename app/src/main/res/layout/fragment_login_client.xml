@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="3"
-    >
+    android:weightSum="3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,23 +27,24 @@
             android:gravity="center"
             android:src="@drawable/logo" />
 
-        <TextView
+        <com.sharity.sharityUser.fonts.TextViewGeoManis
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
             android:gravity="center_horizontal|center_vertical"
             android:text="SHARITY"
-            android:textStyle="bold"
+            app:GeomanisRegular="geomanistregular.ttf"
             android:textColor="@color/green"
             android:textSize="22dp" />
 
 
-        <TextView
+        <com.sharity.sharityUser.fonts.TextViewSegoeUi
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.3"
             android:gravity="center_horizontal|center_vertical"
             android:text="Bienvenue dans l'ère du don gratuit"
+            app:Segoeui="segoeui.ttf"
             android:textColor="@color/green"
             android:textSize="15dp" />
 
@@ -193,7 +194,7 @@
                     android:id="@+id/pro_login_acces"
                     android:layout_gravity="right"
                     android:text="PRO"
-                    android:textSize="15dp"
+                    android:textSize="17dp"
                     android:textColor="@color/red"
                     android:background="@drawable/border_color_button_pro"
                     android:layout_margin="10dp"

@@ -2,8 +2,10 @@ package com.sharity.sharityUser.Utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -172,6 +174,7 @@ public class Utils {
             ft.commit();
         }
     }*/
+
 
 
     public static String SplitTime(String time) {

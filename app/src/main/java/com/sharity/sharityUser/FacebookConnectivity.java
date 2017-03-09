@@ -10,24 +10,25 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.google.firebase.database.Transaction;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
-import com.sharity.sharityUser.LoginClient.LoginClientInteractorImpl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
-import static android.R.attr.bitmap;
-import static android.R.attr.id;
 import static com.sharity.sharityUser.LoginClient.LoginClientInteractorImpl.DownloadImageBitmap;
 import static com.sharity.sharityUser.R.id.user;
-import static com.sharity.sharityUser.R.id.username;
 
 /**
  * Created by Moi on 23/02/2017.
@@ -96,7 +97,7 @@ public class FacebookConnectivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             byte_pictureFB = DbBitmapUtility.getBytes(pictureFB);
-            UserSession=new User(parseUser.getObjectId(),name,email,byte_pictureFB);
+            UserSession=new User(parseUser.getObjectId(),name,email,byte_pictureFB,"");
             saveUser_ParseServer(id,pictureFB,name,email,isnewUser);
         }
     }
@@ -130,13 +131,25 @@ public class FacebookConnectivity {
             }
         });
 
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        String GCMsenderId=String.valueOf(R.string.parse_sender_id);
+        installation.put("user", ParseObject.createWithoutData("_User", parseUser.getObjectId()));
+        installation.put("badge", 0);
+        installation.put("GCMSenderId", GCMsenderId);
+        String[] array={"TransactionTestAndroid"};
+        installation.put("channels", Arrays.asList(array));
+        installation.saveInBackground();
+
+
+
         //Add user to localDB
         if (db.getUserCount()<=0){
             db.addUserProfil(UserSession);
             Log.d("DB", "User Added");
 
         }else {
-            db.updateUser(UserSession);
+            db.deleteAllUser();
+            db.addUserProfil(UserSession);
             Log.d("DB", "User updated");
         }
     }

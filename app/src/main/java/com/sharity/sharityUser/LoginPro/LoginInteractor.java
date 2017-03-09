@@ -1,5 +1,7 @@
 package com.sharity.sharityUser.LoginPro;
 
+import android.content.Context;
+
 public interface LoginInteractor {
 
     interface OnLoginFinishedListener {
@@ -12,6 +14,6 @@ public interface LoginInteractor {
         void onSuccess();
     }
 
-    void login(String username, String password, OnLoginFinishedListener listener);
+    void login(Context context,String username, String password, OnLoginFinishedListener listener);
 
 }

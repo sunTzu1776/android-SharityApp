@@ -2,6 +2,7 @@ package com.sharity.sharityUser.fragment.pro;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,12 +19,16 @@ import android.widget.Toast;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
+import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.LoginPro.LoginProPresenterImpl;
 import com.sharity.sharityUser.LoginPro.LoginProView;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
+import com.sharity.sharityUser.fonts.EditTextGeoManis;
+import com.sharity.sharityUser.fonts.TextViewGeoManis;
 
 
 /**
@@ -32,16 +38,14 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
 
     private View inflate;
     private ProgressBar progress;
-    private EditText username;
-    private EditText password;
-    private Button login_BT;
+    private EditTextGeoManis username;
+    private EditTextGeoManis password;
+    private TextViewGeoManis login_BT;
     private TextView inscription;
     private LoginPresenter presenter;
     private static String type;
     private TextView forgot_password;
-    private Button icon_charite;
-    private Button icon_pro;
-
+    private ImageView logo;
     public static Login_Pro_fragment newInstance(String type) {
         Login_Pro_fragment myFragment = new Login_Pro_fragment();
         Bundle args = new Bundle();
@@ -56,14 +60,13 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
         inflate = inflater.inflate(R.layout.fragment_login_pro, container, false);
 
         type=getArguments().get("type").toString();
-        icon_charite = (Button) inflate.findViewById(R.id.charite_icon);
-        icon_pro = (Button) inflate.findViewById(R.id.pro_icon);
+        logo=(ImageView)inflate.findViewById(R.id.logopro);
         progress = (ProgressBar) inflate.findViewById(R.id.progress);
         inscription=(TextView)inflate.findViewById(R.id.inscription);
         forgot_password=(TextView)inflate.findViewById(R.id.forgotpassword);
-        login_BT = (Button) inflate.findViewById(R.id.login_BT);
-        username = (EditText) inflate.findViewById(R.id.username_login);
-        password = (EditText) inflate.findViewById(R.id.password_login);
+        login_BT = (TextViewGeoManis) inflate.findViewById(R.id.login_BT);
+        username = (EditTextGeoManis) inflate.findViewById(R.id.username_login);
+        password = (EditTextGeoManis) inflate.findViewById(R.id.password_login);
 
         inscription.setOnClickListener(this);
         login_BT.setOnClickListener(this);
@@ -71,11 +74,10 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
         presenter = new LoginProPresenterImpl(this);
 
         if (type.equals("charite")){
-            icon_charite.setVisibility(View.VISIBLE);
-            icon_pro.setVisibility(View.INVISIBLE);
+           // logo.setImageResource(R.drawable..);
         }else if (type.equals("pro")){
-            icon_charite.setVisibility(View.INVISIBLE);
-            icon_pro.setVisibility(View.VISIBLE);
+            logo.setImageResource(R.drawable.logopro);
+
         }
 
         return inflate;
@@ -92,7 +94,7 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
                     break;
 
                 case R.id.login_BT:
-                    presenter.validateCredentials(username.getText().toString(), password.getText().toString());
+                    presenter.validateCredentials(getActivity(),username.getText().toString(), password.getText().toString());
                     break;
 
                 case R.id.forgotpassword:
@@ -146,8 +148,15 @@ public class Login_Pro_fragment extends Fragment implements LoginProView,View.On
     }
 
     @Override public void navigateToHome() {
-        startActivity(new Intent(getActivity(), ProfilActivity.class));
+        IsPro();
+        startActivity(new Intent(getActivity(), ProfilProActivity.class));
         getActivity().finish();
     }
 
+    private void IsPro(){
+        SharedPreferences pref = getActivity().getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("status", "Business");
+        editor.commit();
+    }
 }

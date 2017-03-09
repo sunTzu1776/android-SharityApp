@@ -71,9 +71,9 @@
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
                 android:gravity="center"
                 android:hint="Mot de passe"
+                android:inputType="numberPassword"
                 android:layout_weight="2.5"
                 android:ems="10"
                 android:id="@+id/password" />
@@ -91,9 +91,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:inputType="textPersonName"
                 android:hint="Numéro SIRET"
                 android:layout_weight="2.5"
-                android:inputType="numberPassword"
                 android:ems="14"
                 android:id="@+id/Siret" />
         </LinearLayout>

@@ -2,6 +2,7 @@ package com.sharity.sharityUser.activity;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -21,7 +22,7 @@ import com.parse.ParseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.fragment.Profil_fragment;
+import com.sharity.sharityUser.fragment.client.Profil_fragment;
 import com.sharity.sharityUser.fragment.SimpleBackPage;
 import com.sharity.sharityUser.fragment.client.client_Option_fragment;
 import com.sharity.sharityUser.fragment.client.client_Partenaire_fragment;
@@ -49,12 +50,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
         if (savedInstanceState == null) {
             parseUser=ParseUser.getCurrentUser();
-
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
             pager = (ViewPager) findViewById(R.id.pager);
+            pager.setOffscreenPageLimit(0);
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(1,true);
             pager.setOnPageChangeListener(mPageChangeListener);
@@ -253,6 +254,31 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 102: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
+                    client_Partenaire_fragment client_Partenaire_fragment = (client_Partenaire_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
+
+                    if (client_Partenaire_fragment != null && client_Partenaire_fragment.isVisible()) {
+                        client_Partenaire_fragment.update();
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 }

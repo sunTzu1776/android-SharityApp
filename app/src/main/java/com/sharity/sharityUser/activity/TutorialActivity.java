@@ -145,6 +145,8 @@ public class TutorialActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void buildCircles() {
         circles = LinearLayout.class.cast(findViewById(R.id.circles));
 

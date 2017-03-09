@@ -28,6 +28,11 @@
     <string name="TwitterconsumerKey">qwEsZSc4qUHiDfQ7tKZn6T99a</string>
     <string name="TwitterconsumerSecret">34Tgd35VwC0feJFOTYk88GCnZx1f9twmeBbc3nrQgBX67l9Uz6</string>
     <string name="ParseAppId">ecfa853cf6485638f4ec57f58aad83410b514cb7</string>
+    <string name="gcm_sender_id">569826207341</string>
+    <string name="parse_sender_id">id:569826207341</string>
+    <string name="gcmserver">AAAAOKfHz_g:APA91bGa-DONnzpSp3S60aV-EtWGTtCrYgm165l0ni_VdnTgadnODYvjKAd4fE0LEX6Fb0m_NRnkhBt1oV3h7NrwnkQeiKT7xtPDftHQU5GHIVlSkcOcoM4qFBDtMc2fvS7Ulh4w4XoS</string>
+
+    <string name="gcm_apiKey">AIzaSyDQn1Kz5Kx_XiQZjtNh0sfz9J0Z8FyUlQU</string>
 
 
 

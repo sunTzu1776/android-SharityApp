@@ -1,6 +1,9 @@
 package com.sharity.sharityUser.fragment.client;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -14,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.parse.ParseUser;
 import com.sharity.sharityUser.LoginClient.LoginClientPresenter;
 import com.sharity.sharityUser.LoginClient.LoginClientPresenterImpl;
@@ -22,7 +24,11 @@ import com.sharity.sharityUser.LoginClient.LoginClientView;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
+import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.pro.Login_Pro_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_code_fragment;
+
+import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 
 /**
@@ -51,12 +57,12 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_login_client, container, false);
-
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
 
+        getToken(getContext());
         twitter = (ImageView) inflate.findViewById(R.id.twitter_login);
         facebook = (ImageView) inflate.findViewById(R.id.facebook_login);
         access_pro = (Button) inflate.findViewById(R.id.pro_login_acces);
@@ -136,12 +142,10 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
 
     @Override
     public void navigateToHome() {
-        AccessToken token = AccessToken.getCurrentAccessToken();
-        Log.d("token", String.valueOf(token));
-        final FragmentTransaction connexion = getFragmentManager().beginTransaction();
-        connexion.replace(R.id.login, new client_code_fragment(), "Client_Code_fragment");
-        connexion.addToBackStack(null);
-        connexion.commit();
+        IsUserSession();
+         Intent intent=new Intent(getActivity(), ProfilActivity.class);
+            startActivity(intent);
+            getActivity().finish();
     }
 
 
@@ -175,4 +179,26 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
             }
         }
     }
+
+
+    private void IsUserSession(){
+        SharedPreferences pref = getActivity().getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("status", "User");
+        editor.commit();
+    }
+
+    private String getUserObjectId(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("client_numCode", "");         // getting String
+        return accountDisconnect;
+    }
+
+    private String getToken(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("TokenFireBase", "");         // getting String
+        Log.d("RTOKE", accountDisconnect);
+        return accountDisconnect;
+    }
+
 }

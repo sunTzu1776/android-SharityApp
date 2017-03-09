@@ -7,19 +7,36 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+import com.sharity.sharityUser.BO.Business;
+import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
+import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.fragment.pro.Login_Pro_fragment;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.google.android.gms.analytics.internal.zzy.d;
+import static com.google.android.gms.analytics.internal.zzy.e;
+import static com.sharity.sharityUser.R.id.RIB;
+import static com.sharity.sharityUser.R.id.Siret;
+import static com.sharity.sharityUser.R.id.address;
 import static com.sharity.sharityUser.R.id.business_name;
 import static com.sharity.sharityUser.R.id.chief_name;
 import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.R.id.username;
+import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 public class SignUpProInteractorImpl implements SignUpProInteractor {
     ParseUser user;
@@ -43,6 +60,7 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
     @Override
     public void login(final String type, final View[] fields, Object[] addresse, final String username, final String password, final String Siret, final String Businesname, final String OwnerName, final String Phone, final String address, final String RIB, final String email, final OnLoginFinishedListener listener) {
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
+
         this._type = type;
         this._username = username;
         this._password = password;
@@ -158,14 +176,19 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         point = new ParseGeoPoint(latitude, longitude);
         object.put("location", point);
         object.put("email", _email);
-
-        object.saveInBackground(new SaveCallback() {
+        final ParseObject finalObject = object;
+        finalObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    _listener.onSuccess();
-                    SaveLocationUser(point);
+                    SaveLocationUser(point, finalObject.getObjectId());
+                    final Business business=new Business(finalObject.getObjectId(),user.getUsername(),user.getObjectId(),_OwnerName,_Businesname,_RIB,_Siret,_Phone,_address,String.valueOf(latitude),String.valueOf(longitude),_email);
+                    if (db.getBusinessCount()>=1){
+                        db.deleteAllBusiness();
+                    }
+                        db.addProProfil(business);
                     LoginPro();
+                    _listener.onSuccess();
                 } else {
                     Log.d(TAG, "ex" + e.getMessage());
                 }
@@ -177,6 +200,14 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         ParseUser.logInInBackground(_username, _password, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
+                    ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+                    String GCMsenderId=String.valueOf(R.string.gcm_sender_id);
+                    installation.put("user", ParseObject.createWithoutData("_User", user.getObjectId()));
+                    installation.put("badge", 0);
+                    installation.put("GCMSenderId", GCMsenderId);
+                    String[] array={"Transaction"};
+                    installation.put("channels", Arrays.asList(array));
+                    installation.saveInBackground();
                 } else {
                     if (e.getCode()==101){
                     }
@@ -186,8 +217,9 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
     }
 
 
-    private void SaveLocationUser(ParseGeoPoint point){
+    private void SaveLocationUser(ParseGeoPoint point,String objectid){
         ParseUser parseUser = ParseUser.getCurrentUser();
+        parseUser.put("BusinessId",objectid);
         parseUser.put("geoloc", point);
         parseUser.saveInBackground(new SaveCallback() {
             @Override

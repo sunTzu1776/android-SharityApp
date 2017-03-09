@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextViewGeomanis">
+        <attr name="GeomanisRegular" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="TextViewMontSerra">
+    <attr name="Montserra" format="string"/>
+</declare-styleable>
+
+    <declare-styleable name="TextViewSegoei">
+        <attr name="Segoeui" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewR">
+        <attr name="RobotoBold" format="string"/>
+    </declare-styleable>
+</resources>

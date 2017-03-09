@@ -5,27 +5,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.FacebookConnectivity;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
-import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
-import com.sharity.sharityUser.User;
+import com.sharity.sharityUser.BO.User;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,7 +29,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,8 +36,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
-
-import static android.R.attr.bitmap;
 
 
 public class LoginClientInteractorImpl implements LoginClientInteractor {
@@ -118,6 +109,7 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
 
                              ObjectId_ToPref(user.getObjectId());
 
+
                             FacebookConnectivity FBconnectivity=new FacebookConnectivity(context,AccessToken.getCurrentAccessToken(),user,isnewUser);
                             FBconnectivity.getProfil();
 
@@ -138,6 +130,7 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                             isnewUser=false;
                             Log.d("MyApp", "User logged in through Facebook!");
                             ObjectId_ToPref(user.getObjectId());
+
 
                             FacebookConnectivity FBconnectivity=new FacebookConnectivity(context,AccessToken.getCurrentAccessToken(),user,isnewUser);
                             FBconnectivity.getProfil();

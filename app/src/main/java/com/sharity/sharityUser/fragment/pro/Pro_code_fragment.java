@@ -1,13 +1,11 @@
-package com.sharity.sharityUser.fragment.client;
+package com.sharity.sharityUser.fragment.pro;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,42 +15,32 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.activity.ProfilActivity;
-import com.sharity.sharityUser.activity.TutorialActivity;
-
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.sharity.sharityUser.R.id.RIB;
-import static com.sharity.sharityUser.R.id.address;
-import static com.sharity.sharityUser.R.id.email;
-import static com.sharity.sharityUser.R.id.user;
-import static com.sharity.sharityUser.R.id.username;
+import com.sharity.sharityUser.activity.ProfilProActivity;
+import com.sharity.sharityUser.fonts.EditTextMontserra;
+import com.sharity.sharityUser.fonts.TextViewSegoeUi;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_code_fragment extends Fragment implements View.OnClickListener {
+public class Pro_code_fragment extends Fragment implements View.OnClickListener {
 
     private View inflate;
     private ProgressBar progress;
-    private EditText saisir_code;
-    private EditText  confirmer_code;
-    private Button valider;
+    private EditTextMontserra saisir_code;
+    private EditTextMontserra  confirmer_code;
+    private TextViewSegoeUi valider;
     private TextView inscription;
     private LoginPresenter presenter;
 
-    public static client_code_fragment newInstance() {
-        client_code_fragment myFragment = new client_code_fragment();
+    public static Pro_code_fragment newInstance() {
+        Pro_code_fragment myFragment = new Pro_code_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;
@@ -61,10 +49,10 @@ public class client_code_fragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        inflate = inflater.inflate(R.layout.fragment_setcode_client, container, false);
-        saisir_code=(EditText)inflate.findViewById(R.id.saisir_code);
-        confirmer_code=(EditText)inflate.findViewById(R.id.confirmer_code);
-        valider=(Button)inflate.findViewById(R.id.valider);
+        inflate = inflater.inflate(R.layout.fragment_setcode_pro, container, false);
+        saisir_code=(EditTextMontserra)inflate.findViewById(R.id.saisir_code);
+        confirmer_code=(EditTextMontserra)inflate.findViewById(R.id.confirmer_code);
+        valider=(TextViewSegoeUi)inflate.findViewById(R.id.valider);
 
         saisir_code.setOnClickListener(this);
         confirmer_code.setOnClickListener(this);
@@ -90,14 +78,15 @@ public class client_code_fragment extends Fragment implements View.OnClickListen
 
                 }else {
                     if (saisie.equals(confirmation)){
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        SharedPreferences.Editor edit = prefs.edit();
-                        edit.putString("client_numCode", saisie);
-                        edit.commit();
+                        SharedPreferences pref = getActivity().getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("Business_numCode", saisie);
+                        editor.commit();
+
 
                         if (Utils.isConnected(getContext())){
                             SaveCode_ToParse(saisie);
-                            startActivity(new Intent(getActivity(), ProfilActivity.class));
+                            startActivity(new Intent(getActivity(), ProfilProActivity.class));
                             getActivity().finish();
                         }else {
                             Utils.showDialog3(getActivity(), getString(R.string.dialog_network),getString(R.string.network),true, new Utils.Click() {
@@ -141,9 +130,9 @@ public class client_code_fragment extends Fragment implements View.OnClickListen
 
     }
 
-    private String getUserObjectId(Context context) {
+    private String getBusinessObjectId(Context context) {
         SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
-        final String accountDisconnect = pref.getString("User_ObjectId", "");         // getting String
+        final String accountDisconnect = pref.getString("Business_ObjectId", "");         // getting String
         return accountDisconnect;
     }
 

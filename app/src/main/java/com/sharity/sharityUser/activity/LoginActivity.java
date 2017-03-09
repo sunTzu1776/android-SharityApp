@@ -13,6 +13,7 @@ import com.facebook.FacebookSdk;
 import com.parse.ParseFacebookUtils;
 
 import com.parse.ParseTwitterUtils;
+import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.client.client_Login_fragment;
 
@@ -22,6 +23,7 @@ import com.sharity.sharityUser.fragment.client.client_Login_fragment;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    public static DatabaseHandler db;
     public static CallbackManager callbackManager;
     static LoginActivity login_activity;
 
@@ -34,7 +36,7 @@ public void onCreate( Bundle savedInstanceState) {
     StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.activity_login);
-
+        db=new DatabaseHandler(this);
 
           /*  Context ctx = this; // for Activity, or Service. Otherwise simply get the context
             String dbname = "User";

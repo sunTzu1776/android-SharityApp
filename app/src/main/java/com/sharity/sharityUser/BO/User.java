@@ -1,4 +1,4 @@
-package com.sharity.sharityUser;
+package com.sharity.sharityUser.BO;
 
 /**
  * Created by Moi on 21/11/15.
@@ -9,7 +9,9 @@ public class User {
     String _id;
     String _name;
     String _email;
+    String _code;
     byte[] pictureprofil;
+
     // Empty constructor
     public User(){
 
@@ -20,6 +22,14 @@ public class User {
         this._name = name;
         this._email=email;
         this.pictureprofil = pictureprofil;
+    }
+
+    public User(String id, String name, String email,byte[] pictureprofil,String code){
+        this._id = id;
+        this._name = name;
+        this._email=email;
+        this.pictureprofil = pictureprofil;
+        this._code=code;
     }
 
     // constructor
@@ -38,5 +48,9 @@ public class User {
 
     public String get_name() {
         return _name;
+    }
+
+    public String get_code() {
+        return _code;
     }
 }
