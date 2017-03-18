@@ -1,35 +1,43 @@
 package com.sharity.sharityUser.activity;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.fragment.SimpleBackPage;
-import com.sharity.sharityUser.fragment.client.client_Option_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_Historique_fragment;
-import com.sharity.sharityUser.fragment.pro.Profil_pro_fragment;
-import com.sharity.sharityUser.fragment.pro.Partenaire_Pro_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_History_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Partenaire_fragment;
 
-import static com.sharity.sharityUser.R.id.tab_option;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
 
 
@@ -47,6 +55,12 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     private TextView toolbarTitle;
     boolean start =true;
     public static ParseUser parseUser;
+    private DrawerLayout drawer_layout;
+    private ListView myDrawer;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ArrayList<Drawer> drawersItems= new ArrayList<Drawer>();
+    private AdapterNews adapter;
+    public static String profileSource;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +73,25 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
+            drawer_layout=(DrawerLayout) findViewById(R.id.drawer_layout);
+            drawersItems.add(0, new Drawer(R.drawable.logo, "", 0));
+            drawersItems.add(1, new Drawer(R.drawable.logo, "Finir mon inscription", 1));
+            drawersItems.add(2, new Drawer(R.drawable.logo, "Informations de profil", 1));
+            drawersItems.add(3, new Drawer(R.drawable.logo, "CGU", 1));
+            drawersItems.add(4, new Drawer(R.drawable.logo, "Contacts", 1));
+            drawersItems.add(5, new Drawer(R.drawable.logo, "Noter l'application", 1));
+            drawersItems.add(6, new Drawer(R.drawable.logo, "Déconnexion", 1));
+
+            myDrawer = (ListView) findViewById(R.id.my_drawer);
+            adapter = new AdapterNews(ProfilProActivity.this, drawersItems);
+            myDrawer.setAdapter(adapter);
+
             pager = (ViewPager) findViewById(R.id.pager);
             pager.setOffscreenPageLimit(0);
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(1,true);
+            profileSource="Profil";
+
             pager.setOnPageChangeListener(mPageChangeListener);
             mViewPagerAdapter.notifyDataSetChanged();
             buildTabs();
@@ -74,7 +103,56 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             toolbar.setNavigationIcon(R.drawable.ic_drawer);
 
+            actionBarDrawerToggle = new ActionBarDrawerToggle(ProfilProActivity.this, drawer_layout,
+                    toolbar, R.string.open, R.string.close) {
 
+                /** Called when a drawer has settled in a completely closed state. */
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+
+                    // Do whatever you want here
+                }
+
+                /** Called when a drawer has settled in a completely open state. */
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    // Do whatever you want here
+                }
+            };
+
+
+            myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position){
+                        case 0:
+                            break;
+                        case 1:
+
+                            break;
+                        case 2:
+                            pager.setCurrentItem(1,true);
+                            profileSource="Profilinfo";
+                            mViewPagerAdapter.notifyDataSetChanged();
+                            break;
+                        case 3:
+
+                            break;
+                        case 4:
+
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            //Disconnection
+                            ParseUser.logOut();
+                            Intent intent = new Intent(ProfilProActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                            break;
+                    }
+                }
+            });
         }
     }
 
@@ -88,11 +166,11 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return Pro_Historique_fragment.newInstance();
+                return Pro_Paiment_fragment.newInstance();
             } else if (position == 1) {
-                return Profil_pro_fragment.newInstance();
+                return Pro_Profil_Container_fragment.newInstance(profileSource);
             } else if (position == 2) {
-                return Partenaire_Pro_fragment.newInstance();
+                return Pro_History_fragment.newInstance();
             }
 
             return null;
@@ -109,15 +187,15 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         // To update fragment in ViewPager, we should override getItemPosition() method,
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
-            if (object instanceof Pro_Historique_fragment) {
-                ((Pro_Historique_fragment) object).update();
+            if (object instanceof Pro_Paiment_fragment) {
+                ((Pro_Paiment_fragment) object).update();
             }
-            if (object instanceof Profil_pro_fragment) {
-                ((Profil_pro_fragment) object).update();
+            if (object instanceof Pro_Profil_Container_fragment) {
+                ((Pro_Profil_Container_fragment) object).update();
             }
 
-            if (object instanceof Partenaire_Pro_fragment) {
-                ((Partenaire_Pro_fragment) object).update();
+            if (object instanceof Pro_History_fragment) {
+                ((Pro_History_fragment) object).update();
             }
 
             return super.getItemPosition(object);
@@ -143,11 +221,11 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             bottomBar.setInActiveTabColor(getResources().getColor(R.color.black));
             bottomBar.setActiveTabColor(getResources().getColor(R.color.red));
             if (position==0){
-                toolbarTitle.setText("OPTIONS");
+                toolbarTitle.setText("PAIMENT");
             }else if (position==1){
                 toolbarTitle.setText("PROFIL");
             }else if (position==2){
-                toolbarTitle.setText("PARTENAIRE");
+                toolbarTitle.setText("HISTORIQUE");
             }
         }
 
@@ -178,17 +256,6 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         // ActionBarDrawerToggle will take care of this.
         // Handle action buttons
         switch(item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getSupportActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "not available", Toast.LENGTH_LONG).show();
-                }
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -269,7 +336,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
-                    Partenaire_Pro_fragment Partenaire_Pro_fragment = (Partenaire_Pro_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
+                    Pro_Partenaire_fragment Partenaire_Pro_fragment = (Pro_Partenaire_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
 
                     if (Partenaire_Pro_fragment != null && Partenaire_Pro_fragment.isVisible()) {
                         Partenaire_Pro_fragment.update();
@@ -285,6 +352,40 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             // permissions this app might request
         }
     }
+
+    private boolean onBackPressed(FragmentManager fm) {
+        if (fm != null) {
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+                return true;
+            }
+
+            List<Fragment> fragList = fm.getFragments();
+            if (fragList != null && fragList.size() > 0) {
+                for (Fragment frag : fragList) {
+                    if (frag == null) {
+                        continue;
+                    }
+                    if (frag.isVisible()) {
+                        if (onBackPressed(frag.getChildFragmentManager())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (onBackPressed(fm)) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
 
 }
 

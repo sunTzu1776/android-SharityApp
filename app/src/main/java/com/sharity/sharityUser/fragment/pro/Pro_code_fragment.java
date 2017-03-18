@@ -15,9 +15,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
@@ -25,12 +29,15 @@ import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fonts.EditTextMontserra;
 import com.sharity.sharityUser.fonts.TextViewSegoeUi;
 
+import static com.sharity.sharityUser.R.id.user;
+
 
 /**
  * Created by Moi on 14/11/15.
  */
 public class Pro_code_fragment extends Fragment implements View.OnClickListener {
 
+    private Boolean emailVerified=null;
     private View inflate;
     private ProgressBar progress;
     private EditTextMontserra saisir_code;
@@ -86,8 +93,7 @@ public class Pro_code_fragment extends Fragment implements View.OnClickListener 
 
                         if (Utils.isConnected(getContext())){
                             SaveCode_ToParse(saisie);
-                            startActivity(new Intent(getActivity(), ProfilProActivity.class));
-                            getActivity().finish();
+                            Check_email_validate();
                         }else {
                             Utils.showDialog3(getActivity(), getString(R.string.dialog_network),getString(R.string.network),true, new Utils.Click() {
                             @Override
@@ -106,8 +112,6 @@ public class Pro_code_fragment extends Fragment implements View.OnClickListener 
                         Toast.makeText(getActivity(),"Les codes entrés sont pas identiques",Toast.LENGTH_LONG).show();
                     }
                 }
-
-
                 break;
         }
     }
@@ -134,6 +138,28 @@ public class Pro_code_fragment extends Fragment implements View.OnClickListener 
         SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
         final String accountDisconnect = pref.getString("Business_ObjectId", "");         // getting String
         return accountDisconnect;
+    }
+
+    private String Check_email_validate(){
+        Application.parseUser= ParseUser.getCurrentUser();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+        if (Application.parseUser!=null) {
+            query.getInBackground(Application.parseUser.getObjectId(), new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if (object != null) {
+                        emailVerified = object.getBoolean("emailVerified");
+                        if (emailVerified){
+                            startActivity(new Intent(getActivity(), ProfilProActivity.class));
+                            getActivity().finish();
+                        }else {
+                            Toast.makeText(getActivity(),"Nous venons de vous envoyé un email, Veuillez cliquer sur le lien dans l'email pour confirmer",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
+        }
+        return String.valueOf(emailVerified);
     }
 
 }

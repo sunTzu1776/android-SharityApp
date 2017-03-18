@@ -41,7 +41,7 @@
         <com.sharity.sharityUser.fonts.TextViewSegoeUi
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"
             android:gravity="center_horizontal|center_vertical"
             android:text="Bienvenue dans l'ère du don gratuit"
             app:Segoeui="segoeui.ttf"
@@ -173,31 +173,34 @@
                 android:layout_weight="0.8"
                 android:layout_gravity="right"
                 android:gravity="right"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 >
 
                 <Button
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/charite_login_acces"
                     android:layout_gravity="right"
                     android:text="Charité"
                     android:textSize="15dp"
-                    android:textColor="@color/red"
-                    android:background="@drawable/border_color_button_pro"
-                    android:layout_margin="10dp"
+                    android:layout_marginRight="10dp"
+                 android:background="@drawable/border_color_button_pro"
+                android:textColor="@color/red"
                     />
+
+                <!--   android:background="@drawable/border_color_button_pro"-->
 
                 <Button
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/pro_login_acces"
                     android:layout_gravity="right"
+                    android:layout_marginRight="10dp"
                     android:text="PRO"
+                    android:background="@drawable/border_color_button_pro"
                     android:textSize="17dp"
                     android:textColor="@color/red"
-                    android:background="@drawable/border_color_button_pro"
-                    android:layout_margin="10dp"
                     />
 
 

@@ -2,7 +2,7 @@
 <tabs>
     <tab
         id="@+id/tab_option"
-        icon="@drawable/icon_option"
+        icon="@drawable/icon_historique"
          />
     <tab
         id="@+id/tab_profil"

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +24,7 @@ import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
-import com.sharity.sharityUser.fragment.pro.Login_Pro_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_code_fragment;
-
-import static com.sharity.sharityUser.activity.LoginActivity.db;
+import com.sharity.sharityUser.fragment.pro.Pro_Login_fragment;
 
 
 /**
@@ -62,7 +58,7 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
             StrictMode.setThreadPolicy(policy);
         }
 
-        getToken(getContext());
+
         twitter = (ImageView) inflate.findViewById(R.id.twitter_login);
         facebook = (ImageView) inflate.findViewById(R.id.facebook_login);
         access_pro = (Button) inflate.findViewById(R.id.pro_login_acces);
@@ -89,7 +85,7 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
             case R.id.pro_login_acces:
                 ParseUser.logOut();
                 final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.login, Login_Pro_fragment.newInstance("pro"), "Login_Pro_fragment");
+                ft.replace(R.id.login, Pro_Login_fragment.newInstance("pro"), "Login_Pro_fragment");
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
@@ -97,7 +93,7 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
             case R.id.charite_login_acces:
                 ParseUser.logOut();
                 final FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                ft2.replace(R.id.login, Login_Pro_fragment.newInstance("charite"), "Login_Pro_fragment");
+                ft2.replace(R.id.login, Pro_Login_fragment.newInstance("charite"), "Login_Pro_fragment");
                 ft2.addToBackStack(null);
                 ft2.commit();
                 break;
@@ -194,11 +190,5 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
         return accountDisconnect;
     }
 
-    private String getToken(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
-        final String accountDisconnect = pref.getString("TokenFireBase", "");         // getting String
-        Log.d("RTOKE", accountDisconnect);
-        return accountDisconnect;
-    }
 
 }

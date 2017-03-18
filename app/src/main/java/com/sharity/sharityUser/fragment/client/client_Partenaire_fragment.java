@@ -120,22 +120,6 @@ public class client_Partenaire_fragment extends Fragment implements  GoogleApiCl
             else {
                 permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
             }
-
-        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-           Utils.showDialog3(getActivity(),"Please Enable your GPS","Location",false, new Utils.Click() {
-               @Override
-               public void Ok() {
-
-               }
-
-               @Override
-               public void Cancel() {
-
-               }
-           });
-        }
         }
    // }
 

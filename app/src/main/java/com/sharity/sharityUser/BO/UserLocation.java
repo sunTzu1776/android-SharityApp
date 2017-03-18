@@ -10,14 +10,16 @@ public class UserLocation implements Serializable{
         private double latitude;
         private double longitude;
         private String username;
+        private String userToken;
     byte[] pictureProfil;
 
-        public UserLocation(String id,double latitude, double longitude, String username, byte[] pictureProfil){
+        public UserLocation(String id,double latitude, double longitude, String username, byte[] pictureProfil,String userToken){
             this.latitude=latitude;
             this.longitude=longitude;
             this.username=username;
             this.pictureProfil=pictureProfil;
             this.id=id;
+            this.userToken=userToken;
         }
 
     public String getId() {
@@ -38,5 +40,9 @@ public class UserLocation implements Serializable{
 
     public byte[] getPictureProfil() {
         return pictureProfil;
+    }
+
+    public String getUserToken() {
+        return userToken;
     }
 }

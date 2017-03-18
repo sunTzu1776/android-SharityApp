@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -17,6 +18,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.BO.Business;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
@@ -31,10 +33,13 @@ import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 public class LoginProInteractorImpl implements LoginInteractor {
 
+    private boolean emailVerified;
     Context context;
+    private  OnLoginFinishedListener listener;
     @Override
     public void login(final Context context, final String username, final String password, final OnLoginFinishedListener listener) {
         this.context=context;
+        this.listener=listener;
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -69,14 +74,13 @@ public class LoginProInteractorImpl implements LoginInteractor {
                                                 db.deleteAllBusiness();
                                                 db.addProProfil(business);
                                             }
-
                                             ObjectId_ToPref(user.getObjectId());
-                                            listener.onSuccess();
                                         } else {
                                             // something went wrong
                                         }
                                     }
                                 });
+                            Check_email_validate(user);
                         } else {
                             if (e.getCode() == 101) {
                                 listener.onUserError();
@@ -104,5 +108,26 @@ public class LoginProInteractorImpl implements LoginInteractor {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("User_ObjectId", ObjectId);  // Saving objectid in preference
         editor.commit();
+    }
+
+    private String Check_email_validate(ParseUser user){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+        if (user!=null) {
+            query.getInBackground(user.getObjectId(), new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if (object != null) {
+                        emailVerified = object.getBoolean("emailVerified");
+                        if (emailVerified){
+                            listener.onSuccess();
+                        }else {
+                            Toast.makeText(context,"vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer",Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                }
+            });
+        }
+        return String.valueOf(emailVerified);
     }
 }

@@ -1,6 +1,7 @@
 package com.sharity.sharityUser;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,12 +46,14 @@ public class FacebookConnectivity {
     private byte [] byte_pictureFB;
     private Bitmap  pictureFB;
     private boolean isnewUser;
+    private Context context;
 
     public FacebookConnectivity(Context context,AccessToken accessToken, ParseUser user, boolean isNewUser){
         db = new DatabaseHandler(context);
         this.accessToken=accessToken;
         this.parseUser=user;
         this.isnewUser=isNewUser;
+        this.context=context;
     }
 
     public void getProfil() {
@@ -109,6 +112,10 @@ public class FacebookConnectivity {
             parseUser.put("sharepoints",0);
             parseUser.put("facebookId",FBid);
         }
+        if (getFCMToken(context).length()>0) {
+            parseUser.put("fcm_device_id", getFCMToken(context));
+        }
+
 
 //        Saving profile photo as a ParseFile
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -171,5 +178,12 @@ public class FacebookConnectivity {
 
     public Bitmap getPictureFB() {
         return pictureFB;
+    }
+
+    private String getFCMToken(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("TokenFireBase", "");         // getting String
+        Log.d("RTOKE", accountDisconnect);
+        return accountDisconnect;
     }
 }

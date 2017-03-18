@@ -3,6 +3,7 @@ package com.sharity.sharityUser.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -10,9 +11,14 @@ import android.view.Menu;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.parse.GetCallback;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
+import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.client.client_Login_fragment;
@@ -47,7 +53,6 @@ public void onCreate( Bundle savedInstanceState) {
     if (savedInstanceState ==null){
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new client_Login_fragment(), "Login_fragment")
                      .addToBackStack(null)

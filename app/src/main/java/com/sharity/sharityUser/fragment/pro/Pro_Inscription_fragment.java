@@ -25,16 +25,25 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.sharity.sharityUser.Application;
+import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.GooglePlaces.ParseAutoCompleteAdapter;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.SignupPro.SignUpProPresenter;
 import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProView;
+import com.sharity.sharityUser.Utils.AdapterHistoricUser;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 
@@ -46,14 +55,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
+import static com.google.android.gms.analytics.internal.zzy.e;
+import static com.google.android.gms.analytics.internal.zzy.i;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Inscription_Pro_fragment extends Fragment implements View.OnClickListener, SignUpProView, GoogleApiClient.ConnectionCallbacks,
+public class Pro_Inscription_fragment extends Fragment implements View.OnClickListener, SignUpProView, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
     private EditText username;
@@ -94,8 +106,8 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
     private static boolean mResolvingError = false;
     private String type;
 
-    public static Inscription_Pro_fragment newInstance(String type) {
-        Inscription_Pro_fragment myFragment = new Inscription_Pro_fragment();
+    public static Pro_Inscription_fragment newInstance(String type) {
+        Pro_Inscription_fragment myFragment = new Pro_Inscription_fragment();
         Bundle args = new Bundle();
         args.putString("type",type);
         myFragment.setArguments(args);
@@ -272,23 +284,20 @@ public class Inscription_Pro_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void setEmailError() {
-        email.setError("usernameError");
+        Toast.makeText(getContext(),"Un compte existe déja pour cette adresse email",Toast.LENGTH_LONG);
+        email.setError("fill");
 
     }
 
     @Override
     public void navigateToHome() {
         IsPro();
-        if (db.getBusinessCount()>0 && getBusiness_numCode(getContext()).length()>0){
-            startActivity(new Intent(getActivity(), ProfilProActivity.class));
-            getActivity().finish();
-        }else {
-            final FragmentTransaction connexion = getFragmentManager().beginTransaction();
+        Toast.makeText(getActivity(),"Nous venons de vous envoyé un email, Veuillez cliquer sur le lien dans l'email pour confirmer",Toast.LENGTH_LONG).show();
+
+        final FragmentTransaction connexion = getFragmentManager().beginTransaction();
             connexion.replace(R.id.login, new Pro_code_fragment(), "Pro_code_fragment");
             connexion.addToBackStack(null);
             connexion.commit();
-        }
-
     }
 
 

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="7.7"
+    android:background="@color/white"
+    tools:context="testappparse.guilla.com.testappparse.testappparse.guilla.com.sharity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
+        android:orientation="vertical"
+        android:weightSum="7.7">
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/picture_profil"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/blue"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="0.2"
+                android:gravity="center_vertical|center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/username_login"
+                    android:textColor="@color/white"
+                    android:text="nom"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.8"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cash_icone"
+                android:id="@+id/cash" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cb_icone"
+                android:layout_gravity="center"
+                android:id="@+id/CB" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1.7"
+        android:gravity="center_horizontal|center_vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/black"
+            android:id="@+id/amount_paiment"
+            android:gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center"
+                android:layout_weight="0.1"
+                android:id="@+id/barre"
+                android:weightSum="4">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="2.5"
+                    android:background="@color/red">
+                </View>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="montant du paiment"
+                android:id="@+id/paiment_classique"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/barre"
+                android:textColor="@color/black"
+                android:layout_alignLeft="@+id/barre"
+                android:layout_alignRight="@+id/barre"/>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center|center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:id="@+id/sharepoint_supplementary"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:text="SharePoints Supplémentaire"
+                android:id="@+id/sharepoint_TV"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.7"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VALIDER"
+            android:layout_gravity="center"
+            android:id="@+id/valider"
+            android:padding="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/red"
+            />
+    </LinearLayout>
+
+</LinearLayout>

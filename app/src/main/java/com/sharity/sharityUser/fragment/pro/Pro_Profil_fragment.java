@@ -8,18 +8,12 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.Profile;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.BO.User;
@@ -30,19 +24,15 @@ import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 
-import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.google.android.gms.analytics.internal.zzy.b;
-import static com.google.android.gms.analytics.internal.zzy.i;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Profil_pro_fragment extends Fragment implements Updateable {
+public class Pro_Profil_fragment extends Fragment implements Updateable {
 
     public static final String ARG_PLANET_NUMBER = "planet_number";
     private View inflate;
@@ -53,8 +43,8 @@ public class Profil_pro_fragment extends Fragment implements Updateable {
     private TextView email;
     private TextView phone;
 
-    public static Profil_pro_fragment newInstance() {
-        Profil_pro_fragment myFragment = new Profil_pro_fragment();
+    public static Pro_Profil_fragment newInstance() {
+        Pro_Profil_fragment myFragment = new Pro_Profil_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;
@@ -69,7 +59,7 @@ public class Profil_pro_fragment extends Fragment implements Updateable {
         username=(TextView) inflate.findViewById(R.id.username_login);
         email=(TextView) inflate.findViewById(R.id.email);
         phone=(TextView) inflate.findViewById(R.id.telephone);
-
+        getProfilFromParse();
 
 
         imageView.setOnClickListener(new View.OnClickListener() {

@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/email"
                     android:textColor="@color/red"
-                    android:text="email"
+                    tools:text="email"
                     android:textSize="13.5sp" />
 
 
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/telephone"
                     android:textColor="@color/red"
-                    android:text="telephone"
+                    tools:text="telephone"
                     android:textSize="13.5sp" />
             </LinearLayout>
 

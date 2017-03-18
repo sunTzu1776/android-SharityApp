@@ -2,24 +2,20 @@ package com.sharity.sharityUser.fragment.pro;
 
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,7 +23,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -39,7 +34,6 @@ import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LocationUserActivity;
 import com.sharity.sharityUser.fragment.Updateable;
@@ -50,18 +44,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.content.Context.WINDOW_SERVICE;
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.analytics.internal.zzy.q;
 import static com.sharity.sharityUser.R.id.map;
-import static com.sharity.sharityUser.R.id.username;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
+public class Pro_Partenaire_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
          OnMapReadyCallback,Updateable {
 
@@ -85,8 +75,8 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
     private List<UserLocation> locationUser=new ArrayList<>();
     private Button userListBT;
     private ImageView imageView;
-        public static Partenaire_Pro_fragment newInstance() {
-        Partenaire_Pro_fragment myFragment = new Partenaire_Pro_fragment();
+        public static Pro_Partenaire_fragment newInstance() {
+        Pro_Partenaire_fragment myFragment = new Pro_Partenaire_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;
@@ -103,6 +93,7 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
                 imageView.setVisibility(View.VISIBLE);
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
+                mapView.getMapAsync(this);
 
                 if (mGoogleApiClient==null){
                     buildGoogleApiClient();
@@ -243,7 +234,7 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
         mMap.clear();
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
         query.whereNotEqualTo("userIsBusiness",true);
-        query.whereWithinKilometers("geoloc", geoPoint, 0.50);
+        query.whereWithinKilometers("geoloc", geoPoint, 0.70);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override public void done(List<ParseObject> objects, ParseException e) {
@@ -268,7 +259,9 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
                                 queryLatitude = geoPoint.getLatitude();
                                 queryLongitude = geoPoint.getLongitude();
                                 String username = objects.get(i).getString("username");
-                                    locationUser.add(new UserLocation(userid,queryLatitude, queryLongitude, username,image));
+                                String token = objects.get(i).getString("fcm_device_id");
+
+                                locationUser.add(new UserLocation(userid,queryLatitude, queryLongitude, username,image,token));
                                 }
                         }
 
@@ -294,7 +287,7 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
                     //Place current location marker
 
 
-                    if (counter>2){
+                    if (counter>1){
                         if (!locationUser.isEmpty()){
                             userListBT.setVisibility(View.VISIBLE);
                         }else {
@@ -310,7 +303,9 @@ public class Partenaire_Pro_fragment extends Fragment implements  GoogleApiClien
 
         @Override
         public void onDestroy(){
-            mTimer.cancel();
+            if (mTimer!=null){
+                mTimer.cancel();
+            }
             super.onDestroy();
         }
 

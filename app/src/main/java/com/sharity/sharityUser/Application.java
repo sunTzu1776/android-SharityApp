@@ -37,16 +37,16 @@ public class Application extends android.app.Application {
     }
 
     @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        MultiDex.install(this);
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-
-        OneSignal.startInit(this)
-                .setNotificationOpenedHandler(new MyNotificationOpenedHandler())
-                .setNotificationReceivedHandler( new MyNotificationReceivedHandler() )
-                .init();
 
         mInstance = this;
         FacebookSdk.sdkInitialize(getApplicationContext());

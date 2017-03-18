@@ -68,6 +68,9 @@
         <activity android:name=".activity.ProfilProActivity">
         </activity>
 
+        <activity android:name=".activity.MapActivity">
+        </activity>
+
 
         <activity android:name=".activity.LocationUserActivity">
         </activity>

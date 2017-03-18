@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        >
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/profil"/>
+
+        <TextView android:textColor="#000000"
+            android:id="@+id/user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="user"
+            android:gravity="center"
+            android:layout_alignBottom="@+id/profil"
+            android:layout_alignTop="@+id/profil"
+            android:layout_toLeftOf="@+id/send"
+            android:layout_toRightOf="@+id/profil"
+            android:layout_toEndOf="@+id/profil" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/price"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/user"
+            android:layout_alignLeft="@+id/user"
+            android:layout_toRightOf="@+id/profil"
+            android:layout_toLeftOf="@+id/send"
+            android:inputType="phone"
+            android:hint="valeur"
+            android:layout_toStartOf="@+id/send" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:id="@+id/send"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_marginRight="8dp"
+            android:text="notifier"
+            android:layout_alignTop="@+id/user"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

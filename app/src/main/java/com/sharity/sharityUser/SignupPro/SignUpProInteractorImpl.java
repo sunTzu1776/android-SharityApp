@@ -1,41 +1,29 @@
 package com.sharity.sharityUser.SignupPro;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.sharity.sharityUser.BO.Business;
-import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.fragment.pro.Login_Pro_fragment;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.google.android.gms.analytics.internal.zzy.d;
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.sharity.sharityUser.R.id.RIB;
-import static com.sharity.sharityUser.R.id.Siret;
-import static com.sharity.sharityUser.R.id.address;
-import static com.sharity.sharityUser.R.id.business_name;
-import static com.sharity.sharityUser.R.id.chief_name;
-import static com.sharity.sharityUser.R.id.user;
-import static com.sharity.sharityUser.R.id.username;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 public class SignUpProInteractorImpl implements SignUpProInteractor {
@@ -191,6 +179,9 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
                     _listener.onSuccess();
                 } else {
                     Log.d(TAG, "ex" + e.getMessage());
+                    if (e.getCode()==203){
+                        _listener.onEmailError();
+                    }
                 }
             }
         });
@@ -233,6 +224,13 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
             }
         });
 
+    }
+
+    private String getFCMToken(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("TokenFireBase", "");         // getting String
+        Log.d("RTOKE", accountDisconnect);
+        return accountDisconnect;
     }
 
     private boolean validate(View[] fields) {

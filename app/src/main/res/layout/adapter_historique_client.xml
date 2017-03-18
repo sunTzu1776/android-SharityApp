@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp">
+
+            <TextView android:textColor="#000000"
+                android:id="@+id/business_name"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="business"
+                />
+
+            <TextView android:textColor="#000000"
+                android:id="@+id/prix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBaseline="@+id/business_name"
+                android:text="prix"
+                />
+
+            <TextView android:textColor="#000000"
+                android:id="@+id/date"
+                android:layout_alignLeft="@+id/business_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date"
+                android:layout_below="@+id/business_name"
+                />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

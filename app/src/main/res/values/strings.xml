@@ -15,6 +15,15 @@
         <item>Neptune</item>
     </string-array>
 
+    <string-array name="items">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+        <item>Item 5</item>
+        <item>Item 6</item>
+    </string-array>
+
     <!-- Boite Confirmation -->
     <string name="dialog_OK">OK</string>
     <string name="dialog_BtnCancel">ANNULER</string>
@@ -27,7 +36,7 @@
 
     <string name="TwitterconsumerKey">qwEsZSc4qUHiDfQ7tKZn6T99a</string>
     <string name="TwitterconsumerSecret">34Tgd35VwC0feJFOTYk88GCnZx1f9twmeBbc3nrQgBX67l9Uz6</string>
-    <string name="ParseAppId">ecfa853cf6485638f4ec57f58aad83410b514cb7</string>
+    <string name="ParseAppId">98b6cd47f94a3dea8d6785b1b3ab821b638eab30</string>
     <string name="gcm_sender_id">569826207341</string>
     <string name="parse_sender_id">id:569826207341</string>
     <string name="gcmserver">AAAAOKfHz_g:APA91bGa-DONnzpSp3S60aV-EtWGTtCrYgm165l0ni_VdnTgadnODYvjKAd4fE0LEX6Fb0m_NRnkhBt1oV3h7NrwnkQeiKT7xtPDftHQU5GHIVlSkcOcoM4qFBDtMc2fvS7Ulh4w4XoS</string>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.parse.ParseUser;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
@@ -45,6 +46,7 @@ public class LauncherApplication extends Activity {
 
             } else {
                 if (currentUser != null) {
+                    Log.d("currentUser",currentUser.getObjectId());
                     if (Status(getApplicationContext()).equals("Business")) {
                         Intent intent = new Intent(getBaseContext(), ProfilProActivity.class);
                         startActivity(intent);

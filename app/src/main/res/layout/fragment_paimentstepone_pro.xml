@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:weightSum="3"
+    tools:context="testappparse.guilla.com.testappparse.testappparse.guilla.com.sharity.MainActivity">
+
+
+    <GridView
+        android:numColumns="auto_fit"
+        android:gravity="center_vertical"
+        android:columnWidth="100dp"
+        android:stretchMode="columnWidth"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2.7"
+        android:id="@+id/grid"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:id="@+id/barre"
+            android:weightSum="4">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="2.5"
+                android:background="@color/red">
+            </View>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="PAIEMENT CLASSIQUE"
+            android:id="@+id/paiment_classique"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/barre"
+            android:layout_alignLeft="@+id/barre"
+            android:layout_alignRight="@+id/barre"/>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
