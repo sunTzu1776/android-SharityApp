@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import static com.google.android.gms.analytics.internal.zzy.b;
 import static com.sharity.sharityUser.LoginClient.LoginClientInteractorImpl.DownloadImageBitmap;
 import static com.sharity.sharityUser.R.id.user;
 
@@ -47,7 +48,11 @@ public class FacebookConnectivity {
     private Bitmap  pictureFB;
     private boolean isnewUser;
     private Context context;
+    OnFBUserCreated onFBUserCreated;
 
+    public interface OnFBUserCreated{
+        public void OnFBUserCreated();
+    }
     public FacebookConnectivity(Context context,AccessToken accessToken, ParseUser user, boolean isNewUser){
         db = new DatabaseHandler(context);
         this.accessToken=accessToken;
@@ -56,7 +61,9 @@ public class FacebookConnectivity {
         this.context=context;
     }
 
-    public void getProfil() {
+    public void getProfil(OnFBUserCreated onFBUserCreated) {
+        this.onFBUserCreated=onFBUserCreated;
+
         Bundle parameters = new Bundle();
         parameters.putString("fields", "email,name,picture");
         new GraphRequest(
@@ -71,6 +78,7 @@ public class FacebookConnectivity {
                             id = response.getJSONObject().getString("id");
                             email = response.getJSONObject().getString("email");
                              name = response.getJSONObject().getString("name");
+
                             JSONObject picture = response.getJSONObject().getJSONObject("picture");
                             JSONObject data = picture.getJSONObject("data");
                             String pictureUrl = data.getString("url");
@@ -101,13 +109,13 @@ public class FacebookConnectivity {
             super.onPostExecute(s);
             byte_pictureFB = DbBitmapUtility.getBytes(pictureFB);
             UserSession=new User(parseUser.getObjectId(),name,email,byte_pictureFB,"");
-            saveUser_ParseServer(id,pictureFB,name,email,isnewUser);
+            saveUser_ParseServer(id,byte_pictureFB,name,email,isnewUser);
         }
     }
 
-    private void saveUser_ParseServer(String FBid, Bitmap bitmap,String username, String email,boolean isnewUser) {
+    private void saveUser_ParseServer(String FBid, byte[] profil,String username, String email,boolean isnewUser) {
         parseUser.setUsername(username);
-        parseUser.setEmail(email);
+        parseUser.put("emailClient",email);
         if (isnewUser){
             parseUser.put("sharepoints",0);
             parseUser.put("facebookId",FBid);
@@ -115,13 +123,10 @@ public class FacebookConnectivity {
         if (getFCMToken(context).length()>0) {
             parseUser.put("fcm_device_id", getFCMToken(context));
         }
+        parseUser.put("emailVerified",true);
+        parseUser.put("userIsBusiness",false);
 
-
-//        Saving profile photo as a ParseFile
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Bitmap map = bitmap;
-        map.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] data = stream.toByteArray();
+        byte[] data = profil;
         String thumbName = parseUser.getUsername().replaceAll("\\s+", "");
         final ParseFile parseFile = new ParseFile(thumbName + "_thumb.jpg", data);
 
@@ -152,11 +157,13 @@ public class FacebookConnectivity {
         //Add user to localDB
         if (db.getUserCount()<=0){
             db.addUserProfil(UserSession);
+            onFBUserCreated.OnFBUserCreated();
             Log.d("DB", "User Added");
 
         }else {
             db.deleteAllUser();
             db.addUserProfil(UserSession);
+            onFBUserCreated.OnFBUserCreated();
             Log.d("DB", "User updated");
         }
     }

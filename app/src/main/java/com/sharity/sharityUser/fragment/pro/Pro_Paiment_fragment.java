@@ -1,6 +1,7 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.Updateable;
 
@@ -17,10 +19,9 @@ import com.sharity.sharityUser.fragment.Updateable;
 /**
  * Created by Moi on 14/11/15.
  */
-public class Pro_Paiment_fragment extends Fragment implements Updateable, View.OnClickListener {
+public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_PaimentStepOne_fragment.OnChildPaymentSelection {
     private View inflate;
-    private TextView paiment_classique;
-
+    private Pro_PaimentStepOne_fragment.OnChildPaymentSelection onSelection;
     public static Pro_Paiment_fragment newInstance() {
         Pro_Paiment_fragment myFragment = new Pro_Paiment_fragment();
         Bundle args = new Bundle();
@@ -35,16 +36,12 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable, View.O
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_paiment_pro, container, false);
 
-
-            FragmentManager fm = getFragmentManager();
+            FragmentManager fm = getChildFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-
-            fm.beginTransaction();
             Pro_PaimentStepOne_fragment fragTwo = new Pro_PaimentStepOne_fragment();
             ft.add(R.id.Fragment_container, fragTwo);
+            ft.addToBackStack(null);
             ft.commit();
-
-
 
         return inflate;
     }
@@ -54,20 +51,24 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable, View.O
     }
 
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.paiment_classique:
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
 
-                fm.beginTransaction();
-                Pro_Paiment_StepTwo_Classique_fragment fragTwo = new Pro_Paiment_StepTwo_Classique_fragment();
-                ft.add(R.id.Fragment_container, fragTwo);
-                ft.commit();
-                break;
-        }
+    @Override
+    public void OnSelectGrid(UserLocation user, int i) {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Pro_Paiment_StepTwo_fragment fragTwo = Pro_Paiment_StepTwo_fragment.newInstance(user);
+        ft.add(R.id.Fragment_container, fragTwo);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
-
+    @Override
+    public void Classique() {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Pro_Paiment_StepTwo_Classique_fragment fragTwo = new Pro_Paiment_StepTwo_Classique_fragment();
+        ft.add(R.id.Fragment_container, fragTwo);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
 }

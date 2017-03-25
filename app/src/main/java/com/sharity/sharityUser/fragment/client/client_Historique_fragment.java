@@ -65,7 +65,6 @@ public class client_Historique_fragment extends Fragment implements Updateable {
         inflate = inflater.inflate(R.layout.locationuserlist, container, false);
         listView=(ListView)inflate.findViewById(R.id.ListView);
         payment=(TextView)inflate.findViewById(R.id.payment);
-        dons=(TextView)inflate.findViewById(R.id.dons);
 
 
         if (this.isAdded()) {

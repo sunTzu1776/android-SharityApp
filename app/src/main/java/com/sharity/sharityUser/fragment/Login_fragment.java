@@ -1,4 +1,4 @@
-package com.sharity.sharityUser.fragment.client;
+package com.sharity.sharityUser.fragment;
 
 
 import android.content.Context;
@@ -30,7 +30,7 @@ import com.sharity.sharityUser.fragment.pro.Pro_Login_fragment;
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_Login_fragment extends Fragment implements View.OnClickListener, LoginClientView {
+public class Login_fragment extends Fragment implements View.OnClickListener, LoginClientView {
 
     private View inflate;
     private TextView connexion;
@@ -41,8 +41,8 @@ public class client_Login_fragment extends Fragment implements View.OnClickListe
     private Button access_charite;
 
 
-    public static client_Login_fragment newInstance() {
-        client_Login_fragment myFragment = new client_Login_fragment();
+    public static Login_fragment newInstance() {
+        Login_fragment myFragment = new Login_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;

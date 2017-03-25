@@ -50,6 +50,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LATITUDE="latitude";
     private static final String KEY_LONGITUDE="longitude";
     private static final String KEY_SIRET = "siret";
+    private static final String KEY_EMAILVERIFIED="emailverified";
+
 
 
     public DatabaseHandler(Context context) {
@@ -63,7 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_IMAGE);
         String CREATE_TABLE_BUSINESS = "CREATE TABLE " + Business + "("+KEY_BISOBJECTID + " TEXT,"+ KEY_BISUSERNAME + " TEXT," + KEY_OWNER +" TEXT,"
                 + KEY_OFFICERNAME +" TEXT," + KEY_BUSINESSNAME +" TEXT," + KEY_RIB +" TEXT,"+ KEY_SIRET +" TEXT,"
-                + KEY_TELEPHONE +" TEXT," + KEY_ADDRESS +" TEXT," + KEY_LATITUDE +" TEXT," + KEY_LONGITUDE +" TEXT,"+ KEY_MAIL + " TEXT);";
+                + KEY_TELEPHONE +" TEXT," + KEY_ADDRESS +" TEXT," + KEY_LATITUDE +" TEXT," + KEY_LONGITUDE +" TEXT,"+ KEY_MAIL +" TEXT,"+ KEY_EMAILVERIFIED + " TEXT);";
         db.execSQL(CREATE_TABLE_BUSINESS);
 
 
@@ -205,6 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(KEY_ADDRESS, user.get_address());
         cv.put(KEY_LATITUDE,String.valueOf(user.getLatitude()));
         cv.put(KEY_LONGITUDE,String.valueOf(user.get_longitude()));
+        cv.put(KEY_EMAILVERIFIED,user.getEmailveried());
         db.insert(Business, null, cv);
         db.close(); // Closing database connection
     }
@@ -225,6 +228,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(KEY_ADDRESS, user.get_address());
         cv.put(KEY_LATITUDE,String.valueOf(user.getLatitude()));
         cv.put(KEY_LONGITUDE,String.valueOf(user.get_longitude()));
+        cv.put(KEY_EMAILVERIFIED,user.getEmailveried());
 
         // updating row
         return db.update(Business, cv, KEY_OBJECTID + " = ?",
@@ -238,13 +242,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(Business
                 , new String[] { KEY_BISOBJECTID,
-                        KEY_BISUSERNAME,KEY_OWNER,KEY_OFFICERNAME,KEY_BUSINESSNAME,KEY_RIB,KEY_SIRET,KEY_TELEPHONE,KEY_ADDRESS,KEY_LATITUDE,KEY_LONGITUDE,KEY_MAIL}, KEY_BISOBJECTID + "=?",
+                        KEY_BISUSERNAME,KEY_OWNER,KEY_OFFICERNAME,KEY_BUSINESSNAME,KEY_RIB,KEY_SIRET,KEY_TELEPHONE,KEY_ADDRESS,KEY_LATITUDE,KEY_LONGITUDE,KEY_MAIL,KEY_EMAILVERIFIED}, KEY_BISOBJECTID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
             if (cursor != null)
             cursor.moveToFirst();
 
         Business contact = new Business(cursor.getString(0),
-                cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11));
+                cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12));
         // return contact
         return contact;
     }
@@ -272,6 +276,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.moveToFirst();
         String objectid = cursor.getString(4);
         return objectid;
+    }
+
+    public String getEmailverified() {
+        String selectQuery = "SELECT * FROM " + Business;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        String objectid = cursor.getString(12);
+        return objectid;
+    }
+
+    public int UpdateEmailVerified(Business user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_BISOBJECTID, user.get_id());
+        cv.put(KEY_EMAILVERIFIED,user.getEmailveried());
+        // updating row
+        return db.update(Business, cv, KEY_BISOBJECTID + " = ?",
+                new String[] { String.valueOf(user.get_id()) });
     }
 
 

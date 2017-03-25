@@ -20,8 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,17 +30,12 @@ import com.roughike.bottombar.OnTabSelectListener;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
-import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.fragment.client.Profil_fragment;
-import com.sharity.sharityUser.fragment.SimpleBackPage;
+import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
 import com.sharity.sharityUser.fragment.client.client_Historique_fragment;
-import com.sharity.sharityUser.fragment.client.client_Partenaire_fragment;
+import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static android.R.id.list;
-import static com.google.android.gms.analytics.internal.zzy.t;
 import static com.sharity.sharityUser.R.id.tab_option;
 
 
@@ -137,7 +130,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                             break;
                         case 4:
                             //Disconnection
-                            ParseUser.logOut();
+                            parseUser.logOut();
                             Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
@@ -161,9 +154,9 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             if (position == 0) {
                 return client_Historique_fragment.newInstance();
             } else if (position == 1) {
-                return Profil_fragment.newInstance();
+                return client_Profil_fragment.newInstance();
             } else if (position == 2) {
-                return client_Partenaire_fragment.newInstance();
+                return client_PartenaireMap_fragment.newInstance();
             }
 
             return null;
@@ -183,12 +176,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             if (object instanceof client_Historique_fragment) {
                 ((client_Historique_fragment) object).update();
             }
-            if (object instanceof Profil_fragment) {
-                ((Profil_fragment) object).update();
+            if (object instanceof client_Profil_fragment) {
+                ((client_Profil_fragment) object).update();
             }
 
-            if (object instanceof client_Partenaire_fragment) {
-                ((client_Partenaire_fragment) object).update();
+            if (object instanceof client_PartenaireMap_fragment) {
+                ((client_PartenaireMap_fragment) object).update();
             }
 
             return super.getItemPosition(object);
@@ -222,6 +215,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 toolbarTitle.setText("PROFIL");
             }else if (position==2){
                 toolbarTitle.setText("PARTENAIRE");
+
               /*  try{
                     if (!manager.isProviderEnabled( LocationManager.GPS_PROVIDER) ) {
                         Utils.showDialog3(ProfilActivity.this,"Please Enable your GPS","Location",false, new Utils.Click() {
@@ -267,17 +261,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         // ActionBarDrawerToggle will take care of this.
         // Handle action buttons
         switch(item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getSupportActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "not available", Toast.LENGTH_LONG).show();
-                }
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -336,19 +319,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     }
 
-    private Fragment getFragment(int pageValue) {
-        SimpleBackPage page = SimpleBackPage.getPageValue(pageValue);
-        Fragment fragment;
-        try {
-            fragment = (Fragment) page.getCls().newInstance();
-            return fragment;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -358,10 +328,10 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
-                    client_Partenaire_fragment client_Partenaire_fragment = (client_Partenaire_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
+                    client_PartenaireMap_fragment client_PartenaireMap_fragment = (client_PartenaireMap_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
 
-                    if (client_Partenaire_fragment != null && client_Partenaire_fragment.isVisible()) {
-                        client_Partenaire_fragment.update();
+                    if (client_PartenaireMap_fragment != null && client_PartenaireMap_fragment.isVisible()) {
+                        client_PartenaireMap_fragment.update();
                     }
                 } else {
 

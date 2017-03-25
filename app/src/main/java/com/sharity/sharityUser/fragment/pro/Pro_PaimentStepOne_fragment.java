@@ -1,6 +1,7 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.CustomGrid;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.Updateable;
+import com.sharity.sharityUser.fragment.testpager.PagerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,8 @@ import java.util.Timer;
 import okhttp3.internal.Util;
 
 import static com.google.android.gms.analytics.internal.zzy.e;
+import static com.google.android.gms.analytics.internal.zzy.i;
+import static com.google.android.gms.internal.zznk.fm;
 import static com.sharity.sharityUser.R.id.paiment_classique;
 
 
@@ -61,19 +65,15 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
     private TextView paiment_classique;
     private View inflate;
     GridView grid;
-    String[] web = {
-            "User1",
-            "User1",
-            "User1"
-
-    } ;
-    int[] imageId = {
-            R.drawable.ic_launcher,
-            R.drawable.ic_launcher,
-            R.drawable.ic_launcher
+    private OnChildPaymentSelection onSelection;
 
 
-    };
+    public interface OnChildPaymentSelection{
+        public void OnSelectGrid(UserLocation user, int i);
+        public void Classique();
+
+    }
+
     public static Pro_PaimentStepOne_fragment newInstance() {
         Pro_PaimentStepOne_fragment myFragment = new Pro_PaimentStepOne_fragment();
         Bundle args = new Bundle();
@@ -107,14 +107,8 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                fm.beginTransaction();
-                Pro_Paiment_StepTwo_fragment fragTwo = Pro_Paiment_StepTwo_fragment.newInstance();
-                ft.add(R.id.Fragment_container, fragTwo);
-                ft.commit();
-
+                final UserLocation User = (UserLocation) grid.getAdapter().getItem(position);
+                onSelection.OnSelectGrid(User, position);
             }
         });
 
@@ -129,16 +123,31 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.paiment_classique:
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-
-                fm.beginTransaction();
-                Pro_Paiment_StepTwo_Classique_fragment fragTwo = new Pro_Paiment_StepTwo_Classique_fragment();
-                ft.add(R.id.Fragment_container, fragTwo);
-                ft.commit();
+                onSelection.Classique();
                 break;
         }
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+
+        // check if parent Fragment implements listener
+        if (getParentFragment() instanceof OnChildPaymentSelection) {
+            onSelection = (OnChildPaymentSelection) getParentFragment();
+        } else {
+            throw new RuntimeException("The parent fragment must implement OnSelection");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onSelection = null;
+    }
+
+
 
     private void GetClients() {
         if (db.getBusinessCount() > 0) {

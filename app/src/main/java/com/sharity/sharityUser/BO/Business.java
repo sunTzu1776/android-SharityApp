@@ -25,15 +25,13 @@ public class Business {
     String _latitude;
     String _longitude;
     String _email;
+    String emailveried;
+
     // Empty constructor
 
 
-    public Business() {
-
-    }
-
     // constructor
-    public Business(String id,String username, String ower,String officerName,String businessName,String RIB,String Siret,String telephoneNumber, String address, String latitude,String longitude, String email) {
+    public Business(String id,String username, String ower,String officerName,String businessName,String RIB,String Siret,String telephoneNumber, String address, String latitude,String longitude, String email,String emailveried) {
         this._id = id;
         this._username = username;
         this._ower = ower;
@@ -46,9 +44,14 @@ public class Business {
         this._latitude = latitude;
         this._longitude=longitude;
         this._email = email;
+        this.emailveried=emailveried;
     }
 
     // constructor
+    public Business(String id,String emailveried) {
+        this._id = id;
+        this.emailveried=emailveried;
+    }
 
 
     public String getLatitude() {
@@ -97,5 +100,9 @@ public class Business {
 
     public String get_businessName() {
         return _businessName;
+    }
+
+    public String getEmailveried() {
+        return emailveried;
     }
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="testappparse.guilla.com.testappparse.testappparse.guilla.com.sharity.MainActivity">
+
+    <fragment
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:name="com.sharity.sharityUser.fragment.testpager.PagerFragment"
+        android:layout_above="@+id/linear_slide"
+        tools:layout="@layout/fragment_history_pro" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear_slide"
+            android:weightSum="1"
+            android:layout_above="@+id/buttonmap">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center_horizontal|center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/circles_slide_off"
+                    android:id="@+id/circle_slide1"
+                    android:layout_marginRight="2dp"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:id="@+id/circle_slide2"
+                    android:src="@drawable/circles_slide_off"
+
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonmap"
+            android:layout_margin="10dp"
+            android:text="map"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/border_color_button_pro"
+            android:layout_gravity="right"
+            />
+
+
+
+</RelativeLayout>

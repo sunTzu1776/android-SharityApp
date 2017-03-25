@@ -3,25 +3,19 @@ package com.sharity.sharityUser.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.parse.GetCallback;
-import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseTwitterUtils;
-import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.fragment.client.client_Login_fragment;
+import com.sharity.sharityUser.fragment.Login_fragment;
 
 
 /**
@@ -31,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static DatabaseHandler db;
     public static CallbackManager callbackManager;
-    static LoginActivity login_activity;
+    public static LoginActivity login_activity;
 
 
 @Override
@@ -43,8 +37,18 @@ public void onCreate( Bundle savedInstanceState) {
 
         setContentView(R.layout.activity_login);
         db=new DatabaseHandler(this);
+        login_activity=this;
 
-          /*  Context ctx = this; // for Activity, or Service. Otherwise simply get the context
+    final Bundle data = this.getIntent().getExtras();
+    if (data!=null){
+        String emailVerified = data.getString("emailVerified");
+        if (emailVerified.equals("false")){
+            Toast.makeText(LoginActivity.this,"vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer",Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    /*  Context ctx = this; // for Activity, or Service. Otherwise simply get the context
             String dbname = "User";
             File dbpath = ctx.getDatabasePath(dbname);
             ctx.deleteDatabase(dbname);
@@ -54,7 +58,7 @@ public void onCreate( Bundle savedInstanceState) {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new client_Login_fragment(), "Login_fragment")
+                    .add(R.id.container, new Login_fragment(), "Login_fragment")
                      .addToBackStack(null)
                      .commit();
         }

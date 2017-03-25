@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- client_login_fragment-->
+    <dimen name="title_sharity">28.5dp</dimen>
+    <dimen name="sharity_subtitle">22dp</dimen>
+
+
+    <!--fragment_login_pro-->
+    <dimen name="login_pro_title">28.5dp</dimen>
+    <dimen name="login_pro_editext">22dp</dimen>
+    <dimen name="login_pro_changepassword">19dp</dimen>
+    <dimen name="login_pro_buttondone">28dp</dimen>
+
+    <!--fragment_code_pro-->
+    <dimen name="fragment_code_pro_title">28.5dp</dimen>
+    <dimen name="fragment_code_editext">22dp</dimen>
+    <dimen name="fragment_code_changepassword">19dp</dimen>
+    <dimen name="fragment_code_buttondone">28dp</dimen>
+
+    <dimen name="profil_fragment_title">23dp</dimen>
+
+
+</resources>

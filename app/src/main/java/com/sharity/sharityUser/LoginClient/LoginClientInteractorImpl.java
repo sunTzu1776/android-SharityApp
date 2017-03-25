@@ -37,6 +37,8 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.android.gms.analytics.internal.zzy.F;
+
 
 public class LoginClientInteractorImpl implements LoginClientInteractor {
 
@@ -108,46 +110,49 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                             Log.d("MyApp", "User signed up and logged in through Facebook!");
 
                              ObjectId_ToPref(user.getObjectId());
+                            FacebookConnectivity FBconnectivity=new FacebookConnectivity(context, AccessToken.getCurrentAccessToken(), user, isnewUser);
+                            FBconnectivity.getProfil(new FacebookConnectivity.OnFBUserCreated() {
+                                @Override
+                                public void OnFBUserCreated() {
+                                    AccessToken token = AccessToken.getCurrentAccessToken();
+                                    if (!ParseFacebookUtils.isLinked(user)) {
+                                        ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException ex) {
+                                                if (ParseFacebookUtils.isLinked(user)) {
+                                                }
+                                            }
 
-
-                            FacebookConnectivity FBconnectivity=new FacebookConnectivity(context,AccessToken.getCurrentAccessToken(),user,isnewUser);
-                            FBconnectivity.getProfil();
-
-                            AccessToken token = AccessToken.getCurrentAccessToken();
-                            if (!ParseFacebookUtils.isLinked(user)) {
-                                ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException ex) {
-                                        if (ParseFacebookUtils.isLinked(user)) {
-                                        }
+                                        });
                                     }
+                                    listener.onSuccess();
+                                }
+                            });
 
-                                });
-                            }
-                            listener.onSuccess();
 
                         } else {
                             isnewUser=false;
                             Log.d("MyApp", "User logged in through Facebook!");
                             ObjectId_ToPref(user.getObjectId());
+                            FacebookConnectivity FBconnectivity=new FacebookConnectivity(context, AccessToken.getCurrentAccessToken(), user, isnewUser);
+                            FBconnectivity.getProfil(new FacebookConnectivity.OnFBUserCreated() {
+                                @Override
+                                public void OnFBUserCreated() {
+                                    AccessToken token = AccessToken.getCurrentAccessToken();
+                                    if (!ParseFacebookUtils.isLinked(user)) {
+                                        ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException ex) {
+                                                if (ParseFacebookUtils.isLinked(user)) {
+                                                }
+                                            }
 
-
-                            FacebookConnectivity FBconnectivity=new FacebookConnectivity(context,AccessToken.getCurrentAccessToken(),user,isnewUser);
-                            FBconnectivity.getProfil();
-
-                            AccessToken token = AccessToken.getCurrentAccessToken();
-
-                            if (!ParseFacebookUtils.isLinked(user)) {
-                                ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException ex) {
-                                        if (ParseFacebookUtils.isLinked(user)) {
-                                        }
+                                        });
                                     }
+                                    listener.onSuccess();
+                                }
+                            });
 
-                                });
-                            }
-                            listener.onSuccess();
                         }
                     }
                 });

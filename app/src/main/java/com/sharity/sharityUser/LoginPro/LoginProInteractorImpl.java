@@ -20,6 +20,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.BO.Business;
+import com.sharity.sharityUser.activity.LoginActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static com.google.android.gms.analytics.internal.zzy.e;
@@ -59,15 +61,17 @@ public class LoginProInteractorImpl implements LoginInteractor {
                                             ParseGeoPoint geoPoint = object.getParseGeoPoint("location");
                                             String RIB = object.get("RIB").toString();
                                             String owner = user.getObjectId();
-                                            String Siret = object.get("Siret").toString();
+                                            String Siret = object.get("SIRET").toString();
                                             String _Businesname = object.get("businessName").toString();
                                             String officerName = object.get("officerName").toString();
                                             String address = object.get("address").toString();
                                             String telephoneNumber = object.get("telephoneNumber").toString();
                                             String email = object.get("email").toString();
+                                            String emailVerified = String.valueOf(object.getBoolean("emailVerified"));
+
                                             double latitude = geoPoint.getLatitude();
                                             double longitude = geoPoint.getLongitude();
-                                            final Business business = new Business(object.getObjectId(), user.getUsername(), owner, officerName, _Businesname, RIB, Siret, telephoneNumber, address, String.valueOf(latitude), String.valueOf(longitude), email);
+                                            final Business business = new Business(object.getObjectId(), user.getUsername(), owner, officerName, _Businesname, RIB, Siret, telephoneNumber, address, String.valueOf(latitude), String.valueOf(longitude),email, emailVerified);
                                             if (db.getBusinessCount() <= 0) {
                                                 db.addProProfil(business);
                                             }else if (db.getBusinessCount()>=1){
@@ -119,6 +123,12 @@ public class LoginProInteractorImpl implements LoginInteractor {
                     if (object != null) {
                         emailVerified = object.getBoolean("emailVerified");
                         if (emailVerified){
+                            if (db.getBusinessCount()>0) {
+                                String objectid = db.getBusinessId();
+                                Business business=new Business(objectid,"true");
+                                db.UpdateEmailVerified(business);
+                                db.close();
+                            }
                             listener.onSuccess();
                         }else {
                             Toast.makeText(context,"vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer",Toast.LENGTH_LONG).show();

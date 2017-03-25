@@ -2,10 +2,4 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <!-- client_login_fragment-->
-    <dimen name="title_sharity">22.5dp</dimen>
-    <dimen name="sharity_subtitle">15dp</dimen>
-
-
 </resources>

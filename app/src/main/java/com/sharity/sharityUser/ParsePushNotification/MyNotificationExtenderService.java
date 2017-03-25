@@ -1,6 +1,6 @@
 package com.sharity.sharityUser.ParsePushNotification;
 
-import android.graphics.Bitmap;
+/*import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -13,9 +13,7 @@ import com.sharity.sharityUser.R;
 
 import java.math.BigInteger;
  
-/**
- * Created by androidbash on 12/14/2016.
- */
+
  
 public class MyNotificationExtenderService extends NotificationExtenderService {
     @Override
@@ -37,4 +35,4 @@ public class MyNotificationExtenderService extends NotificationExtenderService {
  
         return true;
     }
-}
+}*/

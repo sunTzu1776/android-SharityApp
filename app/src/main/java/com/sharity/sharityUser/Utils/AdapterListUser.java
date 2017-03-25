@@ -146,7 +146,6 @@ public class AdapterListUser extends BaseAdapter {
 
 
 
-
     Call post(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()

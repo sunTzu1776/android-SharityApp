@@ -13,6 +13,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,39 +23,52 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.sharity.sharityUser.Application;
+import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
-import com.sharity.sharityUser.fragment.SimpleBackPage;
+import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.fragment.pro.Pro_History_container_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_History_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Partenaire_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Profil_Ending_Inscription_fragment;
+import com.sharity.sharityUser.fragment.testpager.PagerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.android.gms.analytics.internal.zzy.g;
+import static com.google.android.gms.analytics.internal.zzy.l;
+import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
+import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 
 /**
  * Created by Moi on 07/05/2016.
  */
 public class ProfilProActivity extends AppCompatActivity implements OnTabSelectListener {
+    private Boolean emailVerified;
     public static DatabaseHandler db;
     static int TOTAL_PAGES=3;
-    ViewPager pager;
-    LinearLayout circles;
-    boolean isOpaque = true;
+    private ViewPager pager;
     private Toolbar toolbar;
     private BottomBar bottomBar;
     private TextView toolbarTitle;
-    boolean start =true;
+    private boolean start =true;
     public static ParseUser parseUser;
     private DrawerLayout drawer_layout;
     private ListView myDrawer;
@@ -61,10 +76,17 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     private ArrayList<Drawer> drawersItems= new ArrayList<Drawer>();
     private AdapterNews adapter;
     public static String profileSource;
+    public ListenFromActivity activityListener;
+
+    public interface ListenFromActivity {
+        void doSomethingInFragment(String frag);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pro);
+
 
         if (savedInstanceState == null) {
             db = new DatabaseHandler(this);
@@ -101,59 +123,69 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbar.setNavigationIcon(R.drawable.ic_drawer);
+            toolbar.setNavigationIcon(R.drawable.nav_drawer_pro);
 
             actionBarDrawerToggle = new ActionBarDrawerToggle(ProfilProActivity.this, drawer_layout,
                     toolbar, R.string.open, R.string.close) {
 
-                /** Called when a drawer has settled in a completely closed state. */
                 public void onDrawerClosed(View view) {
                     super.onDrawerClosed(view);
-
-                    // Do whatever you want here
                 }
-
-                /** Called when a drawer has settled in a completely open state. */
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);
-                    // Do whatever you want here
                 }
             };
 
-
-            myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position){
-                        case 0:
-                            break;
-                        case 1:
-
-                            break;
-                        case 2:
-                            pager.setCurrentItem(1,true);
-                            profileSource="Profilinfo";
-                            mViewPagerAdapter.notifyDataSetChanged();
-                            break;
-                        case 3:
-
-                            break;
-                        case 4:
-
-                            break;
-                        case 5:
-                            break;
-                        case 6:
-                            //Disconnection
-                            ParseUser.logOut();
-                            Intent intent = new Intent(ProfilProActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                            break;
-                    }
+            if (db.getEmailverified().equals("true")){
+            }else {
+                if (Utils.isConnected(this)){
+                    Check_email_validate();
+                }else {
+                     Intent intent= new Intent(ProfilProActivity.this, LoginActivity.class);
+                    intent.putExtra("emailVerified","false");
+                    startActivity(intent);
+                    finish();
                 }
-            });
+            }
         }
+
+        myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        break;
+                    case 1:
+                        pager.setCurrentItem(1,true);
+                        if (null != activityListener) {
+                            activityListener.doSomethingInFragment("Finalize_inscription");
+                        }
+                        break;
+                    case 2:
+                        pager.setCurrentItem(1,true);
+                        if (null != activityListener) {
+                            activityListener.doSomethingInFragment("Profilinfo");
+                        }
+                        break;
+                    case 3:
+
+                        break;
+                    case 4:
+
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        //Disconnection
+                        parseUser.logOut();
+                        Intent intent = new Intent(ProfilProActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                }
+            }
+        });
+
     }
 
     private FragmentStatePagerAdapter mViewPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
@@ -170,7 +202,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             } else if (position == 1) {
                 return Pro_Profil_Container_fragment.newInstance(profileSource);
             } else if (position == 2) {
-                return Pro_History_fragment.newInstance();
+                return Pro_History_container_fragment.newInstance();
             }
 
             return null;
@@ -194,8 +226,8 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 ((Pro_Profil_Container_fragment) object).update();
             }
 
-            if (object instanceof Pro_History_fragment) {
-                ((Pro_History_fragment) object).update();
+            if (object instanceof Pro_History_container_fragment) {
+                ((Pro_History_container_fragment) object).update();
             }
 
             return super.getItemPosition(object);
@@ -314,79 +346,63 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         }
     }
 
-    private Fragment getFragment(int pageValue) {
-        SimpleBackPage page = SimpleBackPage.getPageValue(pageValue);
-        Fragment fragment;
-        try {
-            fragment = (Fragment) page.getCls().newInstance();
-            return fragment;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 102: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
-                    Pro_Partenaire_fragment Partenaire_Pro_fragment = (Pro_Partenaire_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
-
-                    if (Partenaire_Pro_fragment != null && Partenaire_Pro_fragment.isVisible()) {
-                        Partenaire_Pro_fragment.update();
-                    }
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-    private boolean onBackPressed(FragmentManager fm) {
-        if (fm != null) {
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-                return true;
-            }
-
-            List<Fragment> fragList = fm.getFragments();
-            if (fragList != null && fragList.size() > 0) {
-                for (Fragment frag : fragList) {
-                    if (frag == null) {
-                        continue;
-                    }
-                    if (frag.isVisible()) {
-                        if (onBackPressed(frag.getChildFragmentManager())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (onBackPressed(fm)) {
+        SparseArray<FragmentManager> managers = new SparseArray<>();
+        traverseManagers(getSupportFragmentManager(), managers, 0);
+        if (managers.size() > 0) {
+            managers.valueAt(managers.size() - 1).popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void traverseManagers(FragmentManager manager, SparseArray<FragmentManager> managers, int intent) {
+        if (manager.getBackStackEntryCount() > 0) {
+            managers.put(intent, manager);
+        }
+        if (manager.getFragments() == null) {
             return;
         }
-        super.onBackPressed();
+        for (Fragment fragment : manager.getFragments()) {
+            if (fragment != null) traverseManagers(fragment.getChildFragmentManager(), managers, intent + 1);
+        }
     }
 
 
+    private String Check_email_validate(){
+        parseUser= ParseUser.getCurrentUser();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+        if (parseUser!=null) {
+            query.getInBackground(parseUser.getObjectId(), new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if (object != null) {
+                        emailVerified = object.getBoolean("emailVerified");
+                        if (emailVerified) {
+                            if (db.getBusinessCount() > 0) {
+                                String objectid = db.getBusinessId();
+                                Business business = new Business(objectid, "true");
+                                db.UpdateEmailVerified(business);
+                                db.close();
+                            }
+                        } else {
+                            Intent intent= new Intent(ProfilProActivity.this, LoginActivity.class);
+                            intent.putExtra("emailVerified","false");
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                }
+            });
+        }
+        return String.valueOf(emailVerified);
+    }
+
+    public void setActivityListener(ListenFromActivity activityListener) {
+        this.activityListener = activityListener;
+    }
 }
 
 

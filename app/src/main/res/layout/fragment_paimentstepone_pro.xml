@@ -56,10 +56,6 @@
             android:layout_below="@+id/barre"
             android:layout_alignLeft="@+id/barre"
             android:layout_alignRight="@+id/barre"/>
-
-
-
-
     </RelativeLayout>
 
 </LinearLayout>

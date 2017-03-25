@@ -24,6 +24,7 @@ import com.sharity.sharityUser.R;
 import java.util.Arrays;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.sharity.sharityUser.R.id.address;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 public class SignUpProInteractorImpl implements SignUpProInteractor {
@@ -42,8 +43,8 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
     private View[] _field;
     private OnLoginFinishedListener _listener;
     ParseGeoPoint point;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     @Override
     public void login(final String type, final View[] fields, Object[] addresse, final String username, final String password, final String Siret, final String Businesname, final String OwnerName, final String Phone, final String address, final String RIB, final String email, final OnLoginFinishedListener listener) {
@@ -58,9 +59,12 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         this._Phone = Phone;
         this._RIB = RIB;
         this._email = email;
-        this.latitude=(double)addresse[0];
-        this.longitude=(double)addresse[1];
-        this._address = (String)addresse[2];
+       if ((Double)addresse[0]!=null){
+           this.latitude=(Double)addresse[0];
+           this.longitude=(Double)addresse[1];
+           this._address = (String)addresse[2];
+        }
+
         this._addressfield=address;
         this._listener = listener;
 
@@ -137,8 +141,15 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
                 if (e == null) {
-                    CreateBusiness();
+                    try {
+                        CreateBusiness();
+                    }catch (NullPointerException d){
+
+                    }
                 } else {
+                    if (e.getCode()==203){
+                        _listener.onEmailError();
+                    }
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
                 }
@@ -157,20 +168,22 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         object.put("owner", ParseObject.createWithoutData("_User", user.getObjectId()));
         object.put("officerName", _OwnerName);
         object.put("RIB", _RIB);
-        object.put("Siret", Integer.parseInt(_Siret));
+        object.put("SIRET", _Siret);
         object.put("businessName", _Businesname);
         object.put("telephoneNumber", _Phone);
         object.put("address", _address);
         point = new ParseGeoPoint(latitude, longitude);
         object.put("location", point);
         object.put("email", _email);
+        object.put("emailVerified", false);
+
         final ParseObject finalObject = object;
         finalObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
                     SaveLocationUser(point, finalObject.getObjectId());
-                    final Business business=new Business(finalObject.getObjectId(),user.getUsername(),user.getObjectId(),_OwnerName,_Businesname,_RIB,_Siret,_Phone,_address,String.valueOf(latitude),String.valueOf(longitude),_email);
+                    final Business business=new Business(finalObject.getObjectId(),user.getUsername(),user.getObjectId(),_OwnerName,_Businesname,_RIB,_Siret,_Phone,_address,String.valueOf(latitude),String.valueOf(longitude),_email,"false");
                     if (db.getBusinessCount()>=1){
                         db.deleteAllBusiness();
                     }

@@ -1,6 +1,8 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,11 +11,15 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.google.android.gms.analytics.internal.zzy.p;
 
 
 /**
@@ -29,11 +35,12 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     private TextView username_login;
     private ImageView cash;
     private ImageView CB;
+    private  UserLocation userLocation;
 
-
-    public static Pro_Paiment_StepTwo_fragment newInstance() {
+    public static Pro_Paiment_StepTwo_fragment newInstance(UserLocation userLocation) {
         Pro_Paiment_StepTwo_fragment myFragment = new Pro_Paiment_StepTwo_fragment();
         Bundle args = new Bundle();
+        args.putSerializable("user", userLocation);
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -57,6 +64,12 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         CB.setOnClickListener(this);
         valider.setOnClickListener(this);
 
+        userLocation= (UserLocation) getArguments().getSerializable("user");
+        if (userLocation.getPictureProfil()!=null){
+            Bitmap bmp = null;
+            bmp = BitmapFactory.decodeByteArray(userLocation.getPictureProfil(), 0, userLocation.getPictureProfil().length);
+            picture_profil.setImageBitmap(bmp);
+        }
 
         return inflate;
     }

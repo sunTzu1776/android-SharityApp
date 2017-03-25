@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Moi on 14/11/15.
  */
-public class Profil_fragment extends Fragment implements Updateable {
+public class client_Profil_fragment extends Fragment implements Updateable {
 
     public static final String ARG_PLANET_NUMBER = "planet_number";
     private View inflate;
@@ -41,8 +42,8 @@ public class Profil_fragment extends Fragment implements Updateable {
     private CircleImageView imageView;
     protected ParseUser parseUser= ProfilActivity.parseUser;
     private TextView points;
-    public static Profil_fragment newInstance() {
-        Profil_fragment myFragment = new Profil_fragment();
+    public static client_Profil_fragment newInstance() {
+        client_Profil_fragment myFragment = new client_Profil_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;
@@ -88,8 +89,7 @@ public class Profil_fragment extends Fragment implements Updateable {
                 byte[] image = user.getPictureprofil();
                 User update = new User(user.get_id(), usernameFB, user.get_email(), image);
                 db.updateUser(update);
-
-                Bitmap PictureProfile = DbBitmapUtility.getImage(image);
+                Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
                 imageView.setImageBitmap(PictureProfile);
                 //DO network request to get User data
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");

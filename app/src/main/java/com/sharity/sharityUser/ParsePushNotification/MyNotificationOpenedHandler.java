@@ -1,5 +1,5 @@
 package com.sharity.sharityUser.ParsePushNotification;
-
+/*
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,10 +14,6 @@ import org.json.JSONObject;
 
 import static java.security.AccessController.getContext;
 
-/**
- * Created by androidbash on 12/14/2016.
- */
- 
 public class MyNotificationOpenedHandler implements OneSignal.NotificationOpenedHandler {
     // This fires when a notification is opened by tapping on it.
     @Override
@@ -62,4 +58,4 @@ public class MyNotificationOpenedHandler implements OneSignal.NotificationOpened
             }
         }
     }
-}
+}*/

@@ -25,6 +25,7 @@ import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -37,7 +38,9 @@ import static com.sharity.sharityUser.activity.ProfilProActivity.profileSource;
 /**
  * Created by Moi on 14/11/15.
  */
-public class Pro_Profil_Container_fragment extends Fragment implements Updateable {
+public class Pro_Profil_Container_fragment extends Fragment implements Updateable,ProfilProActivity.ListenFromActivity {
+
+
 
     public static final String ARG_PLANET_NUMBER = "planet_number";
     private View inflate;
@@ -61,29 +64,22 @@ public class Pro_Profil_Container_fragment extends Fragment implements Updateabl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_profile_container_pro, container, false);
+        ((ProfilProActivity) getActivity()).setActivityListener(Pro_Profil_Container_fragment.this);
 
-        if (profileSource.equals("Profilinfo")){
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            fm.beginTransaction();
-            Pro_Profil_Infos_fragment fragTwo = new Pro_Profil_Infos_fragment();
-            ft.add(R.id.Fragment_profil_container, fragTwo);
-            ft.commit();
 
-        }else if (profileSource.equals("Profil")){
-            Fragment currentFagment= getChildFragmentManager().findFragmentById(R.id.Fragment_profil_container);
-            if (currentFagment instanceof Pro_Profil_fragment ){
-                Log.d("fragment Profil","Pro_Profil_fragment visible");
-            }else {
-                Pro_Profil_fragment fragTwo = new Pro_Profil_fragment();
-                FragmentManager fm = getChildFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                fm.beginTransaction();
-                ft.add(R.id.Fragment_profil_container, fragTwo);
-                ft.commit();
+        if (getArguments().getString("source").toString()!=null){
+            if (getArguments().getString("source").equals("Profil")){
+                Fragment currentFagment= getFragmentManager().findFragmentById(R.id.Fragment_profil_container);
+                if (currentFagment instanceof Pro_Profil_fragment ){
+                }else {
+                    Pro_Profil_fragment fragTwo = new Pro_Profil_fragment();
+                    FragmentManager fm = getChildFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.add(R.id.Fragment_profil_container, fragTwo);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }
-
-
         }
 
         return inflate;
@@ -95,6 +91,34 @@ public class Pro_Profil_Container_fragment extends Fragment implements Updateabl
     public  void update() {
     }
 
+    @Override
+    public void doSomethingInFragment(String pos) {
+        if (pos.equals("Finalize_inscription")){
+            Fragment currentFagment= getFragmentManager().findFragmentById(R.id.Fragment_profil_container);
+            if (currentFagment instanceof Pro_Profil_fragment ){
+            }else {
+                Pro_Profil_Ending_Inscription_fragment fragTwo = new Pro_Profil_Ending_Inscription_fragment();
+                FragmentManager fm = getChildFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.Fragment_profil_container, fragTwo);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        }
 
+        if (pos.equals("Profilinfo")){
+            Fragment currentFagment= getFragmentManager().findFragmentById(R.id.Fragment_profil_container);
+            if (currentFagment instanceof Pro_Profil_fragment ){
+                Log.d("fragment Profil","Pro_Profil_fragment visible");
+            }else {
+                Pro_Profil_Infos_fragment fragTwo = new Pro_Profil_Infos_fragment();
+                FragmentManager fm = getChildFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.Fragment_profil_container, fragTwo);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        }
+}
 
 }

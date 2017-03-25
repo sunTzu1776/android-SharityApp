@@ -45,6 +45,7 @@ import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProView;
 import com.sharity.sharityUser.Utils.AdapterHistoricUser;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import org.json.JSONArray;
@@ -59,7 +60,11 @@ import java.util.List;
 
 import static com.google.android.gms.analytics.internal.zzy.e;
 import static com.google.android.gms.analytics.internal.zzy.i;
+import static com.google.android.gms.analytics.internal.zzy.p;
+import static com.sharity.sharityUser.R.id.price;
+import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
+import static com.sharity.sharityUser.activity.LoginActivity.login_activity;
 
 
 /**
@@ -284,9 +289,8 @@ public class Pro_Inscription_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void setEmailError() {
-        Toast.makeText(getContext(),"Un compte existe déja pour cette adresse email",Toast.LENGTH_LONG);
-        email.setError("fill");
-
+                Toast.makeText(getActivity(),"Un compte existe déja pour cette adresse email",Toast.LENGTH_LONG).show();
+       // email.setError("fill");
     }
 
     @Override

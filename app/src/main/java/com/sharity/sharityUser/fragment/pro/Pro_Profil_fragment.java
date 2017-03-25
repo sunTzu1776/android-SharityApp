@@ -8,6 +8,7 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,7 @@ public class Pro_Profil_fragment extends Fragment implements Updateable {
         if (db.getBusinessCount()>0) {
             String objectid = db.getBusinessId();
             Business business = db.getBusiness(objectid);
+            Log.d("emailVerified",business.getEmailveried());
             username.setText(business.get_officerName());
             email.setText(business.get_email());
             phone.setText(business.get_telephoneNumber());

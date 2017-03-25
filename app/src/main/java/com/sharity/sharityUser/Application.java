@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-import com.onesignal.OneSignal;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
@@ -21,8 +20,7 @@ import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.interceptors.ParseLogInterceptor;
 import com.sharity.sharityUser.ParsePushNotification.MyCustomReceiver;
-import com.sharity.sharityUser.ParsePushNotification.MyNotificationOpenedHandler;
-import com.sharity.sharityUser.ParsePushNotification.MyNotificationReceivedHandler;
+
 
 public class Application extends android.app.Application {
 

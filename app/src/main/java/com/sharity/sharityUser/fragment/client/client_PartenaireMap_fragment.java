@@ -1,41 +1,27 @@
 package com.sharity.sharityUser.fragment.client;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -48,22 +34,18 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.BO.LocationBusiness;
-import com.sharity.sharityUser.Manifest;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
-import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sharity.sharityUser.R.id.business_name;
-
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_Partenaire_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
+public class client_PartenaireMap_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
          OnMapReadyCallback,Updateable {
 
@@ -80,8 +62,8 @@ public class client_Partenaire_fragment extends Fragment implements  GoogleApiCl
     private List<LocationBusiness> locationBusiness=new ArrayList<>();
 
 
-        public static client_Partenaire_fragment newInstance() {
-        client_Partenaire_fragment myFragment = new client_Partenaire_fragment();
+        public static client_PartenaireMap_fragment newInstance() {
+        client_PartenaireMap_fragment myFragment = new client_PartenaireMap_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
         return myFragment;
@@ -142,21 +124,28 @@ public class client_Partenaire_fragment extends Fragment implements  GoogleApiCl
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        //Initialize Google Play Services
-        permissionRuntime = new PermissionRuntime(getActivity());
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        }
-        else {
-            permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+        if (this.isAdded()){
+            try {
+                mMap = googleMap;
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                //Initialize Google Play Services
+                permissionRuntime = new PermissionRuntime(getActivity());
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                }
+                else {
+                    permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+                }
+
+                // Add a marker in Delhi and move the camera
+                GetBusiness();
+            }catch (NullPointerException e){
+
+            }
         }
 
-        // Add a marker in Delhi and move the camera
-        GetBusiness();
 
       //  mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi));
     }
@@ -283,21 +272,21 @@ public class client_Partenaire_fragment extends Fragment implements  GoogleApiCl
     }
 
     private void SaveLocationUser(ParseGeoPoint point){
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        parseUser.put("geoloc", point);
-        parseUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                // TODO Auto-generated method stub
-                if (e != null){
-                    e.printStackTrace();
-                }else{
-                    //updated successfully
+        try {
+            ParseUser parseUser = ParseUser.getCurrentUser();
+            parseUser.put("geoloc", point);
+            parseUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    // TODO Auto-generated method stub
+                    if (e != null){
+                        e.printStackTrace();
+                    }else{
+                        //updated successfully
+                    }
                 }
-            }
-        });
-
+            });
+        }catch (NullPointerException e){
+        }
     }
-
-
 }

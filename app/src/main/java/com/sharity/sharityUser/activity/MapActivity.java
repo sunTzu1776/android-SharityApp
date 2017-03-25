@@ -1,6 +1,7 @@
 package com.sharity.sharityUser.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -8,15 +9,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 
-import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.parse.ParseFacebookUtils;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.fragment.client.client_Login_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Partenaire_fragment;
-
-import static com.sharity.sharityUser.activity.LoginActivity.callbackManager;
 
 
 /**
@@ -104,6 +100,31 @@ public void onCreate( Bundle savedInstanceState) {
     public void onPause() {
         super.onPause();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 102: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
+                    Pro_Partenaire_fragment Partenaire_Pro_fragment = (Pro_Partenaire_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
+
+                    if (Partenaire_Pro_fragment != null && Partenaire_Pro_fragment.isVisible()) {
+                        Partenaire_Pro_fragment.update();
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override

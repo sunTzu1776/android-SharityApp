@@ -1,5 +1,5 @@
 package com.sharity.sharityUser.ParsePushNotification;
-
+/*
 import android.util.Log;
  
 import com.onesignal.OSNotification;
@@ -7,10 +7,14 @@ import com.onesignal.OneSignal;
  
 import org.json.JSONObject;
  
-/**
- * Created by androidbash on 12/14/2016.
- */
- 
+
+import android.util.Log;
+
+import com.onesignal.OSNotification;
+import com.onesignal.OneSignal;
+
+import org.json.JSONObject;
+
 //This will be called when a notification is received while your app is running.
 public class MyNotificationReceivedHandler  implements OneSignal.NotificationReceivedHandler {
     @Override
@@ -26,4 +30,4 @@ public class MyNotificationReceivedHandler  implements OneSignal.NotificationRec
                 Log.i("OneSignalExample", "customkey set with value: " + customKey);
         }
     }
-}
+}*/

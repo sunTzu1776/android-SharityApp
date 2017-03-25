@@ -35,18 +35,18 @@
             android:text="SHARITY"
             app:GeomanisRegular="geomanistregular.ttf"
             android:textColor="@color/green"
-            android:textSize="22dp" />
+            android:textSize="@dimen/title_sharity" />
 
 
         <com.sharity.sharityUser.fonts.TextViewSegoeUi
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.4"
+            android:layout_weight="0.45"
             android:gravity="center_horizontal|center_vertical"
             android:text="Bienvenue dans l'ère du don gratuit"
             app:Segoeui="segoeui.ttf"
             android:textColor="@color/green"
-            android:textSize="15dp" />
+            android:textSize="@dimen/sharity_subtitle" />
 
     </LinearLayout>
 
@@ -68,15 +68,16 @@
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+            android:weightSum="3"
         android:layout_weight="0.8"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0dp"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
-            android:layout_weight="0.1"
+            android:layout_weight="1"
             android:weightSum="4">
 
             <View
@@ -90,7 +91,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.8"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal">
 
@@ -129,10 +130,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0dp"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
-            android:layout_weight="0.1"
+            android:layout_weight="1.1"
             android:weightSum="4">
 
             <View
@@ -170,7 +171,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.7"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_marginBottom="10dp"
@@ -202,7 +203,6 @@
                     android:textSize="17dp"
                     android:textColor="@color/red"
                     />
-
 
             </LinearLayout>
 

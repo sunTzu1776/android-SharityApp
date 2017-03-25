@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +23,20 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.Application;
+import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.LoginPro.LoginPresenter;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.activity.LoginActivity;
+import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fonts.EditTextMontserra;
 import com.sharity.sharityUser.fonts.TextViewSegoeUi;
 
 import static com.sharity.sharityUser.R.id.user;
+import static com.sharity.sharityUser.R.id.username;
+import static com.sharity.sharityUser.activity.LoginActivity.db;
+import static java.lang.Boolean.getBoolean;
 
 
 /**
@@ -119,7 +126,7 @@ public class Pro_code_fragment extends Fragment implements View.OnClickListener 
     private void SaveCode_ToParse(final String saisie){
         ParseUser parseUser = ParseUser.getCurrentUser();
         parseUser.put("securityCode", saisie);
-        parseUser.saveInBackground(new SaveCallback() {
+        parseUser.saveEventually(new SaveCallback() {
 
             @Override
             public void done(ParseException e) {
@@ -148,12 +155,18 @@ public class Pro_code_fragment extends Fragment implements View.OnClickListener 
                 @Override
                 public void done(ParseObject object, ParseException e) {
                     if (object != null) {
-                        emailVerified = object.getBoolean("emailVerified");
+                     Boolean emailVerified = object.getBoolean("emailVerified");
                         if (emailVerified){
+                            if (LoginActivity.db.getBusinessCount()>0) {
+                                String objectid = db.getBusinessId();
+                                Business business=new Business(objectid,"true");
+                                db.UpdateEmailVerified(business);
+                                db.close();
+                            }
                             startActivity(new Intent(getActivity(), ProfilProActivity.class));
                             getActivity().finish();
                         }else {
-                            Toast.makeText(getActivity(),"Nous venons de vous envoyé un email, Veuillez cliquer sur le lien dans l'email pour confirmer",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(),"vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer",Toast.LENGTH_LONG).show();
                         }
                     }
                 }

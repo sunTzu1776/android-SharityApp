@@ -4,10 +4,13 @@ package com.sharity.sharityUser.fragment.pro;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,24 +42,20 @@ import static com.sharity.sharityUser.R.id.prix;
 /**
  * Created by Moi on 14/11/15.
  */
-public class Pro_History_fragment extends Fragment implements Updateable, View.OnClickListener {
+public class Pro_History_fragment extends Fragment implements Updateable, SwipeRefreshLayout.OnRefreshListener {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-    OkHttpClient client = new OkHttpClient();
-    Button buttonmap;
-
+    private SwipeRefreshLayout swipeContainer;
     ArrayList<History> payment_value=new ArrayList<>();
-    TextView payment;
-    TextView dons;
     ListView listView;
     private String indice;
     private AdapterHistory customAdapter;
 
     View inflate;
-        public static Pro_History_fragment newInstance() {
+        public static Pro_History_fragment newInstance(String indice) {
         Pro_History_fragment myFragment = new Pro_History_fragment();
         Bundle args = new Bundle();
+            args.putString("indice",indice);
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -66,44 +65,29 @@ public class Pro_History_fragment extends Fragment implements Updateable, View.O
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_history_pro, container, false);
         listView=(ListView)inflate.findViewById(R.id.ListView);
-        buttonmap=(Button)inflate.findViewById(R.id.buttonmap);
-        listView=(ListView)inflate.findViewById(R.id.ListView);
-        payment=(TextView)inflate.findViewById(R.id.payment);
-        dons=(TextView)inflate.findViewById(R.id.dons);
-        payment.setOnClickListener(this);
-        dons.setOnClickListener(this);
-        buttonmap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), MapActivity.class));
-            }
-        });
+        swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this);
 
-
-        if (this.isAdded()) {
-            payment.setTextColor(getResources().getColor(R.color.green));
-            indice="payements";
+            indice= getArguments().getString("indice");
             payment_value.clear();
             customAdapter = new AdapterHistory(getActivity(), payment_value);
             listView .setAdapter(customAdapter);
             if (Utils.isConnected(getContext())){
                 get_client_Historic();
             }
-        }
-
         return inflate;
 
     }
     private void get_client_Historic() {
         try {
             ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("_User");
-            innerQuery.whereEqualTo("objectId", ProfilActivity.parseUser.getObjectId());
+            innerQuery.whereEqualTo("objectId", ProfilProActivity.parseUser.getObjectId());
             ParseQuery<ParseObject> query3 = ParseQuery.getQuery("Transaction");
             query3.whereMatchesQuery("customer", innerQuery);
             query3.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> commentList, ParseException e) {
                     if (commentList!=null){
-
+                        Log.d("history","passed");
                         if (indice.equals("payements")){
                             payment_value.add(new History("", "", "", "",0));
                         }
@@ -147,6 +131,8 @@ public class Pro_History_fragment extends Fragment implements Updateable, View.O
                         }
 
                         customAdapter.notifyDataSetChanged();
+                        swipeContainer.setRefreshing(false);
+
                         // payment_value.add(new History("", "", "", "",3));
                     }
                 }
@@ -159,28 +145,17 @@ public class Pro_History_fragment extends Fragment implements Updateable, View.O
 
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.payment:
-                indice="payements";
-                payment.setTextColor(getResources().getColor(R.color.green));
-                dons.setTextColor(getResources().getColor(R.color.black));
-                payment_value.clear();
-                get_client_Historic();
-                break;
-            case R.id.dons:
-                indice="dons";
-                payment.setTextColor(getResources().getColor(R.color.black));
-                dons.setTextColor(getResources().getColor(R.color.green));
-                payment_value.clear();
-                get_client_Historic();
-                break;
-        }
-    }
-
-
-    @Override
     public void update() {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        if (Utils.isConnected(getContext())){
+            swipeContainer.setRefreshing(true);
+            payment_value.clear();
+            customAdapter.notifyDataSetChanged();
+            get_client_Historic();
+        }
     }
 }
