@@ -4,6 +4,7 @@ package com.sharity.sharityUser.fragment.client;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +45,11 @@ import static com.sharity.sharityUser.R.id.forgot_pass;
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_Historique_fragment extends Fragment implements Updateable {
+public class client_Historique_fragment extends Fragment implements Updateable, SwipeRefreshLayout.OnRefreshListener {
     private View inflate;
     ArrayList<History> payment_value=new ArrayList<>();
     TextView payment;
+    private SwipeRefreshLayout swipeContainer;
     TextView dons;
     ListView listView;
     private String indice;
@@ -65,7 +67,8 @@ public class client_Historique_fragment extends Fragment implements Updateable {
         inflate = inflater.inflate(R.layout.locationuserlist, container, false);
         listView=(ListView)inflate.findViewById(R.id.ListView);
         payment=(TextView)inflate.findViewById(R.id.payment);
-
+        swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this);
 
         if (this.isAdded()) {
             payment.setTextColor(getResources().getColor(R.color.green));
@@ -93,6 +96,7 @@ public class client_Historique_fragment extends Fragment implements Updateable {
             innerQuery.whereEqualTo("objectId", ProfilActivity.parseUser.getObjectId());
             ParseQuery<ParseObject> query3 = ParseQuery.getQuery("Transaction");
             query3.whereMatchesQuery("customer", innerQuery);
+            query3.orderByDescending("createdAt");
             query3.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> commentList, ParseException e) {
                     if (commentList!=null){
@@ -107,7 +111,7 @@ public class client_Historique_fragment extends Fragment implements Updateable {
 
                         for (ParseObject object : commentList){
                             String prix = String.valueOf(object.getInt("value"));
-                            String business = String.valueOf(object.getString("recipientName"));
+                            String business = String.valueOf(object.getString("senderName"));
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());
@@ -139,7 +143,8 @@ public class client_Historique_fragment extends Fragment implements Updateable {
                         }
 
                         customAdapter.notifyDataSetChanged();
-                       // payment_value.add(new History("", "", "", "",3));
+                        swipeContainer.setRefreshing(false);
+                        // payment_value.add(new History("", "", "", "",3));
                     }
                 }
             });
@@ -150,5 +155,13 @@ public class client_Historique_fragment extends Fragment implements Updateable {
     }
 
 
-
+    @Override
+    public void onRefresh() {
+        if (Utils.isConnected(getContext())){
+            swipeContainer.setRefreshing(true);
+            payment_value.clear();
+            customAdapter.notifyDataSetChanged();
+            get_client_Historic();
+        }
+    }
 }

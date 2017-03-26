@@ -44,6 +44,8 @@
             android:layout_toLeftOf="@+id/send"
             android:inputType="phone"
             android:hint="valeur"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_toStartOf="@+id/send" />
 
         <Button

@@ -1,13 +1,17 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,26 +19,43 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.Profile;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.google.android.gms.analytics.internal.zzy.e;
+import static com.sharity.sharityUser.R.id.RIB_value;
+import static com.sharity.sharityUser.R.id.sharepoint_value;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
+import static com.sharity.sharityUser.activity.ProfilProActivity.profilProActivity;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Pro_Profil_fragment extends Fragment implements Updateable {
+public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRefreshLayout.OnRefreshListener {
 
+    private SwipeRefreshLayout swipeContainer;
+    private BroadcastReceiver statusReceiver;
+    private IntentFilter mIntent;
     public static final String ARG_PLANET_NUMBER = "planet_number";
     private View inflate;
     private TextView username;
@@ -43,6 +64,10 @@ public class Pro_Profil_fragment extends Fragment implements Updateable {
     private TextView points;
     private TextView email;
     private TextView phone;
+    private TextView sharepoint_generated;
+    private TextView RIB_value;
+
+
 
     public static Pro_Profil_fragment newInstance() {
         Pro_Profil_fragment myFragment = new Pro_Profil_fragment();
@@ -60,8 +85,10 @@ public class Pro_Profil_fragment extends Fragment implements Updateable {
         username=(TextView) inflate.findViewById(R.id.username_login);
         email=(TextView) inflate.findViewById(R.id.email);
         phone=(TextView) inflate.findViewById(R.id.telephone);
-        getProfilFromParse();
-
+        sharepoint_generated=(TextView) inflate.findViewById(R.id.sharepoint_value);
+        RIB_value=(TextView) inflate.findViewById(R.id.RIB_value);
+        swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,102 +96,109 @@ public class Pro_Profil_fragment extends Fragment implements Updateable {
                 ParseUser.logOut();
             }
         });
+
+        if (isAdded()) {
+            getProfilFromParse();
+        }
+
         return inflate;
     }
 
-
-
     @Override
     public  void update() {
-        getProfilFromParse();
     }
 
     private void getProfilFromParse() {
-        if (db.getBusinessCount()>0) {
-            String objectid = db.getBusinessId();
-            Business business = db.getBusiness(objectid);
+        final String objectid = db.getBusinessId();
+        Business business = db.getBusiness(objectid);
+
+        if (Utils.isConnected(getContext())) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
+            query.whereEqualTo("objectId", objectid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null) {
+                        String _user_name="";
+                        String _email="";
+                        String _phone="";
+                        String _RIB="";
+                        int _generated_sharepoints=0;
+
+                        for (ParseObject object : objects){
+                            _user_name = object.getString("officerName");
+                            _email = object.getString("email");
+                            _phone = object.getString("telephoneNumber");
+                            _RIB = object.getString("RIB");
+                            _generated_sharepoints = object.getInt("generated_sharepoints");
+                        }
+
+                        username.setText(_user_name);
+                        email.setText(_email);
+                        phone.setText(_phone);
+                        RIB_value.setText(_RIB);
+                        sharepoint_generated.setText(String.valueOf(_generated_sharepoints));
+                        swipeContainer.setRefreshing(false);
+
+                    } else {
+
+                    }
+
+                }
+            });
+
             Log.d("emailVerified",business.getEmailveried());
-            username.setText(business.get_officerName());
-            email.setText(business.get_email());
-            phone.setText(business.get_telephoneNumber());
             db.close();
         }
         else {
-           /* try {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-                        if (e == null) {
-                            for (int i =0; i<objects.size();i++){
-                                ParseObject object = objects.get(i).getParseObject("user");
-                               Log.d("objo",object.getObjectId());
-                               // String user_name = objects.getString("officerName");
-                              //  username.setText(user_name);
-                            }
-                        } else {
-                            // something went wrong
-                        }
-
-                    }
-                });
-            } catch (CursorIndexOutOfBoundsException e) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-            }*/
-
-            //Get user data from localDB.
-     /*   if (parseUser!=null) {
-            getDataFromLocalDB();
-
-        } else {
-            //DO network request to get User data
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("User");
-            query.getInBackground(getUserObjectId(getActivity()), new GetCallback<ParseObject>() {
-                public void done(ParseObject object, ParseException e) {
-                    if (e == null) {
-                        String user_name = object.getString("username");
-                        String sharepoint = object.getString("sharepoints");
-
-                        username.setText(user_name);
-                        points.setText(sharepoint);
-                    } else {
-                        // something went wrong
-                    }
-                }
-            });
-        }*/
+            username.setText(business.get_officerName());
+            email.setText(business.get_email());
+            phone.setText(business.get_telephoneNumber());
+            RIB_value.setText(business.get_RIB());
         }
     }
 
-    private String getObjectId(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
-        final String accountDisconnect = pref.getString("User_ObjectId", "");         // getting String
-        return accountDisconnect;
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver2,
+                new IntentFilter("eventRefresh"));
     }
 
-    private void getDataFromLocalDB(){
-        DatabaseHandler db = new DatabaseHandler(getActivity());
-        Profile profile = Profile.getCurrentProfile();
-        String objectId= getObjectId(getActivity());
+    @Override
+    public void onPause() {
+        if(mIntent != null) {
+            getActivity().unregisterReceiver(mMessageReceiver2);
+            mIntent = null;
+        }
+        super.onPause();
+    }
 
-        if (profile!=null){
-            try {
-                String usernameFB = profile.getName();
-                User user = db.getUser(objectId);
-                byte[] image = user.getPictureprofil();
-                User update=new User(user.get_id(),usernameFB,user.get_email(),image);
-                db.updateUser(update);
+    private BroadcastReceiver mMessageReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("message");
+            Log.d("receiver", "Got message: " + message);
+            updateProfil();
+        }
+    };
 
-                Bitmap PictureProfile = DbBitmapUtility.getImage(image);
-                imageView.setImageBitmap(PictureProfile);
-                username.setText(update.get_name());
-            }catch (CursorIndexOutOfBoundsException e){
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+    public void updateProfil() {
+        profilProActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                getProfilFromParse();
             }
+        });
     }
+
+
+    @Override
+    public void onRefresh() {
+        if (Utils.isConnected(getContext())){
+            swipeContainer.setRefreshing(true);
+            getProfilFromParse();
+        }
     }
 }

@@ -12,8 +12,13 @@ import android.widget.TextView;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import java.util.ArrayList;
+
+import static com.google.android.gms.analytics.internal.zzy.i;
+import static com.sharity.sharityUser.Utils.JSONParser.is;
 
 
 public class AdapterHistory extends BaseAdapter {
@@ -81,7 +86,12 @@ public class AdapterHistory extends BaseAdapter {
             } else if(listViewItemType == 1) {
 
                 if(holder.payment!= null) {
-                    holder.payment.setText("Payment from "+it.get_businessname());
+                    if (context instanceof ProfilProActivity){
+                        holder.payment.setText("Payment to "+it.get_businessname());
+                    }else if (context instanceof ProfilActivity){
+                        holder.payment.setText("Payment from "+it.get_businessname());
+
+                    }
                 }
                 if(holder.date_payment!= null) {
                     holder.date_payment.setText(it.get_date());

@@ -1,20 +1,26 @@
 package com.sharity.sharityUser.activity;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +42,7 @@ import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
 
 import java.util.ArrayList;
 
+import static com.google.android.gms.common.api.Status.sm;
 import static com.sharity.sharityUser.R.id.tab_option;
 
 
@@ -43,6 +50,9 @@ import static com.sharity.sharityUser.R.id.tab_option;
  * Created by Moi on 07/05/2016.
  */
 public class ProfilActivity extends AppCompatActivity implements OnTabSelectListener {
+
+    private BroadcastReceiver statusReceiver;
+    private IntentFilter mIntent;
     static int TOTAL_PAGES=3;
     private ViewPager pager;
     private LocationManager manager;
@@ -51,6 +61,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     private BottomBar bottomBar;
     private TextView toolbarTitle;
     boolean start =true;
+    public static ProfilActivity clientProfilActivity;
     public static ParseUser parseUser;
     private DrawerLayout drawer_layout;
     private ListView myDrawer;
@@ -64,6 +75,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
         if (savedInstanceState == null) {
             manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            clientProfilActivity=this;
             parseUser = ParseUser.getCurrentUser();
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
@@ -306,15 +318,15 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         switch (tabId){
             case tab_option:
                 pager.setCurrentItem(0,true);
-                mViewPagerAdapter.notifyDataSetChanged();
+                updateProfil();
                 break;
             case R.id.tab_profil:
                 pager.setCurrentItem(1,true);
-                mViewPagerAdapter.notifyDataSetChanged();
+                updateProfil();
                 break;
             case R.id.tab_partenaire:
                 pager.setCurrentItem(2,true);
-                mViewPagerAdapter.notifyDataSetChanged();
+                updateProfil();
                 break;
         }
     }
@@ -344,6 +356,21 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             // permissions this app might request
         }
     }
+
+    public static ProfilActivity  getInstance(){
+        return clientProfilActivity;
+    }
+
+    public void updateProfil() {
+        ProfilActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                mViewPagerAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+
 }
 
 

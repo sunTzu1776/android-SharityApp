@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -35,8 +36,14 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
+import static com.google.android.gms.analytics.internal.zzy.c;
+import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.sharity.sharityUser.R.id.button;
 import static com.sharity.sharityUser.R.id.prix;
+import static com.sharity.sharityUser.R.id.user;
+import static com.sharity.sharityUser.R.id.username;
+import static com.sharity.sharityUser.activity.ProfilProActivity.db;
+import static okhttp3.Protocol.get;
 
 
 /**
@@ -44,6 +51,8 @@ import static com.sharity.sharityUser.R.id.prix;
  */
 public class Pro_History_fragment extends Fragment implements Updateable, SwipeRefreshLayout.OnRefreshListener {
 
+    ParseObject obj= null;
+    String customer="";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private SwipeRefreshLayout swipeContainer;
     ArrayList<History> payment_value=new ArrayList<>();
@@ -80,10 +89,12 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
     }
     private void get_client_Historic() {
         try {
-            ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("_User");
-            innerQuery.whereEqualTo("objectId", ProfilProActivity.parseUser.getObjectId());
+            ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("Business");
+            innerQuery.whereEqualTo("objectId", db.getBusinessId());
             ParseQuery<ParseObject> query3 = ParseQuery.getQuery("Transaction");
-            query3.whereMatchesQuery("customer", innerQuery);
+            query3.whereMatchesQuery("business", innerQuery);
+            query3.orderByDescending("createdAt");
+            query3.include("_User");
             query3.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> commentList, ParseException e) {
                     if (commentList!=null){
@@ -95,10 +106,22 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
                             payment_value.add(0,new History("", "", "", "",2));
                         }
 
-
+                        ParseObject sale = ParseObject.create("_User");
                         for (ParseObject object : commentList){
+
+                            //Get Pointer customer
+                         /*   try {
+                                sale = object.getParseObject("customer").fetchIfNeeded();
+                                Log.d("post",sale.getString("username"));
+
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+
+                            String toto=sale.getString("username");
+                            */
+                            String recipientName=object.getString("recipientName");
                             String prix = String.valueOf(object.getInt("value"));
-                            String business = String.valueOf(object.getString("recipientName"));
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());
@@ -119,13 +142,13 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
 
                             if (transactionType==1){
                                 if (indice.equals("payements")){
-                                    payment_value.add(new History(id, business, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
                                 }
                             }
 
                             if (transactionType==2){
                                 if (indice.equals("dons")){
-                                    payment_value.add(new History(id, business, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
                                 }
                             }
                         }

@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -46,12 +48,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             sendNotification(remoteMessage.getData().get("body").toString());
+            Log.d("sender", "Broadcasting message");
+            Intent intent = new Intent("custom-event-name");
+            // You can also include some extra data.
+            intent.putExtra("message", "This is my message!");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "Message Notification Title: " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, "Message Notification Tag: " + remoteMessage.getNotification().getTag());
+            Log.d(TAG, "Message Notification Sound: " + remoteMessage.getNotification().getSound());
+            Log.d(TAG, "Message Notification Icon: " + remoteMessage.getNotification().getIcon());
+            Log.d(TAG, "Message Notification Icon: " + remoteMessage.getNotification().getClickAction());
+            String messageText = remoteMessage.getNotification().getTitle();
+            if (messageText == null)
+                messageText = remoteMessage.getNotification().getBody();
+
+            sendNotification(remoteMessage.getNotification().getBody().toString());
+
+        }else {
+            Log.d("Notification", "Message Notification is null: ");
+
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -59,7 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, ProfilProActivity.class);
+        Intent intent = new Intent(this, ProfilActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -67,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.icon_logo)
-                .setContentTitle("FCM Message")
+                .setContentTitle("Sharity")
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

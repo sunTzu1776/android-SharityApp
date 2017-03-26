@@ -1,6 +1,9 @@
 package com.sharity.sharityUser.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -61,6 +65,8 @@ import static com.sharity.sharityUser.activity.LoginActivity.db;
  * Created by Moi on 07/05/2016.
  */
 public class ProfilProActivity extends AppCompatActivity implements OnTabSelectListener {
+
+
     private Boolean emailVerified;
     public static DatabaseHandler db;
     static int TOTAL_PAGES=3;
@@ -75,6 +81,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ArrayList<Drawer> drawersItems= new ArrayList<Drawer>();
     private AdapterNews adapter;
+    public static ProfilProActivity profilProActivity;
     public static String profileSource;
     public ListenFromActivity activityListener;
 
@@ -90,6 +97,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
         if (savedInstanceState == null) {
             db = new DatabaseHandler(this);
+            profilProActivity=this;
             parseUser=ParseUser.getCurrentUser();
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
@@ -403,6 +411,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     public void setActivityListener(ListenFromActivity activityListener) {
         this.activityListener = activityListener;
     }
+
 }
 
 
