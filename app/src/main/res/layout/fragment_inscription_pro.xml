@@ -49,15 +49,29 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_TextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="Nom d'utilisateur"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/username" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:gravity="center"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    android:hint="Nom d'utilisateur"
+                    android:ems="10"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -68,15 +82,29 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:hint="Mot de passe"
-                android:inputType="numberPassword"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/password" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:hint="Mot de passe"
+                    android:inputType="numberPassword"
+                    android:layout_weight="2.5"
+                    android:ems="10"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    android:id="@+id/password"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -87,15 +115,28 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:inputType="textPersonName"
-                android:hint="Numéro SIRET"
                 android:layout_weight="2.5"
-                android:ems="14"
-                android:id="@+id/Siret" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:inputType="textPersonName"
+                    android:hint="Numéro SIRET"
+                    android:layout_weight="2.5"
+                    android:ems="14"
+                    android:id="@+id/Siret"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -106,16 +147,28 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="Nom de l'entreprise"
                 android:layout_weight="2.5"
-                android:ems="10"
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
 
-                android:id="@+id/business_name" />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:gravity="center"
+                    android:hint="Nom de l'entreprise"
+                    android:layout_weight="2.5"
+                    android:ems="10"
+                    android:id="@+id/business_name"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -126,15 +179,29 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="Nom du dirigeant"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/chief_name" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:gravity="center"
+                    android:hint="Nom du dirigeant"
+                    android:layout_weight="2.5"
+                    android:ems="10"
+                    android:id="@+id/chief_name"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -145,15 +212,28 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="numberPassword"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="N° de téléphone"
                 android:layout_weight="2.5"
-                android:id="@+id/phone_number" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="numberPassword"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="N° de téléphone"
+                    android:layout_weight="2.5"
+                    android:id="@+id/phone_number"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -164,15 +244,29 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="RIB"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/RIB" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:gravity="center"
+                    android:hint="RIB"
+                    android:layout_weight="2.5"
+                    android:ems="10"
+                    android:id="@+id/RIB"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -228,15 +322,28 @@
             android:layout_weight="1"
             android:weightSum="4">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:gravity="center"
-                android:hint="E-mail"
                 android:layout_weight="2.5"
-                android:ems="10"
-                android:id="@+id/email" />
+                android:gravity="center"
+                android:theme="@style/EditTextInscription"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:gravity="center"
+                    android:hint="E-mail"
+                    android:layout_weight="2.5"
+                    android:ems="10"
+                    android:id="@+id/email"
+                    android:textSize="@dimen/login_pro_editext_inscription"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -254,7 +361,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:textColor="@color/red"
             android:background="@color/transparent"
-            android:textSize="18sp"
+            android:textSize="@dimen/login_pro_buttondone_inscription"
             android:text="DONE"
             style="?android:attr/borderlessButtonStyle"
             android:id="@+id/done" />

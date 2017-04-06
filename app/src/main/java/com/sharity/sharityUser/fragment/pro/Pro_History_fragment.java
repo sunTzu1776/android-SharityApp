@@ -36,8 +36,6 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
-import static com.google.android.gms.analytics.internal.zzy.c;
-import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.sharity.sharityUser.R.id.button;
 import static com.sharity.sharityUser.R.id.prix;
 import static com.sharity.sharityUser.R.id.user;

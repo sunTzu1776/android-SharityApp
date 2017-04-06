@@ -40,8 +40,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.google.android.gms.analytics.internal.zzy.p;
-import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.parse.ParsePush.sendMessageInBackground;
 import static com.sharity.sharityUser.Application.getContext;
 import static com.sharity.sharityUser.R.id.price;

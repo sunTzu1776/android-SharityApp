@@ -58,9 +58,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.sharity.sharityUser.R.id.price;
 import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
@@ -214,18 +211,8 @@ public class Pro_Inscription_fragment extends Fragment implements View.OnClickLi
         switch (view.getId()){
             case R.id.done:{
                     View[] fields={username,password,Siret,business_name,chief_name,phone,address,RIB,email};
-                    String _username= username.getText().toString();
-                    String _password= password.getText().toString();
-                    String _Siret= Siret.getText().toString();
-                    String _business_name= business_name.getText().toString();
-                    String _chief_name= chief_name.getText().toString();
-                    String _phone= phone.getText().toString();
-                    String _RIB= RIB.getText().toString();
-                    String _email= email.getText().toString();
-                    String _addresse= address.getText().toString();
-
-                Object[] address={latitude,longitude,addresse};
-                    presenter.validateCredentials(type,fields,address,_username,_password,_Siret,_business_name,_chief_name, _phone, _addresse, _RIB,_email);
+                    Object[] address={latitude,longitude,addresse};
+                    presenter.validateCredentials(type,fields,address);
             }
         }
     }
@@ -283,7 +270,7 @@ public class Pro_Inscription_fragment extends Fragment implements View.OnClickLi
 
     @Override
     public void setRIBError() {
-        RIB.setError("RIB Error");
+       RIB.setError("RIB Error");
 
     }
 

@@ -27,26 +27,28 @@
             android:gravity="center"
             android:src="@drawable/logo" />
 
-        <com.sharity.sharityUser.fonts.TextViewGeoManis
+        <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
             android:gravity="center_horizontal|center_vertical"
             android:text="SHARITY"
-            app:GeomanisRegular="geomanistregular.ttf"
+            app:NotoRegular="notosansuiregular.ttf"
             android:textColor="@color/green"
             android:textSize="@dimen/title_sharity" />
 
 
-        <com.sharity.sharityUser.fonts.TextViewSegoeUi
+        <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.45"
             android:gravity="center_horizontal|center_vertical"
             android:text="Bienvenue dans l'ère du don gratuit"
-            app:Segoeui="segoeui.ttf"
+            app:NotoRegular="notosansuiregular.ttf"
             android:textColor="@color/green"
-            android:textSize="@dimen/sharity_subtitle" />
+            android:textSize="@dimen/sharity_subtitle"
+             />
+
 
     </LinearLayout>
 
@@ -165,6 +167,7 @@
                 android:layout_weight="1.2"
                 android:orientation="vertical"
                 >
+
 
             </LinearLayout>
 

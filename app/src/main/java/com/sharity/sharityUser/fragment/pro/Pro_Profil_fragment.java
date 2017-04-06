@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -41,7 +44,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.google.android.gms.analytics.internal.zzy.e;
 import static com.sharity.sharityUser.R.id.RIB_value;
 import static com.sharity.sharityUser.R.id.sharepoint_value;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;

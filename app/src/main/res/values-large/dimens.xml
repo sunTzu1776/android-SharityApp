@@ -5,19 +5,27 @@
 
 
     <!-- client_login_fragment-->
-    <dimen name="title_sharity">26.5dp</dimen>
+    <dimen name="title_sharity">28.5dp</dimen>
     <dimen name="sharity_subtitle">20dp</dimen>
 
     <!--fragment_login_pro-->
-    <dimen name="login_pro_title">26.5dp</dimen>
+    <dimen name="login_pro_title">25.5dp</dimen>
     <dimen name="login_pro_editext">20dp</dimen>
     <dimen name="login_pro_changepassword">18dp</dimen>
-    <dimen name="login_pro_buttondone">25dp</dimen>
+    <dimen name="login_pro_buttondone">23dp</dimen>
+    <dimen name="login_pro_inscription">18dp</dimen>
+
+    <!--fragment_inscription_pro-->
+    <dimen name="login_pro_editext_inscription">20dp</dimen>
+    <dimen name="login_pro_buttondone_inscription">23dp</dimen>
+
 
     <!--fragment_code_pro-->
     <dimen name="fragment_code_pro_title">26.5dp</dimen>
     <dimen name="fragment_code_editext">20dp</dimen>
     <dimen name="fragment_code_buttondone">25dp</dimen>
+
+
 
 
     <!--Profil Fragment Title -->

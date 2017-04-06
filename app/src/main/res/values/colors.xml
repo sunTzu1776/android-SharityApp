@@ -2,16 +2,16 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#76bb6f</color>
+    <color name="colorAccent">#75c33c</color>
 
     <item name="white" type="color">#FFFFFFFF</item>
-    <item name="greensolid" type="color">#FF368257</item>
+    <item name="greensolid" type="color">#75c33c</item>
     <item name="transparent" type="color">#FFFFFFFF</item>
     <item name="grey" type="color">#cacaca</item>
 
 
-    <item name="green" type="color">#76bb6f</item>
-    <item name="red" type="color">#ff647e</item>
+    <item name="green" type="color">#75c33c</item>
+    <item name="red" type="color">#ff6871</item>
     <item name="black" type="color">#000000</item>
 
 

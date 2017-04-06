@@ -57,9 +57,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.p;
-import static com.google.android.gms.analytics.internal.zzy.u;
 import static com.sharity.sharityUser.R.id.profil;
 import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;

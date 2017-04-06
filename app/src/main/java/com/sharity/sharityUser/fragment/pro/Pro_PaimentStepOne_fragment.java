@@ -42,10 +42,6 @@ import java.util.List;
 import java.util.Timer;
 
 import okhttp3.internal.Util;
-
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.internal.zznk.fm;
 import static com.sharity.sharityUser.R.id.paiment_classique;
 
 

@@ -14,4 +14,8 @@
     <declare-styleable name="TextViewR">
         <attr name="RobotoBold" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="TextViewNoto">
+        <attr name="NotoRegular" format="string"/>
+    </declare-styleable>
 </resources>

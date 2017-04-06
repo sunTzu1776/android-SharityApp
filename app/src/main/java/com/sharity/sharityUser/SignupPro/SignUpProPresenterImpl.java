@@ -16,12 +16,12 @@ public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInte
     }
 
     @Override
-    public void validateCredentials(String type, View[] fields, Object[] addresse, String username, String password, String RC3number, String Businesname, String OwnerName, String Phone, String address, String RIB, String email) {
+    public void validateCredentials(String type, View[] fields, Object[] addresse) {
         if (loginView != null) {
             loginView.showProgress();
         }
 
-        loginInteractor.login(type,fields,addresse,username, password,RC3number,Businesname,OwnerName,Phone,address,RIB,email, this);
+        loginInteractor.login(type,fields,addresse, this);
     }
 
     @Override public void onDestroy() {

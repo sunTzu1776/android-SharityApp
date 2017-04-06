@@ -38,8 +38,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.p;
+
 import static com.sharity.sharityUser.R.id.price;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 

@@ -45,9 +45,6 @@ import okhttp3.Response;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.analytics.internal.zzy.p;
-import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.sharity.sharityUser.Application.getContext;
 import static com.sharity.sharityUser.R.id.price;
 import static com.sharity.sharityUser.R.id.user;

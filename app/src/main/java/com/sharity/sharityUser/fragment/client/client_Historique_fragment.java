@@ -25,6 +25,7 @@ import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 import com.sharity.sharityUser.fragment.pro.Passord_forgotten_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_History_fragment;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -33,13 +34,8 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import static android.view.View.Z;
-import static com.google.android.gms.analytics.internal.zzy.i;
-import static com.google.android.gms.analytics.internal.zzy.p;
-import static com.google.android.gms.auth.api.credentials.PasswordSpecification.df;
-import static com.google.android.gms.cast.internal.zzl.pa;
 import static com.sharity.sharityUser.R.id.forgot_pass;
+import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
 
 
 /**
@@ -54,9 +50,12 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
     ListView listView;
     private String indice;
     private AdapterHistory customAdapter;
-    public static client_Historique_fragment newInstance() {
+
+
+    public static client_Historique_fragment newInstance(String indice) {
         client_Historique_fragment myFragment = new client_Historique_fragment();
         Bundle args = new Bundle();
+        args.putString("indice",indice);
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -65,6 +64,7 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.locationuserlist, container, false);
+
         listView=(ListView)inflate.findViewById(R.id.ListView);
         payment=(TextView)inflate.findViewById(R.id.payment);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
@@ -72,11 +72,12 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
         if (this.isAdded()) {
             payment.setTextColor(getResources().getColor(R.color.green));
-            indice="payements";
+            indice= getArguments().getString("indice");
+            Log.d("indice",indice);
             payment_value.clear();
             customAdapter = new AdapterHistory(getActivity(), payment_value);
             listView .setAdapter(customAdapter);
-            if (Utils.isConnected(getContext())){
+            if (Utils.isConnected2(getActivity())){
                 get_client_Historic();
             }
         }
@@ -89,17 +90,27 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
     }
 
-
     private void get_client_Historic() {
         try {
             ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("_User");
-            innerQuery.whereEqualTo("objectId", ProfilActivity.parseUser.getObjectId());
-            ParseQuery<ParseObject> query3 = ParseQuery.getQuery("Transaction");
-            query3.whereMatchesQuery("customer", innerQuery);
-            query3.orderByDescending("createdAt");
-            query3.findInBackground(new FindCallback<ParseObject>() {
+            innerQuery.whereEqualTo("objectId", parseUser.getObjectId());
+
+            ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Transaction");
+            query1.whereMatchesQuery("customer", innerQuery);
+
+            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Transaction");
+            query2.whereMatchesQuery("clientDonator", innerQuery);
+
+            List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+            queries.add(query1);
+            queries.add(query2);
+            ParseQuery<ParseObject> mainquery = ParseQuery.or(queries);
+            mainquery.orderByDescending("createdAt");
+            mainquery.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> commentList, ParseException e) {
                     if (commentList!=null){
+                        payment_value.clear();
+                        Log.d("m1stFragment","get_client_Historic");
 
                         if (indice.equals("payements")){
                             payment_value.add(new History("", "", "", "",0));
@@ -108,10 +119,10 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
                             payment_value.add(0,new History("", "", "", "",2));
                         }
 
-
                         for (ParseObject object : commentList){
                             String prix = String.valueOf(object.getInt("value"));
                             String business = String.valueOf(object.getString("senderName"));
+                            String recipientName = String.valueOf(object.getString("recipientName"));
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());
@@ -137,7 +148,7 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
                             if (transactionType==2){
                                 if (indice.equals("dons")){
-                                    payment_value.add(new History(id, business, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName, newDate, prix,3));
                                 }
                             }
                         }
@@ -158,10 +169,12 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
     @Override
     public void onRefresh() {
         if (Utils.isConnected(getContext())){
+            Log.d("m1stFragment","onRefresh");
             swipeContainer.setRefreshing(true);
             payment_value.clear();
             customAdapter.notifyDataSetChanged();
             get_client_Historic();
         }
     }
+
 }

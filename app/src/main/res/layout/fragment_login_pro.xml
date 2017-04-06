@@ -47,15 +47,15 @@
         android:layout_weight="0.3"
         android:orientation="horizontal">
 
-        <com.sharity.sharityUser.fonts.TextViewGeoManis
+        <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
             android:text="BIENVENUE SUR SHARITY"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/textView2"
-            app:GeomanisRegular="geomanis.ttf"
             android:gravity="center"
-            android:textSize="@dimen/login_pro_title"
+            app:NotoRegular="notosansuiregular.ttf"
             android:textColor="@color/red"
+            android:textSize="@dimen/login_pro_title"
             />
 
     </LinearLayout>
@@ -79,27 +79,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.1"></View>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:weightSum="4">
 
-                <com.sharity.sharityUser.fonts.EditTextGeoManis
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/username_TextInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:id="@+id/username_login"
-                    android:textSize="@dimen/login_pro_editext"
-                    app:GeomanisRegular="geomanis.ttf"
-                    android:hint="Nom d'utilisateur"
                     android:layout_weight="2.8"
-                    android:ems="10"
-                    />
+                    android:gravity="center"
+                    android:theme="@style/TextLabel"
+
+                    >
+
+                    <EditText
+                        android:id="@+id/username_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textPersonName"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/login_pro_editext"
+                        android:hint="Nom d'utilisateur"
+                        android:layout_weight="2.8"
+                        android:ems="10"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
 
 
@@ -108,23 +121,35 @@
                 android:layout_height="0dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:layout_marginTop="7dp"
                 android:weightSum="4">
 
-                <com.sharity.sharityUser.fonts.EditTextGeoManis
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/password_TextInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"
-                    android:gravity="center"
-                    android:textSize="@dimen/login_pro_editext"
-                    android:textColor="@color/black"
-                    app:GeomanisRegular="geomanis.ttf"
-                    android:id="@+id/password_login"
-                    android:hint="Mot de passe"
                     android:layout_weight="2.8"
-                    android:ems="10"
-                    />
+                    android:gravity="center"
+                    android:theme="@style/TextLabel"
+                    >
+
+                    <EditText
+                        android:id="@+id/password_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textPassword"
+                        android:gravity="center"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:hint="Mot de passe"
+                        android:layout_weight="2.8"
+                        android:ems="10"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
 
 
@@ -133,18 +158,20 @@
                 android:layout_height="0dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:weightSum="4">
 
-                <com.sharity.sharityUser.fonts.TextViewGeoManis
+
+                <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
                     android:text="mot de passe oublié / changer de mot de passe"
                     android:layout_width="match_parent"
-                    app:GeomanisRegular="geomanis.ttf"
                     android:layout_height="wrap_content"
+                    app:NotoRegular="notosansuiregular.ttf"
                     android:textSize="@dimen/login_pro_changepassword"
                     android:layout_weight="2.7"
                     android:id="@+id/forgotpassword"
-                    android:gravity="center_vertical|center_horizontal" />
+                    android:gravity="center_vertical|center_horizontal"
+                    />
             </LinearLayout>
 
 
@@ -156,7 +183,7 @@
                 android:weightSum="2"
                 >
 
-                <com.sharity.sharityUser.fonts.TextViewGeoManis
+                <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
@@ -168,7 +195,10 @@
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     style="?android:attr/borderlessButtonStyle"
-                    android:id="@+id/login_BT" />
+                    android:id="@+id/login_BT"
+                    app:NotoRegular="notosansuiregular.ttf"
+
+                    />
 
 
                 <ProgressBar
@@ -190,16 +220,19 @@
         android:orientation="vertical"
       >
 
-       <com.sharity.sharityUser.fonts.TextViewGeoManis
-        android:layout_width="match_parent"
+
+        <com.sharity.sharityUser.fonts.TextViewNotoSansRegular
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="INSCRIPTION"
             android:gravity="bottom|right"
             android:id="@+id/inscription"
-           android:textSize="17sp"
-           app:GeomanisRegular="geomanis.ttf"
-           android:textColor="@color/black"
-            android:layout_margin="10dp"/>
+            android:textSize="@dimen/login_pro_inscription"
+            android:textColor="@color/black"
+            android:layout_margin="10dp"
+            app:NotoRegular="notosansuiregular.ttf"
+
+            />
     </RelativeLayout>
 
 </LinearLayout>

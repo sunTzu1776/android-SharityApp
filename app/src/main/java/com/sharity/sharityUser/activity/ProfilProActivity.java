@@ -1,33 +1,25 @@
 package com.sharity.sharityUser.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -36,29 +28,19 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
-import com.sharity.sharityUser.Application;
 import com.sharity.sharityUser.BO.Business;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.fragment.pro.Pro_History_container_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_History_fragment;
+import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_Partenaire_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_Profil_Ending_Inscription_fragment;
-import com.sharity.sharityUser.fragment.testpager.PagerFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.google.android.gms.analytics.internal.zzy.g;
-import static com.google.android.gms.analytics.internal.zzy.l;
-import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
-import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 
 /**
@@ -129,20 +111,25 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             //   pager.setPageTransformer(true, new CrossfadePageTransformer());
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbar.setNavigationIcon(R.drawable.nav_drawer_pro);
 
             actionBarDrawerToggle = new ActionBarDrawerToggle(ProfilProActivity.this, drawer_layout,
                     toolbar, R.string.open, R.string.close) {
 
                 public void onDrawerClosed(View view) {
-                    super.onDrawerClosed(view);
+                    supportInvalidateOptionsMenu();
+
                 }
                 public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
+                    supportInvalidateOptionsMenu();
                 }
             };
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.red));
+            drawer_layout.setDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.syncState();
+
+
 
             if (db.getEmailverified().equals("true")){
             }else {
@@ -210,7 +197,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             } else if (position == 1) {
                 return Pro_Profil_Container_fragment.newInstance(profileSource);
             } else if (position == 2) {
-                return Pro_History_container_fragment.newInstance();
+                return History_container_fragment.newInstance();
             }
 
             return null;
@@ -234,8 +221,8 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 ((Pro_Profil_Container_fragment) object).update();
             }
 
-            if (object instanceof Pro_History_container_fragment) {
-                ((Pro_History_container_fragment) object).update();
+            if (object instanceof History_container_fragment) {
+                ((History_container_fragment) object).update();
             }
 
             return super.getItemPosition(object);
@@ -299,19 +286,6 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
     }
 
 
@@ -410,6 +384,20 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
     public void setActivityListener(ListenFromActivity activityListener) {
         this.activityListener = activityListener;
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
 }

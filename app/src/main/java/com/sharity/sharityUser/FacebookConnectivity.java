@@ -28,7 +28,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import static com.google.android.gms.analytics.internal.zzy.b;
 import static com.sharity.sharityUser.LoginClient.LoginClientInteractorImpl.DownloadImageBitmap;
 import static com.sharity.sharityUser.R.id.user;
 

@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static com.sharity.sharityUser.R.id.address;
+import static com.sharity.sharityUser.R.id.username;
 import static com.sharity.sharityUser.activity.LoginActivity.db;
 
 public class SignUpProInteractorImpl implements SignUpProInteractor {
@@ -47,25 +48,25 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
     private Double longitude;
 
     @Override
-    public void login(final String type, final View[] fields, Object[] addresse, final String username, final String password, final String Siret, final String Businesname, final String OwnerName, final String Phone, final String address, final String RIB, final String email, final OnLoginFinishedListener listener) {
-        // Mock login. I'm creating a handler to delay the answer a couple of seconds
+    public void login(final String type, final View[] fields, Object[] addresse, final OnLoginFinishedListener listener) {
 
+     //   View[] fields={username,password,Siret,business_name,chief_name,phone,address,RIB,email};
         this._type = type;
-        this._username = username;
-        this._password = password;
-        this._Siret = Siret;
-        this._Businesname = Businesname;
-        this._OwnerName = OwnerName;
-        this._Phone = Phone;
-        this._RIB = RIB;
-        this._email = email;
-       if ((Double)addresse[0]!=null){
+        this._username = ((EditText)fields[0]).getText().toString();
+        this._password = ((EditText)fields[1]).getText().toString();
+        this._Siret = ((EditText)fields[2]).getText().toString();
+        this._Businesname = ((EditText)fields[3]).getText().toString();
+        this._OwnerName = ((EditText)fields[4]).getText().toString();
+        this._Phone = ((EditText)fields[5]).getText().toString();
+        this._addressfield = ((AutoCompleteTextView)fields[6]).getText().toString();;
+        this._RIB = ((EditText)fields[7]).getText().toString();
+        this._email = ((EditText)fields[8]).getText().toString();
+
+        if ((Double)addresse[0]!=null){
            this.latitude=(Double)addresse[0];
            this.longitude=(Double)addresse[1];
            this._address = (String)addresse[2];
         }
-
-        this._addressfield=address;
         this._listener = listener;
 
         new Handler().postDelayed(new Runnable() {
@@ -136,7 +137,11 @@ public class SignUpProInteractorImpl implements SignUpProInteractor {
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
-        user.put("userIsBusiness", true);
+        if (_type.equals("charite")) {
+            user.put("userIsCharity", true);
+        } else if (_type.equals("pro")) {
+            user.put("userIsBusiness", true);
+        }
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {

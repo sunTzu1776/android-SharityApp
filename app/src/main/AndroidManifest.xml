@@ -65,7 +65,9 @@
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
 
-        <activity android:name=".activity.ProfilProActivity">
+        <activity android:name=".activity.ProfilProActivity"
+                   android:windowSoftInputMode="adjustPan"
+            >
         </activity>
 
         <activity android:name=".activity.MapActivity">

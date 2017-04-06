@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import com.sharity.sharityUser.R;
 
 public class PagerFragment extends Fragment {
-  ViewPager pager;
+  public ViewPager pager;
   private OnSelection onSelection;
-
+  public SampleAdapter adapter;
   public interface OnSelection{
     public void OnSelect(int i);
   }
@@ -30,10 +30,14 @@ public class PagerFragment extends Fragment {
     return(result);
   }
 
-  private PagerAdapter buildAdapter() {
-    return(new SampleAdapter(getActivity(), getChildFragmentManager()));
+  public PagerAdapter buildAdapter() {
+    adapter=new SampleAdapter(getActivity(), getChildFragmentManager());
+    return adapter;
   }
 
+  public SampleAdapter getAdapter() {
+    return adapter;
+  }
 
   private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
     @Override

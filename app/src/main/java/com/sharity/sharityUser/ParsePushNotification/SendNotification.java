@@ -25,8 +25,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.p;
 import static com.sharity.sharityUser.Application.getContext;
 import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LocationUserActivity.db;
@@ -79,6 +77,8 @@ public class SendNotification {
             JSONObject param = new JSONObject();
             JSONObject data = new JSONObject();
             param.put("title", "Notification");
+            param.put("sharepoints", price);
+            param.put("BusinessName", db.getBusinessName());
             param.put("body", db.getBusinessName()+ " vous à envoyé une notification ");
             data.put("data", param);
             jsonObject.put("payload", data);

@@ -30,7 +30,6 @@ import com.sharity.sharityUser.fragment.Updateable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.google.android.gms.internal.zznk.fm;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 import static com.sharity.sharityUser.activity.ProfilProActivity.profileSource;
 
@@ -39,7 +38,6 @@ import static com.sharity.sharityUser.activity.ProfilProActivity.profileSource;
  * Created by Moi on 14/11/15.
  */
 public class Pro_Profil_Container_fragment extends Fragment implements Updateable,ProfilProActivity.ListenFromActivity {
-
 
 
     public static final String ARG_PLANET_NUMBER = "planet_number";

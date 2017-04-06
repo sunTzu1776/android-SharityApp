@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.parse.ParseUser;
 import com.sharity.sharityUser.LoginClient.LoginClientPresenter;
 import com.sharity.sharityUser.LoginClient.LoginClientPresenterImpl;
@@ -25,6 +26,8 @@ import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.pro.Pro_Login_fragment;
+
+import static com.sharity.sharityUser.Utils.Utils.replaceFragmentWithAnimation;
 
 
 /**
@@ -64,8 +67,6 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
         access_pro = (Button) inflate.findViewById(R.id.pro_login_acces);
         access_charite = (Button) inflate.findViewById(R.id.charite_login_acces);
 
-
-
         twitter.setOnClickListener(this);
         facebook.setOnClickListener(this);
         access_pro.setOnClickListener(this);
@@ -84,18 +85,12 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
         switch (view.getId()) {
             case R.id.pro_login_acces:
                 ParseUser.logOut();
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.login, Pro_Login_fragment.newInstance("pro"), "Login_Pro_fragment");
-                ft.addToBackStack(null);
-                ft.commit();
+                replaceFragmentWithAnimation(Pro_Login_fragment.newInstance("pro"),getFragmentManager(),"Login_Pro_fragment");
                 break;
 
             case R.id.charite_login_acces:
                 ParseUser.logOut();
-                final FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                ft2.replace(R.id.login, Pro_Login_fragment.newInstance("charite"), "Login_Pro_fragment");
-                ft2.addToBackStack(null);
-                ft2.commit();
+                replaceFragmentWithAnimation(Pro_Login_fragment.newInstance("charite"),getFragmentManager(),"Login_Pro_fragment");
                 break;
 
             case R.id.twitter_login:
@@ -189,6 +184,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
         final String accountDisconnect = pref.getString("client_numCode", "");         // getting String
         return accountDisconnect;
     }
+
 
 
 }

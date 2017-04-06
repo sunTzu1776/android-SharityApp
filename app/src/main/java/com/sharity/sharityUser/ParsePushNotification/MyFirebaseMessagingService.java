@@ -48,10 +48,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             sendNotification(remoteMessage.getData().get("body").toString());
-            Log.d("sender", "Broadcasting message");
+            String business= remoteMessage.getData().get("BusinessName").toString();
+            String sharepoints= remoteMessage.getData().get("sharepoints").toString();
+
             Intent intent = new Intent("custom-event-name");
             // You can also include some extra data.
             intent.putExtra("message", "This is my message!");
+            intent.putExtra("sharepoints", sharepoints);
+            intent.putExtra("business", business);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         }

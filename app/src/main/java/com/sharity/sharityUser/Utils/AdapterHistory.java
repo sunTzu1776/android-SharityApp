@@ -17,7 +17,6 @@ import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import java.util.ArrayList;
 
-import static com.google.android.gms.analytics.internal.zzy.i;
 import static com.sharity.sharityUser.Utils.JSONParser.is;
 
 
@@ -68,11 +67,11 @@ public class AdapterHistory extends BaseAdapter {
 
             } else if(listViewItemType == 3){
                 convertView = inflat.inflate(R.layout.row_dons_body_listview, null);
-                holder.payment = (TextView) convertView
-                        .findViewById(R.id.payment);
+                holder.dons = (TextView) convertView
+                        .findViewById(R.id.dons);
                 holder.date_dons = (TextView) convertView
-                        .findViewById(R.id.date);
-                holder.price_dons=(TextView)convertView.findViewById(R.id.price);
+                        .findViewById(R.id.date_dons);
+                holder.price_dons=(TextView)convertView.findViewById(R.id.price_dons);
             }
             convertView.setTag(holder);
 
@@ -84,7 +83,6 @@ public class AdapterHistory extends BaseAdapter {
             if (listViewItemType == 0) {
 
             } else if(listViewItemType == 1) {
-
                 if(holder.payment!= null) {
                     if (context instanceof ProfilProActivity){
                         holder.payment.setText("Payment to "+it.get_businessname());
@@ -104,7 +102,12 @@ public class AdapterHistory extends BaseAdapter {
             }
             else if(listViewItemType == 3) {
                 if(holder.dons!= null) {
-                    holder.dons.setText("Payment to "+it.get_businessname());
+                    if (context instanceof ProfilProActivity){
+                        holder.dons.setText("Donate to "+it.get_businessname());
+                    }else if (context instanceof ProfilActivity){
+                        holder.dons.setText("Donate to "+it.get_businessname());
+
+                    }
                 }
                 if(holder.date_dons!= null) {
                     holder.date_dons.setText(it.get_date());

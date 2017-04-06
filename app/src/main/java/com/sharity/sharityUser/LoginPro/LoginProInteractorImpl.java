@@ -24,10 +24,6 @@ import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.google.android.gms.analytics.internal.zzy.e;
-import static com.google.android.gms.analytics.internal.zzy.g;
-import static com.google.android.gms.analytics.internal.zzy.t;
-import static com.google.android.gms.analytics.internal.zzy.v;
 import static com.sharity.sharityUser.R.id.RIB;
 import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.R.id.username;

@@ -1,14 +1,11 @@
 package com.sharity.sharityUser.activity;
 
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -20,7 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,21 +24,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import com.sharity.sharityUser.BO.Drawer;
+import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
-import com.sharity.sharityUser.fragment.client.client_Historique_fragment;
 import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
+import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 
 import java.util.ArrayList;
 
-import static com.google.android.gms.common.api.Status.sm;
 import static com.sharity.sharityUser.R.id.tab_option;
 
 
@@ -51,6 +46,7 @@ import static com.sharity.sharityUser.R.id.tab_option;
  */
 public class ProfilActivity extends AppCompatActivity implements OnTabSelectListener {
 
+    public static DatabaseHandler db;
     private BroadcastReceiver statusReceiver;
     private IntentFilter mIntent;
     static int TOTAL_PAGES=3;
@@ -68,6 +64,16 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ArrayList<Drawer> drawersItems= new ArrayList<Drawer>();
     private AdapterNews adapter;
+    public OnNotificationUpdateProfil onNotificationUpdateProfil;
+    public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
+
+    public interface OnNotificationUpdateHistoric {
+        void TaskOnNotification(String business, String sharepoints);
+    }
+    public interface OnNotificationUpdateProfil {
+        void TaskOnNotification(String business, String sharepoints);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +82,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         if (savedInstanceState == null) {
             manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             clientProfilActivity=this;
+            db = new DatabaseHandler(this);
             parseUser = ParseUser.getCurrentUser();
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
@@ -103,28 +110,25 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             //   pager.setPageTransformer(true, new CrossfadePageTransformer());
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbar.setNavigationIcon(R.drawable.ic_drawer);
 
             actionBarDrawerToggle = new ActionBarDrawerToggle(ProfilActivity.this, drawer_layout,
                     toolbar, R.string.open, R.string.close) {
 
                 /** Called when a drawer has settled in a completely closed state. */
                 public void onDrawerClosed(View view) {
-                    super.onDrawerClosed(view);
-
-                    // Do whatever you want here
+                    supportInvalidateOptionsMenu();
                 }
 
                 /** Called when a drawer has settled in a completely open state. */
                 public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                    // Do whatever you want here
+                    supportInvalidateOptionsMenu();
                 }
             };
-// Set the drawer toggle as the DrawerListener
             drawer_layout.addDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.green));
+            actionBarDrawerToggle.syncState();
 
             myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -164,7 +168,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return client_Historique_fragment.newInstance();
+                return History_container_fragment.newInstance();
             } else if (position == 1) {
                 return client_Profil_fragment.newInstance();
             } else if (position == 2) {
@@ -185,17 +189,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         // To update fragment in ViewPager, we should override getItemPosition() method,
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
-            if (object instanceof client_Historique_fragment) {
-                ((client_Historique_fragment) object).update();
-            }
-            if (object instanceof client_Profil_fragment) {
-                ((client_Profil_fragment) object).update();
-            }
-
-            if (object instanceof client_PartenaireMap_fragment) {
-                ((client_PartenaireMap_fragment) object).update();
-            }
-
             return super.getItemPosition(object);
         };
     };
@@ -280,20 +273,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-    }
-
-
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (pager != null) {
@@ -318,11 +297,11 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         switch (tabId){
             case tab_option:
                 pager.setCurrentItem(0,true);
-                updateProfil();
+               // updateProfil();
                 break;
             case R.id.tab_profil:
                 pager.setCurrentItem(1,true);
-                updateProfil();
+                //updateProfil();
                 break;
             case R.id.tab_partenaire:
                 pager.setCurrentItem(2,true);
@@ -369,7 +348,68 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         });
     }
 
+    public void onNotificationReceived_Display(){
+        if (bottomBar.getId()!=R.id.tab_profil){
+            mPageChangeListener.onPageSelected(1);
+        }
+    }
 
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    //Notification handler
+    public void setProfilListener(ProfilActivity.OnNotificationUpdateProfil activityListener) {
+        this.onNotificationUpdateProfil = activityListener;
+    }
+    public void setHistoricListener(ProfilActivity.OnNotificationUpdateHistoric activityListener) {
+        this.onNotificationUpdateHistoric = activityListener;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //registerReceiver(statusReceiver,mIntent);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
+    }
+
+    @Override
+    public void onPause() {
+        if (mIntent != null) {
+            this.unregisterReceiver(mMessageReceiver);
+            mIntent = null;
+        }
+        super.onPause();
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("message");
+            String sharepoints = intent.getStringExtra("sharepoints");
+            String business = intent.getStringExtra("business");
+            int item = pager.getCurrentItem();
+            onNotificationUpdateHistoric.TaskOnNotification(business,sharepoints);
+            onNotificationUpdateProfil.TaskOnNotification(business,sharepoints);
+
+            // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
+            // Popup_onNotification onNotification=new Popup_onNotification();
+            // onNotification.displayPopupWindow(do_donationTV,getActivity(),business,sharepoints);
+        }
+    };
 
 }
 

@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="3"
     tools:context="testappparse.guilla.com.testappparse.testappparse.guilla.com.sharity.MainActivity">
 
     <fragment
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_height="0dp"
         android:name="com.sharity.sharityUser.fragment.testpager.PagerFragment"
         android:layout_above="@+id/linear_slide"
+        android:layout_weight="2.7"
         tools:layout="@layout/fragment_history_pro" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/linear_slide"
+            android:layout_weight="0.3"
             android:weightSum="1"
+            android:layout_alignParentBottom="true"
             android:layout_above="@+id/buttonmap">
 
             <LinearLayout
@@ -49,19 +52,4 @@
 
             </LinearLayout>
         </LinearLayout>
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonmap"
-            android:layout_margin="10dp"
-            android:text="map"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/border_color_button_pro"
-            android:layout_gravity="right"
-            />
-
-
-</RelativeLayout>
+</LinearLayout>

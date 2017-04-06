@@ -4,14 +4,20 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- client_login_fragment-->
-    <dimen name="title_sharity">21dp</dimen>
+    <dimen name="title_sharity">25dp</dimen>
     <dimen name="sharity_subtitle">16dp</dimen>
 
     <!--fragment_login_pro-->
     <dimen name="login_pro_title">21dp</dimen>
     <dimen name="login_pro_editext">15dp</dimen>
     <dimen name="login_pro_changepassword">13dp</dimen>
-    <dimen name="login_pro_buttondone">20dp</dimen>
+    <dimen name="login_pro_buttondone">19dp</dimen>
+    <dimen name="login_pro_inscription">15dp</dimen>
+
+    <!--fragment_inscription_pro-->
+    <dimen name="login_pro_editext_inscription">15dp</dimen>
+    <dimen name="login_pro_buttondone_inscription">18dp</dimen>
+
 
     <!--fragment_code_pro-->
     <dimen name="fragment_code_pro_title">21dp</dimen>
@@ -21,7 +27,6 @@
 
     <!--Profil Fragment Title -->
     <dimen name="profil_fragment_title">17dp</dimen>
-
     <dimen name="fragment_editext">15dp</dimen>
 
 </resources>

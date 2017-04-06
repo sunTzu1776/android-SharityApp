@@ -4,12 +4,14 @@ package com.sharity.sharityUser.fragment.pro;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +28,9 @@ import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fonts.EditTextGeoManis;
 import com.sharity.sharityUser.fonts.TextViewGeoManis;
+import com.sharity.sharityUser.fonts.TextViewNotoSansRegular;
+
+import static com.sharity.sharityUser.Utils.Utils.replaceFragmentWithAnimation;
 
 
 /**
@@ -35,14 +40,17 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
 
     private View inflate;
     private ProgressBar progress;
-    private EditTextGeoManis username;
-    private EditTextGeoManis password;
-    private TextViewGeoManis login_BT;
-    private TextView inscription;
+    private EditText username;
+    private EditText password;
+    private TextViewNotoSansRegular login_BT;
+    private TextViewNotoSansRegular inscription;
     private LoginPresenter presenter;
     private static String type;
     private TextView forgot_password;
     private ImageView logo;
+    private TextInputLayout username_TextInputLayout;
+    private TextInputLayout password_TextInputLayout;
+
     public static Pro_Login_fragment newInstance(String type) {
         Pro_Login_fragment myFragment = new Pro_Login_fragment();
         Bundle args = new Bundle();
@@ -59,11 +67,13 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
         type=getArguments().get("type").toString();
         logo=(ImageView)inflate.findViewById(R.id.logopro);
         progress = (ProgressBar) inflate.findViewById(R.id.progress);
-        inscription=(TextView)inflate.findViewById(R.id.inscription);
+        inscription=(TextViewNotoSansRegular)inflate.findViewById(R.id.inscription);
         forgot_password=(TextView)inflate.findViewById(R.id.forgotpassword);
-        login_BT = (TextViewGeoManis) inflate.findViewById(R.id.login_BT);
-        username = (EditTextGeoManis) inflate.findViewById(R.id.username_login);
-        password = (EditTextGeoManis) inflate.findViewById(R.id.password_login);
+        login_BT = (TextViewNotoSansRegular) inflate.findViewById(R.id.login_BT);
+        username = (EditText) inflate.findViewById(R.id.username_login);
+        password = (EditText) inflate.findViewById(R.id.password_login);
+        username_TextInputLayout = (TextInputLayout) inflate.findViewById(R.id.username_TextInputLayout);
+        password_TextInputLayout = (TextInputLayout) inflate.findViewById(R.id.password_TextInputLayout);
 
         inscription.setOnClickListener(this);
         login_BT.setOnClickListener(this);
@@ -84,10 +94,7 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
     public void onClick(View view) {
             switch(view.getId()) {
                 case R.id.inscription:
-                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.login, Pro_Inscription_fragment.newInstance(type), "Inscription_Pro_fragment");
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    replaceFragmentWithAnimation(Pro_Inscription_fragment.newInstance(type),getFragmentManager(),"Inscription_Pro_fragment");
                     break;
 
                 case R.id.login_BT:
@@ -137,11 +144,11 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
     }
 
     @Override public void setUsernameError() {
-        username.setError("usernameError");
+       // username_TextInputLayout.setError("Entrer votre utilisateur");
     }
 
     @Override public void setPasswordError() {
-        password.setError("passwordError");
+      //  password_TextInputLayout.setError("Entrer votre mot de passe");
     }
 
     @Override

@@ -21,6 +21,6 @@ public interface SignUpProInteractor {
         void onSuccess();
     }
 
-    void login(String type, View[] fields, Object[] addresse, String username, String password, String RC3number, String Businesname, String OwnerName, String Phone, String address, String RIB, String email, OnLoginFinishedListener listener);
+    void login(String type, View[] fields, Object[] addresse,OnLoginFinishedListener listener);
 
 }

@@ -80,6 +80,15 @@ public class client_PartenaireMap_fragment extends Fragment implements  GoogleAp
 
                 if (mGoogleApiClient==null){
                     buildGoogleApiClient();
+                    permissionRuntime = new PermissionRuntime(getActivity());
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        mapView.getMapAsync(this);
+                    }
+                    else {
+                        permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+                    }
                 }
             }catch (NullPointerException e){
 
@@ -93,15 +102,6 @@ public class client_PartenaireMap_fragment extends Fragment implements  GoogleAp
     public void update() {
        // client_Partenaire_fragment myFragment = (client_Partenaire_fragment)getFragmentManager().findFragmentByTag("client_Partenaire_fragment");
        // if (myFragment != null && myFragment.isVisible()) {
-            permissionRuntime = new PermissionRuntime(getActivity());
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mapView.getMapAsync(this);
-            }
-            else {
-                permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
-            }
         }
    // }
 
