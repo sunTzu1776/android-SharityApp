@@ -3,25 +3,15 @@ package com.sharity.sharityUser.fragment.pro;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -35,14 +25,9 @@ import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.CustomGrid;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.Updateable;
-import com.sharity.sharityUser.fragment.testpager.PagerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-
-import okhttp3.internal.Util;
-import static com.sharity.sharityUser.R.id.paiment_classique;
 
 
 /**
@@ -155,7 +140,7 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
 
 
             final ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
-            query.whereNotEqualTo("userIsBusiness", true);
+            query.whereEqualTo("userIsClient", true);
             query.whereWithinKilometers("geoloc", geoPoint, 0.70);
 
             query.findInBackground(new FindCallback<ParseObject>() {
@@ -188,7 +173,6 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
                             }
                         }
                         adapter.notifyDataSetChanged();
-
                     }
                 }
             });

@@ -18,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -91,6 +93,8 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
         RIB_value=(TextView) inflate.findViewById(R.id.RIB_value);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
+
+
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

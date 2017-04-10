@@ -25,10 +25,13 @@ import com.sharity.sharityUser.LoginPro.LoginProPresenterImpl;
 import com.sharity.sharityUser.LoginPro.LoginProView;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fonts.EditTextGeoManis;
 import com.sharity.sharityUser.fonts.TextViewGeoManis;
 import com.sharity.sharityUser.fonts.TextViewNotoSansRegular;
+import com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment;
+import com.sharity.sharityUser.fragment.sharity.Charity_Inscription_container_fragment;
 
 import static com.sharity.sharityUser.Utils.Utils.replaceFragmentWithAnimation;
 
@@ -81,7 +84,7 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
         presenter = new LoginProPresenterImpl(this);
 
         if (type.equals("charite")){
-           // logo.setImageResource(R.drawable..);
+            logo.setImageResource(R.drawable.logocharite);
         }else if (type.equals("pro")){
             logo.setImageResource(R.drawable.logopro);
 
@@ -94,7 +97,11 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
     public void onClick(View view) {
             switch(view.getId()) {
                 case R.id.inscription:
-                    replaceFragmentWithAnimation(Pro_Inscription_fragment.newInstance(type),getFragmentManager(),"Inscription_Pro_fragment");
+                    if (type.equals("pro")){
+                        replaceFragmentWithAnimation(R.id.login,Pro_Inscription_fragment.newInstance(type),getFragmentManager(),"Inscription_Pro_fragment");
+                    }else {
+                        replaceFragmentWithAnimation(R.id.login,Charity_Inscription_container_fragment.newInstance(),getFragmentManager(),"Charity_Inscription_container_fragment");
+                    }
                     break;
 
                 case R.id.login_BT:

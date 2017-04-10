@@ -1,46 +1,52 @@
 package com.sharity.sharityUser.SignupPro;
 
 import android.view.View;
-import android.widget.EditText;
 
-import static com.sharity.sharityUser.R.id.username;
+import static android.R.attr.type;
 
-public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInteractor.OnLoginFinishedListener {
+/**
+ * Created by Moi on 07/04/2017.
+ */
+
+public class SignUpCharityPresenterImpl implements SignUpProPresenter, SignUpProInteractor.OnLoginFinishedListener {
+
 
     private SignUpProView loginView;
     private SignUpProInteractor loginInteractor;
 
-    public SignUpProPresenterImpl(SignUpProView loginView) {
+    public SignUpCharityPresenterImpl(SignUpProView loginView) {
         this.loginView = loginView;
-        this.loginInteractor = new SignUpProInteractorImpl();
+        this.loginInteractor = new SignUpCharityInteractorImpl();
     }
 
     @Override
     public void validateCredentials(String type, View[] fields, Object[] addresse) {
-        if (loginView != null) {
-            loginView.showProgress();
-        }
 
-        loginInteractor.login(type,fields,addresse, this);
     }
 
     @Override
     public void validateCredentialsSharity(String type, Object[] fields, Object[] addresse) {
-
+        if (loginView != null) {
+            loginView.showProgress();
+        }
+        loginInteractor.loginSharity(type, fields, addresse, this);
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         loginView = null;
     }
 
-    @Override public void onUsernameError() {
+    @Override
+    public void onUsernameError() {
         if (loginView != null) {
             loginView.setUsernameError();
             loginView.hideProgress();
         }
     }
 
-    @Override public void onPasswordError() {
+    @Override
+    public void onPasswordError() {
         if (loginView != null) {
             loginView.setPasswordError();
             loginView.hideProgress();
@@ -96,7 +102,8 @@ public class SignUpProPresenterImpl implements SignUpProPresenter, SignUpProInte
         }
     }
 
-    @Override public void onSuccess() {
+    @Override
+    public void onSuccess() {
         if (loginView != null) {
             loginView.navigateToHome();
         }

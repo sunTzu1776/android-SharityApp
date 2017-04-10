@@ -22,5 +22,6 @@ public interface SignUpProInteractor {
     }
 
     void login(String type, View[] fields, Object[] addresse,OnLoginFinishedListener listener);
+    void loginSharity(String type, Object[] fields, Object[] addresse,OnLoginFinishedListener listener);
 
 }

@@ -1,24 +1,29 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="5dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/grid_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         tools:src="@drawable/logo"
         android:layout_gravity="center_vertical">
     </de.hdodenhof.circleimageview.CircleImageView>
 
     <TextView
         android:id="@+id/grid_text"
-        android:layout_width="match_parent"
+        android:layout_alignLeft="@+id/grid_image"
+        android:layout_alignRight="@+id/grid_image"
+        android:layout_below="@+id/grid_image"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:textSize="9sp" >
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:gravity="center"
+        tools:text="toto">
     </TextView>
 
-</LinearLayout>
+</RelativeLayout>

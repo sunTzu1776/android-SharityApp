@@ -124,6 +124,8 @@ public class FacebookConnectivity {
         }
         parseUser.put("emailVerified",true);
         parseUser.put("userIsBusiness",false);
+        parseUser.put("userIsSharity",false);
+        parseUser.put("userIsClient",true);
 
         byte[] data = profil;
         String thumbName = parseUser.getUsername().replaceAll("\\s+", "");

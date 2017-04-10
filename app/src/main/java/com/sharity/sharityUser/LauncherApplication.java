@@ -63,6 +63,12 @@ public class LauncherApplication extends Activity {
                         db.close();
                         finish();
                     }
+                    else if (Status(getApplicationContext()).equals("Sharity")) {
+                        Intent intent = new Intent(getBaseContext(), ProfilProActivity.class);
+                        startActivity(intent);
+                        db.close();
+                        finish();
+                    }
                 } else {
                     Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                     startActivity(intent);

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -23,6 +24,7 @@ import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
@@ -64,6 +66,11 @@ public class Pro_Profil_Container_fragment extends Fragment implements Updateabl
         inflate = inflater.inflate(R.layout.fragment_profile_container_pro, container, false);
         ((ProfilProActivity) getActivity()).setActivityListener(Pro_Profil_Container_fragment.this);
 
+ /* LinearLayout beatmaker_layout=(LinearLayout)inflate.findViewById(R.id.activity_main);
+        final LayoutInflater inflat= (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View editor= inflat.inflate(R.layout.layout_editingsequence,beatmaker_layout,false);
+        beatmaker_layout.addView(editor);
+        Utils.expand(editor);*/
 
         if (getArguments().getString("source").toString()!=null){
             if (getArguments().getString("source").equals("Profil")){
@@ -74,7 +81,6 @@ public class Pro_Profil_Container_fragment extends Fragment implements Updateabl
                     FragmentManager fm = getChildFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
                     ft.add(R.id.Fragment_profil_container, fragTwo);
-                    ft.addToBackStack(null);
                     ft.commit();
                 }
             }

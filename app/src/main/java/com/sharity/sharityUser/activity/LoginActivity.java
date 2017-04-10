@@ -1,6 +1,7 @@
 package com.sharity.sharityUser.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import com.parse.ParseFacebookUtils;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.Login_fragment;
+import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
+import com.sharity.sharityUser.fragment.sharity.Charity_Inscription_container_fragment;
 
 
 /**
@@ -128,6 +131,29 @@ public void onCreate( Bundle savedInstanceState) {
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 103: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
+                    Charity_Inscription_container_fragment Inscription_container_fragment = (Charity_Inscription_container_fragment) getSupportFragmentManager().findFragmentByTag("Charity_Inscription_container_fragment");
+                    if (Inscription_container_fragment != null && Inscription_container_fragment.isVisible()) {
+                        Inscription_container_fragment.CallGetPicture();
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 }
 
 

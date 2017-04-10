@@ -9,10 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,18 +32,30 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
+import com.sharity.sharityUser.Utils.StoreAdapter2;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.sharity.sharityUser.R.id.charity_description;
+import static com.sharity.sharityUser.R.id.charity_dons_validate;
+import static com.sharity.sharityUser.R.id.dons_view;
+import static com.sharity.sharityUser.R.id.recycler_charity;
+import static com.sharity.sharityUser.R.id.sharepoints_moins;
+import static com.sharity.sharityUser.R.id.sharepoints_plus;
 
 
 /**
@@ -47,7 +63,7 @@ import java.util.List;
  */
 public class client_PartenaireMap_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-         OnMapReadyCallback,Updateable {
+         OnMapReadyCallback,Updateable,StoreAdapter2.OnItemDonateClickListener {
 
     private double latitude=0.0;
     private double longitude=0.0;
@@ -60,9 +76,15 @@ public class client_PartenaireMap_fragment extends Fragment implements  GoogleAp
     private GoogleMap mMap;
     private PermissionRuntime permissionRuntime;
     private List<LocationBusiness> locationBusiness=new ArrayList<>();
+    private RecyclerView recyclerview;
+    private FrameLayout recyclerFrame;
+    StoreAdapter2 adapter2;
+    private StoreAdapter2.OnItemDonateClickListener onItemDonateClickListener;
+    private ArrayList<CharityDons> list_dons = new ArrayList<CharityDons>();
+    private byte[] imageByte = null;
 
 
-        public static client_PartenaireMap_fragment newInstance() {
+    public static client_PartenaireMap_fragment newInstance() {
         client_PartenaireMap_fragment myFragment = new client_PartenaireMap_fragment();
         Bundle args = new Bundle();
         myFragment.setArguments(args);
@@ -75,6 +97,11 @@ public class client_PartenaireMap_fragment extends Fragment implements  GoogleAp
         inflate = inflater.inflate(R.layout.fragment_partenaire, container, false);
             try {
                 mapView = (MapView) inflate.findViewById(R.id.map);
+                recyclerview = (RecyclerView) inflate.findViewById(R.id.recyclerview);
+                recyclerFrame = (FrameLayout) inflate.findViewById(R.id.recyclerFrame);
+                onItemDonateClickListener = this;
+                ShowDonateView();
+
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
 
@@ -288,5 +315,60 @@ public class client_PartenaireMap_fragment extends Fragment implements  GoogleAp
             });
         }catch (NullPointerException e){
         }
+    }
+
+
+    //Recycler
+    ///////
+
+
+    public void ShowDonateView() {
+        recyclerFrame.setVisibility(View.VISIBLE);
+        if (Utils.isConnected(getApplicationContext())) {
+            LinearLayoutManager layoutManager
+                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerview.setLayoutManager(layoutManager);
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(),
+                    layoutManager.getOrientation());
+            recyclerview.addItemDecoration(dividerItemDecoration);
+            adapter2 = new StoreAdapter2(getActivity(), list_dons, onItemDonateClickListener);
+            recyclerview.setAdapter(adapter2);
+            get_Charity();
+        } else {
+        }
+    }
+
+    private void get_Charity() {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Charity");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> commentList, ParseException e) {
+                    if (commentList != null) {
+                        for (final ParseObject object : commentList) {
+                            ParseFile image = (ParseFile) object.getParseFile("Logo");
+                            final String name = object.getString("name");
+                            final String description = object.getString("description");
+                            final String id = object.getObjectId();
+                            Log.d("obj", id);
+                            try {
+                                imageByte = image.getData();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            list_dons.add(new CharityDons(id, name, description, imageByte));
+                        }
+
+                        adapter2.notifyDataSetChanged();
+                    }
+                }
+            });
+        } catch (NullPointerException f) {
+
+        }
+    }
+
+    @Override
+    public void onItemClick(int item, CharityDons bo) {
+
     }
 }

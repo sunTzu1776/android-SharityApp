@@ -85,12 +85,12 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
         switch (view.getId()) {
             case R.id.pro_login_acces:
                 ParseUser.logOut();
-                replaceFragmentWithAnimation(Pro_Login_fragment.newInstance("pro"),getFragmentManager(),"Login_Pro_fragment");
+                replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("pro"),getFragmentManager(),"Login_Pro_fragment");
                 break;
 
             case R.id.charite_login_acces:
                 ParseUser.logOut();
-                replaceFragmentWithAnimation(Pro_Login_fragment.newInstance("charite"),getFragmentManager(),"Login_Pro_fragment");
+                replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("charite"),getFragmentManager(),"Login_Pro_fragment");
                 break;
 
             case R.id.twitter_login:

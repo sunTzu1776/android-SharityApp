@@ -4,8 +4,6 @@ package com.sharity.sharityUser.fragment.pro;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +15,7 @@ import com.sharity.sharityUser.activity.MapActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
-import com.sharity.sharityUser.fragment.client.client_Historique_fragment;
-import com.sharity.sharityUser.fragment.testpager.PagerFragment;
-
-import java.util.List;
-
-import static android.R.attr.data;
-import static android.R.attr.fragment;
+import com.sharity.sharityUser.fragment.pagerHistoric.PagerFragment;
 
 
 /**
@@ -70,6 +62,9 @@ public class History_container_fragment extends Fragment implements Updateable, 
     }
 
 
+    /*
+ * CallBack when historic pager is selected
+ * */
     @Override
     public void OnSelect(int i) {
         if (i == 0) {
@@ -90,6 +85,9 @@ public class History_container_fragment extends Fragment implements Updateable, 
         }
     }
 
+    /*
+    * Refresh historic when notification received foreground.
+    * */
     @Override
     public void TaskOnNotification(String business, String sharepoints) {
         PagerFragment fragment2 = (PagerFragment) getChildFragmentManager().findFragmentById(R.id.content);

@@ -75,6 +75,7 @@ import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
  */
 public class client_Profil_fragment extends Fragment implements Updateable,ProfilActivity.OnNotificationUpdateProfil, SwipeRefreshLayout.OnRefreshListener, StoreAdapter2.OnItemDonateClickListener {
 
+
     private int recycler_position = -1;
     private StoreAdapter2.OnItemDonateClickListener onItemDonateClickListener;
     private ArrayList<CharityDons> list_dons = new ArrayList<CharityDons>();

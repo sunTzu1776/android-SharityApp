@@ -1,4 +1,4 @@
-package com.sharity.sharityUser.fragment.testpager;
+package com.sharity.sharityUser.fragment.pagerHistoric;
 
 import android.content.Context;
 import android.os.Bundle;

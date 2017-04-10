@@ -100,14 +100,11 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                     @Override
                     public void done(final ParseUser user, ParseException err) {
                         if (user == null) {
-                            Log.d("MyApp", "The user cancelled the Facebook login.: "+err.getMessage());
                             listener.onUsernameError();
                             ParseUser.logOut();
 
                         } else if (user.isNew()) {
                             isnewUser=true;
-                            Log.d("MyApp", "User signed up and logged in through Facebook!");
-
                              ObjectId_ToPref(user.getObjectId());
                             FacebookConnectivity FBconnectivity=new FacebookConnectivity(context, AccessToken.getCurrentAccessToken(), user, isnewUser);
                             FBconnectivity.getProfil(new FacebookConnectivity.OnFBUserCreated() {

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:name="com.sharity.sharityUser.fragment.testpager.PagerFragment"
+        android:name="com.sharity.sharityUser.fragment.pagerHistoric.PagerFragment"
         android:layout_above="@+id/linear_slide"
         tools:layout="@layout/fragment_history_pro" />
 

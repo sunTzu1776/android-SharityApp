@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.Updateable;
+
+import static com.sharity.sharityUser.R.id.user;
 
 
 /**
@@ -40,7 +43,6 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
             FragmentTransaction ft = fm.beginTransaction();
             Pro_PaimentStepOne_fragment fragTwo = new Pro_PaimentStepOne_fragment();
             ft.add(R.id.Fragment_container, fragTwo);
-            ft.addToBackStack(null);
             ft.commit();
 
         return inflate;
@@ -51,24 +53,20 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
     }
 
 
-
+    /*
+ * GridView user is selected.
+ * */
     @Override
     public void OnSelectGrid(UserLocation user, int i) {
         FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Pro_Paiment_StepTwo_fragment fragTwo = Pro_Paiment_StepTwo_fragment.newInstance(user);
-        ft.add(R.id.Fragment_container, fragTwo);
-        ft.addToBackStack(null);
-        ft.commit();
+        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_StepTwo_fragment.newInstance(user),fm,"Pro_Paiment_StepTwo_fragment");
     }
-
+    /*
+* Classique Paiment selected
+* */
     @Override
     public void Classique() {
         FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Pro_Paiment_StepTwo_Classique_fragment fragTwo = new Pro_Paiment_StepTwo_Classique_fragment();
-        ft.add(R.id.Fragment_container, fragTwo);
-        ft.addToBackStack(null);
-        ft.commit();
+        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),fm,"Pro_Paiment_StepTwo_fragment");
     }
 }

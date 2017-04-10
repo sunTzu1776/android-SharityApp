@@ -17,15 +17,10 @@ public class PermissionRuntime {
     public static String MY_PERMISSIONS_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     public static String MY_PERMISSIONS_SEND_SMS = Manifest.permission.SEND_SMS;
 
-
-
     public static int Code_READ_CONTACT = 100;
     public static int Code_ACCESS_FINE_LOCATION = 102;
     public static int Code_WRITE_EXTERNAL_STORAGE = 103;
     public static int Code_SEND_SMS = 104;
-
-
-
 
 
     Activity context;
