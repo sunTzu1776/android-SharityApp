@@ -14,12 +14,12 @@ public class LoginProPresenterImpl implements LoginPresenter, LoginInteractor.On
         this.loginInteractor = new LoginProInteractorImpl();
     }
 
-    @Override public void validateCredentials(Context context,String username, String password) {
+    @Override public void validateCredentials(Context context,String type,String username, String password) {
         if (loginView != null) {
             loginView.showProgress();
         }
 
-        loginInteractor.login(context,username, password, this);
+        loginInteractor.login(context,type,username, password, this);
     }
 
     @Override public void onDestroy() {

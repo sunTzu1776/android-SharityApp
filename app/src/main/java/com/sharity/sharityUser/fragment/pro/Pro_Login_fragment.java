@@ -105,7 +105,11 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
                     break;
 
                 case R.id.login_BT:
-                    presenter.validateCredentials(getActivity(),username.getText().toString(), password.getText().toString());
+                    if (type.equals("charite")) {
+                        presenter.validateCredentials(getActivity(),"charite",username.getText().toString(), password.getText().toString());
+                    }else {
+                        presenter.validateCredentials(getActivity(),"pro",username.getText().toString(), password.getText().toString());
+                    }
                     break;
 
                 case R.id.forgotpassword:

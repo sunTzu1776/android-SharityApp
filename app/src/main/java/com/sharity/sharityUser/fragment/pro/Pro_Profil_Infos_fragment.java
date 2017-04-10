@@ -28,6 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -129,7 +130,7 @@ public class Pro_Profil_Infos_fragment extends Fragment{
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ((ProfilProActivity)getActivity()).onBackPressed();
             }
         });
         return inflate;

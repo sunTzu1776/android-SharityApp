@@ -14,6 +14,6 @@ public interface LoginInteractor {
         void onSuccess();
     }
 
-    void login(Context context,String username, String password, OnLoginFinishedListener listener);
+    void login(Context context,String type,String username, String password, OnLoginFinishedListener listener);
 
 }

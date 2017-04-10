@@ -35,7 +35,7 @@ public class LoginProInteractorImpl implements LoginInteractor {
     Context context;
     private  OnLoginFinishedListener listener;
     @Override
-    public void login(final Context context, final String username, final String password, final OnLoginFinishedListener listener) {
+    public void login(final Context context, final String type, final String username, final String password, final OnLoginFinishedListener listener) {
         this.context=context;
         this.listener=listener;
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
@@ -48,10 +48,19 @@ public class LoginProInteractorImpl implements LoginInteractor {
                 ParseUser.logInInBackground(username, password, new LogInCallback() {
                     public void done(final ParseUser user, ParseException e) {
                         if (user != null) {
+                            String businessid = null;
+                            ParseQuery<ParseObject> query = null;
+                            Log.d("DB",type);
+                            if (type.equals("charite")){
+                                businessid =user.get("SharityId").toString();
+                                query = ParseQuery.getQuery("Charity");
+                            }else { //business
+                               businessid =user.get("BusinessId").toString();
+                                 query = ParseQuery.getQuery("Business");
+                            }
+
                             Log.d("DB",String.valueOf(db.getBusinessCount()));
-                                final String businessid=user.get("BusinessId").toString();
-                                final ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
-                                query.getInBackground(businessid, new GetCallback<ParseObject>() {
+                            query.getInBackground(businessid, new GetCallback<ParseObject>() {
                                     public void done(ParseObject object, ParseException e) {
                                         if (e == null) {
                                             ParseGeoPoint geoPoint = object.getParseGeoPoint("location");
