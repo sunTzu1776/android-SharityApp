@@ -85,6 +85,7 @@ public class FacebookConnectivity {
                             new ProfilePhotoAsync(pictureUrl).execute();
                             Log.d("pictureUrl", pictureUrl);
                         } catch (JSONException e) {
+                            Log.d("FacebookConnectivity", "Facebook error fetch data json");
                             e.printStackTrace();
                         }
                     }
@@ -140,6 +141,7 @@ public class FacebookConnectivity {
                 parseUser.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
+                        Log.d("FacebookConnectivity", "Saved to parse");
                     }
                 });
             }
