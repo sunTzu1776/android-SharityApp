@@ -140,7 +140,6 @@ public class FacebookConnectivity {
                 parseUser.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-
                     }
                 });
             }
@@ -154,7 +153,6 @@ public class FacebookConnectivity {
         String[] array={"TransactionTestAndroid"};
         installation.put("channels", Arrays.asList(array));
         installation.saveInBackground();
-
 
 
         //Add user to localDB

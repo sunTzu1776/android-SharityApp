@@ -111,6 +111,7 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                             FBconnectivity.getProfil(new FacebookConnectivity.OnFBUserCreated() {
                                 @Override
                                 public void OnFBUserCreated() {
+                                    Log.d("FacebookConnectivity", "Saved to parse");
                                     AccessToken token = AccessToken.getCurrentAccessToken();
                                     if (!ParseFacebookUtils.isLinked(user)) {
                                         ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
@@ -135,6 +136,7 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                             FBconnectivity.getProfil(new FacebookConnectivity.OnFBUserCreated() {
                                 @Override
                                 public void OnFBUserCreated() {
+                                    Log.d("FacebookConnectivity", "Saved to parse");
                                     AccessToken token = AccessToken.getCurrentAccessToken();
                                     if (!ParseFacebookUtils.isLinked(user)) {
                                         ParseFacebookUtils.linkInBackground(user, token, new SaveCallback() {
