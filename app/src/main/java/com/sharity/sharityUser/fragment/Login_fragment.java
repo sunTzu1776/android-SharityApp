@@ -98,7 +98,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
                 boolTwitter = true;
                 twitter.setImageResource(R.drawable.twitter_click);
                 facebook.setImageResource(R.drawable.facebook_unclick);
-                Connexion();
+               // Connexion();
                 break;
             case R.id.facebook_login:
                 boolFacebook = true;

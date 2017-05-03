@@ -110,6 +110,7 @@ public class SendNotification {
                                 if (parentActivity!=null){
                                     parentActivity.runOnUiThread(new Runnable() {
                                         public void run() {
+                                            toastInterface.onNotificationSuccess(user,price);
                                             Toast.makeText(getContext(), "Une erreur s'est produite lors de la notification", Toast.LENGTH_LONG).show();
                                             //  toastInterface.onNotificationSuccess();
                                         }

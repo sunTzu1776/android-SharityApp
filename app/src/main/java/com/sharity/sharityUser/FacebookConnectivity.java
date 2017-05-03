@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -124,7 +125,7 @@ public class FacebookConnectivity {
         }
         parseUser.put("emailVerified",true);
         parseUser.put("userIsBusiness",false);
-        parseUser.put("userIsSharity",false);
+        parseUser.put("userIsCharity",false);
         parseUser.put("userIsClient",true);
 
         byte[] data = profil;
@@ -139,6 +140,7 @@ public class FacebookConnectivity {
                 parseUser.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
+
                     }
                 });
             }

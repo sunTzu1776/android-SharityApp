@@ -3,12 +3,14 @@ package com.sharity.sharityUser.Utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Point;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sharity.sharityUser.R;
@@ -79,16 +82,18 @@ public class Utils {
         transaction.commit();
     }
 
-    public static void replaceFragmentWithAnimationVertical(int containerId,android.support.v4.app.Fragment fragment, FragmentManager fm, String tag){
+    public static void replaceFragmentWithAnimationVertical(int containerId,android.support.v4.app.Fragment fragment, FragmentManager fm, String tag,boolean addToBackStack){
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-        transaction.replace(containerId, fragment);
-        transaction.addToBackStack(null);
+        transaction.replace(containerId, fragment,tag);
+        if (addToBackStack){
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
     public static void expand(final View v) {
-        v.measure(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         final int targetHeight = v.getMeasuredHeight();
 
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
@@ -99,7 +104,7 @@ public class Utils {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 v.getLayoutParams().height = interpolatedTime == 1
-                        ? WindowManager.LayoutParams.WRAP_CONTENT
+                        ? RelativeLayout.LayoutParams.WRAP_CONTENT
                         : (int)(targetHeight * interpolatedTime);
                 v.requestLayout();
             }
@@ -111,7 +116,8 @@ public class Utils {
         };
 
         // 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        int duration = (int) ((targetHeight / v.getContext().getResources().getDisplayMetrics().density)/30);
+        a.setDuration((int)(duration));
         v.startAnimation(a);
     }
 
@@ -269,6 +275,17 @@ public class Utils {
         }
     }*/
 
+    public static int getScreenWidth(Context context) {
+        int screenWidth=0;
+        if (screenWidth == 0) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+        }
+        return screenWidth;
+    }
 
 
     public static String SplitTime(String time) {
@@ -277,6 +294,17 @@ public class Utils {
         String part1 = parts[0];
         String part2 = parts[1];
         return part2;
+    }
+
+    public static float distance(double latitudecatastrophe, double longitudecatastrophe, double latitude, double longitude) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(latitudecatastrophe);
+        locationA.setLongitude(longitudecatastrophe);
+        Location locationB = new Location("point B");
+        locationB.setLatitude(latitude);
+        locationB.setLongitude(longitude);
+        float distance = locationA.distanceTo(locationB);
+        return distance;
     }
 }
 

@@ -27,6 +27,7 @@ import com.facebook.Profile;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -36,6 +37,7 @@ import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Popup_onNotification;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
@@ -46,8 +48,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static com.sharity.sharityUser.R.id.RIB_value;
+import static com.sharity.sharityUser.R.id.latitude;
+import static com.sharity.sharityUser.R.id.longitude;
 import static com.sharity.sharityUser.R.id.sharepoint_value;
+import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 import static com.sharity.sharityUser.activity.ProfilProActivity.profilProActivity;
 
@@ -94,8 +100,6 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
 
-
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,6 +109,7 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
 
         if (isAdded()) {
             getProfilFromParse();
+           // CreatePromo();
         }
 
         return inflate;
@@ -206,5 +211,31 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
             swipeContainer.setRefreshing(true);
             getProfilFromParse();
         }
+    }
+
+    private void CreatePromo() {
+        ParseObject object = null;
+            object = new ParseObject("Promo");
+        object.put("businessPointer", ParseObject.createWithoutData("Business", db.getBusinessId()));
+        object.put("reduction", "20%");
+        object.put("prix", "20 euros");
+        object.put("description", "Menu Kebab");
+        object.put("categorie", "alimentation");
+        ParseGeoPoint point = new ParseGeoPoint(Double.valueOf(db.getBusinessLatitude()), Double.valueOf(db.getBusinessLongitude()));
+        object.put("promo_location", point);
+        object.put("businessName", db.getBusinessName());
+
+        final ParseObject finalObject = object;
+        finalObject.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("promo","success");
+                }
+                else {
+                    Log.d("promo",e.getMessage());
+                }
+            }
+        });
     }
 }

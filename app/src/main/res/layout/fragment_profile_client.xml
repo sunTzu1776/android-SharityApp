@@ -6,8 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frame_expand"
+        >
+
+<LinearLayout
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -141,18 +146,33 @@
 
             </LinearLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:text="faire un don"
-                android:textColor="@color/green"
-                android:id="@+id/do_donationTV"
-                android:textSize="17dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dummyanchor"
+                    android:layout_toLeftOf="@+id/do_donationTV"
+                    android:layout_marginLeft="20dp"
+                    android:layout_alignParentLeft="true"
+                    tools:text="fff"
+                    android:visibility="invisible">
+                </TextView>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:text="faire un don"
+                    android:textColor="@color/green"
+                    android:id="@+id/do_donationTV"
+                    android:textSize="17dp" />
+
+            </RelativeLayout>
         </LinearLayout>
-
 
         >
         </LinearLayout>
@@ -172,7 +192,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:id="@+id/recycler_charity"></android.support.v7.widget.RecyclerView>
@@ -182,25 +202,15 @@
             android:layout_height="0dp"
             android:gravity="center_vertical|center_horizontal|top"
             android:layout_weight="0.8"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/charity_description"
             android:text=""/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.7"
-            android:id="@+id/charity_dons_validate"
-            android:clickable="true"
-            android:textColor="@color/green"
-            android:textSize="@dimen/login_pro_buttondone"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="Valider"/>
 
     </LinearLayout>
 
 </LinearLayout>
+    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

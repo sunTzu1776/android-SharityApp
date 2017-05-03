@@ -59,7 +59,7 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
     @Override
     public void OnSelectGrid(UserLocation user, int i) {
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_StepTwo_fragment.newInstance(user),fm,"Pro_Paiment_StepTwo_fragment");
+        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_StepTwo_fragment.newInstance(user),fm,"Pro_Paiment_StepTwo_fragment",true);
     }
     /*
 * Classique Paiment selected
@@ -67,6 +67,6 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
     @Override
     public void Classique() {
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),fm,"Pro_Paiment_StepTwo_fragment");
+        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),fm,"Pro_Paiment_StepTwo_fragment",true);
     }
 }

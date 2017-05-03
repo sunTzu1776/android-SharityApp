@@ -1,17 +1,25 @@
 package com.sharity.sharityUser.fragment.client;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -34,22 +42,32 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static com.sharity.sharityUser.BO.CISSTransaction.transactionType;
+import static com.sharity.sharityUser.R.id.active_network;
+import static com.sharity.sharityUser.R.id.animation_nonetwork;
 import static com.sharity.sharityUser.R.id.forgot_pass;
+import static com.sharity.sharityUser.R.id.frame_nonetwork;
 import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mGoogleApiClient;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_Historique_fragment extends Fragment implements Updateable, SwipeRefreshLayout.OnRefreshListener {
+public class client_Historique_fragment extends Fragment implements Updateable, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     private View inflate;
     ArrayList<History> payment_value=new ArrayList<>();
     TextView payment;
     private SwipeRefreshLayout swipeContainer;
+    private Button active_network;
+    private RelativeLayout frame_nonetwork;
+    private LottieAnimationView animation_nonetwork;
     TextView dons;
     ListView listView;
     private String indice;
     private AdapterHistory customAdapter;
+    private RelativeLayout recyclerscreen;
 
 
     public static client_Historique_fragment newInstance(String indice) {
@@ -66,12 +84,14 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
         inflate = inflater.inflate(R.layout.locationuserlist, container, false);
 
         listView=(ListView)inflate.findViewById(R.id.ListView);
-        payment=(TextView)inflate.findViewById(R.id.payment);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
+        recyclerscreen= (RelativeLayout)inflate.findViewById(R.id.framebackground);
+        frame_nonetwork = (RelativeLayout) inflate.findViewById(R.id.frame_nonetwork);
+        active_network = (Button) inflate.findViewById(R.id.active_network);
+        animation_nonetwork = (LottieAnimationView) inflate.findViewById(R.id.animation_nonetwork);
 
         if (this.isAdded()) {
-            payment.setTextColor(getResources().getColor(R.color.green));
             indice= getArguments().getString("indice");
             Log.d("indice",indice);
             payment_value.clear();
@@ -79,6 +99,8 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
             listView .setAdapter(customAdapter);
             if (Utils.isConnected2(getActivity())){
                 get_client_Historic();
+            }else {
+                ShowNetworkView();
             }
         }
         return inflate;
@@ -120,9 +142,15 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
                         }
 
                         for (ParseObject object : commentList){
-                            String prix = String.valueOf(object.getInt("value"));
-                            String business = String.valueOf(object.getString("senderName"));
-                            String recipientName = String.valueOf(object.getString("recipientName"));
+                            String sharepoints;
+                            String prix;
+                            String recipientName;
+
+                            sharepoints  = String.valueOf(object.getInt("sharepoints"));
+                            prix  = String.valueOf(object.getInt("amount")/100);
+                            recipientName = String.valueOf(object.getString("recipient_name"));
+
+                            String business = String.valueOf(object.getString("sender_name"));
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());
@@ -142,13 +170,13 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
                             if (transactionType==1){
                                 if (indice.equals("payements")){
-                                    payment_value.add(new History(id, business, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
                                 }
                                 }
 
                             if (transactionType==2){
                                 if (indice.equals("dons")){
-                                    payment_value.add(new History(id, recipientName, newDate, prix,3));
+                                    payment_value.add(new History(id, recipientName, newDate, sharepoints,3));
                                 }
                             }
                         }
@@ -168,13 +196,56 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
     @Override
     public void onRefresh() {
-        if (Utils.isConnected(getContext())){
+        if (Utils.isConnected(getActivity())){
             Log.d("m1stFragment","onRefresh");
             swipeContainer.setRefreshing(true);
             payment_value.clear();
             customAdapter.notifyDataSetChanged();
             get_client_Historic();
+            HideNetworkView();
+        }else {
+            swipeContainer.setRefreshing(false);
+            Toast.makeText(getActivity(),"Veuillez activer votre wifi ou réseau",Toast.LENGTH_LONG).show();
+            ShowNetworkView();
+        }}
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.frame_nonetwork:
+                break;
+            case R.id.active_network:
+                if (Utils.isConnected2(getActivity())){
+                    get_client_Historic();
+                    HideNetworkView();
+                }
         }
     }
+
+    public void ShowNetworkView(){
+        frame_nonetwork.setVisibility(View.VISIBLE);
+        active_network.setVisibility(View.VISIBLE);
+        animation_nonetwork.setVisibility(View.VISIBLE);
+        recyclerscreen.setVisibility(View.INVISIBLE);
+        frame_nonetwork.setOnClickListener(this);
+        active_network.setOnClickListener(this);
+        animation_nonetwork.setAnimation("loading.json");
+        animation_nonetwork.loop(true);
+        animation_nonetwork.playAnimation();
+    }
+
+    public void HideNetworkView(){
+        frame_nonetwork.setVisibility(View.INVISIBLE);
+        active_network.setVisibility(View.INVISIBLE);
+        animation_nonetwork.setVisibility(View.INVISIBLE);
+        recyclerscreen.setVisibility(View.VISIBLE);
+        active_network.setOnClickListener(this);
+        frame_nonetwork.setOnClickListener(this);
+        animation_nonetwork.loop(false);
+        animation_nonetwork.cancelAnimation();
+    }
+
+
 
 }

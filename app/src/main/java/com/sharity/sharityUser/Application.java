@@ -7,19 +7,36 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
+import com.parse.ParseLiveQueryClient;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
+import com.parse.SubscriptionHandling;
 import com.parse.interceptors.ParseLogInterceptor;
+import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.ParsePushNotification.MyCustomReceiver;
+
+import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static com.sharity.sharityUser.BO.CISSTransaction.approved;
+import static com.sharity.sharityUser.BO.CISSTransaction.transaction;
 
 
 public class Application extends android.app.Application {
@@ -28,8 +45,8 @@ public class Application extends android.app.Application {
     private static Context context;
     private static Application mInstance;
     public static ParseUser parseUser;
-
-
+    public static ParseLiveQueryClient parseLiveQueryClient;
+    public static SubscriptionHandling<CISSTransaction> subscriptionHandling;
     public static Context getContext() {
         return context;
     }
@@ -50,18 +67,33 @@ public class Application extends android.app.Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+        ParseObject.registerSubclass(CISSTransaction.class);
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.ParseAppId)) // correspond to APP_ID
-                .clientKey("")
+                .clientKey("034ba10e9b381a67c9a3340acc1ad2a425987c4176tfvbji876tghj")
                 .addNetworkInterceptor(new ParseLogInterceptor())
-                .server("http://ec2-52-56-157-252.eu-west-2.compute.amazonaws.com:80/parse").build());
+                .server("https://sharity-back.com/parse").build());
 
         ParseFacebookUtils.initialize(this);
         ParseTwitterUtils.initialize(getString(R.string.TwitterconsumerKey), getString(R.string.TwitterconsumerSecret));
-        parseUser= ParseUser.getCurrentUser();
+        parseUser = ParseUser.getCurrentUser();
 
+        parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
+        subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE, new
+                SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
+                    @Override
+                    public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
+                        if (object.getString("transactionId").equals("27stNpojGi") && object.getBoolean("approved")==true){
+                            Log.d("AEOEO",object.getString("transactionId"));
+                        }
+                    }
+                });
     }
+
 
 
 

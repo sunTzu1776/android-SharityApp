@@ -1,27 +1,30 @@
 package com.sharity.sharityUser.fragment.client;
 
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -30,345 +33,521 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.google.maps.android.ui.IconGenerator;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
+import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
+import com.sharity.sharityUser.Utils.AdapterPartenaireMapClient;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
-import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
+import okhttp3.internal.Util;
+
+import static android.graphics.Typeface.BOLD;
+import static android.graphics.Typeface.ITALIC;
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.sharity.sharityUser.R.id.charity_description;
-import static com.sharity.sharityUser.R.id.charity_dons_validate;
-import static com.sharity.sharityUser.R.id.dons_view;
-import static com.sharity.sharityUser.R.id.recycler_charity;
-import static com.sharity.sharityUser.R.id.sharepoints_moins;
-import static com.sharity.sharityUser.R.id.sharepoints_plus;
+import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.R.id.userlist;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isShop;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.latitude;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop_filtered;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.longitude;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mGoogleApiClient;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mMap;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mViewcategorieColapse;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.on;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.recyclerFrame;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.search_layout;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.vinflater;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class client_PartenaireMap_fragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-         OnMapReadyCallback,Updateable,StoreAdapter2.OnItemDonateClickListener {
+public class client_PartenaireMap_fragment extends Fragment implements
+        OnMapReadyCallback, Updateable, AdapterPartenaireMapClient.OnItemDonateClickListener, GoogleMap.OnMarkerClickListener, AdapterGridViewCategorie.OnItemGridCategorieClickListener {
 
-    private double latitude=0.0;
-    private double longitude=0.0;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    private LocationRequest mLocationRequest;
-    private GoogleApiClient mGoogleApiClient;
+    private  RecyclerView recyclerview;
     private View inflate;
     private MapView mapView;
-    private GoogleMap mMap;
     private PermissionRuntime permissionRuntime;
-    private List<LocationBusiness> locationBusiness=new ArrayList<>();
-    private RecyclerView recyclerview;
-    private FrameLayout recyclerFrame;
-    StoreAdapter2 adapter2;
-    private StoreAdapter2.OnItemDonateClickListener onItemDonateClickListener;
-    private ArrayList<CharityDons> list_dons = new ArrayList<CharityDons>();
+    private LinearLayoutManager layoutManager;
+    private AdapterPartenaireMapClient adapter2;
+    private AdapterPartenaireMapClient.OnItemDonateClickListener onItemDonateClickListener;
+    private AdapterGridViewCategorie.OnItemGridCategorieClickListener onItemGridCategorieClickListener;
+
     private byte[] imageByte = null;
+    private ImageView close;
+    private MapCallback onCloseMap;
+    private boolean isShop;
+    private Button shop_BT;
+    private Button promo_BT;
+    private  GridView gridview;
+    private boolean issearch= true;
 
-
-    public static client_PartenaireMap_fragment newInstance() {
+    public static client_PartenaireMap_fragment newInstance(ArrayList<LocationBusiness> data, boolean type) {
         client_PartenaireMap_fragment myFragment = new client_PartenaireMap_fragment();
         Bundle args = new Bundle();
+        args.putSerializable("data", data);
+        args.putBoolean("type", type);
         myFragment.setArguments(args);
         return myFragment;
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        inflate = inflater.inflate(R.layout.fragment_partenaire, container, false);
-            try {
-                mapView = (MapView) inflate.findViewById(R.id.map);
-                recyclerview = (RecyclerView) inflate.findViewById(R.id.recyclerview);
-                recyclerFrame = (FrameLayout) inflate.findViewById(R.id.recyclerFrame);
-                onItemDonateClickListener = this;
-                ShowDonateView();
+        vinflater=inflater;
+        inflate = inflater.inflate(R.layout.fragment_partenaire_mapclient, container, false);
 
-                mapView.onCreate(savedInstanceState);
-                mapView.onResume();
-
-                if (mGoogleApiClient==null){
-                    buildGoogleApiClient();
-                    permissionRuntime = new PermissionRuntime(getActivity());
-                    if (ContextCompat.checkSelfPermission(getActivity(),
-                            permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        mapView.getMapAsync(this);
-                    }
-                    else {
-                        permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
-                    }
-                }
-            }catch (NullPointerException e){
+        mapView = (MapView) inflate.findViewById(R.id.map);
+        recyclerview = (RecyclerView) inflate.findViewById(R.id.recyclerview);
+        close = (ImageView) inflate.findViewById(R.id.close);
+        recyclerFrame = (FrameLayout) inflate.findViewById(R.id.recyclerFrame);
+        search_layout = (LinearLayout) inflate.findViewById(R.id.search_layout);
+        shop_BT = (Button) inflate.findViewById(R.id.shop_BT);
+        promo_BT = (Button) inflate.findViewById(R.id.promo_BT);
+        close.setOnClickListener(closeMapListener);
+        search_layout.setOnClickListener(categorie);
+        promo_BT.setOnClickListener(categorie);
+        shop_BT.setOnClickListener(categorie);
+        onItemDonateClickListener = this;
+        onItemGridCategorieClickListener=this;
 
 
+        mapView.onCreate(null);
+        mapView.onResume();
+
+        isShop = getArguments().getBoolean("type");
+
+        if (isShop) {
+            list_shop = (ArrayList<LocationBusiness>) getArguments().getSerializable("data");
+
+        } else {
+            list_shop = (ArrayList<LocationBusiness>) getArguments().getSerializable("data");
         }
 
+        Initalize_RecyclerView();
+        if (mGoogleApiClient != null) {
+            permissionRuntime = new PermissionRuntime(getActivity());
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mapView.getMapAsync(this);
+            } else {
+                permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+            }
+        }
+
+
+        final int width = (int) (Utils.getScreenWidth(getActivity()) / 2);
+            recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int diff=0;
+                    TextView latitude=null;
+                    TextView longitude=null;
+                    View view1 = (View) recyclerView.getChildAt(0);
+                    if (view1!=null) {
+                         latitude = (TextView) view1.findViewById(R.id.latitude);
+                         longitude = (TextView) view1.findViewById(R.id.longitude);
+                        View itemcolor = (View) view1.findViewById(R.id.itembarcolor);
+                        itemcolor.setBackgroundColor(getResources().getColor(R.color.green));
+                        view1.getLeft();
+                        diff = (view1.getLeft() - (recyclerView.getLeft()));
+                    }
+                    View view2 = (View) recyclerView.getChildAt(1);
+                    if (view2!=null){
+                    View itemcolor2 = (View) view2.findViewById(R.id.itembarcolor);
+                    itemcolor2.setBackgroundColor(getResources().getColor(R.color.transparent));
+                    }
+
+
+
+                    if (diff >= -width && diff <= 0) {
+                        if (mMap != null && latitude!=null) {
+                            try {
+                                LatLng latLng = new LatLng(Double.valueOf(latitude.getText().toString()), Double.valueOf(longitude.getText().toString()));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                            } catch (NumberFormatException e) {
+
+                            }
+                        }
+                    }
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+
+            });
+
+
+
+        if (mapView!=null) {
+            mapView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+
+            });
+        }
         return inflate;
     }
 
     @Override
     public void update() {
-       // client_Partenaire_fragment myFragment = (client_Partenaire_fragment)getFragmentManager().findFragmentByTag("client_Partenaire_fragment");
-       // if (myFragment != null && myFragment.isVisible()) {
-        }
-   // }
-
-   /* @Override
-    public void onResume() {
-        super.onResume();
-        followMeLocationSource.getBestAvailableProvider();
-        setUpMapIfNeeded();
-        mMap.setMyLocationEnabled(true);
     }
-
-    @Override
-    public void onPause() {
-        mMap.setMyLocationEnabled(false);
-
-        super.onPause();
-    }*/
-
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (this.isAdded()){
+        if (this.isAdded()) {
             try {
                 mMap = googleMap;
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                mMap.setOnMarkerClickListener(this);
                 //Initialize Google Play Services
                 permissionRuntime = new PermissionRuntime(getActivity());
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
-                }
-                else {
+                } else {
                     permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
                 }
 
+                if (latitude!=0.0){
+                    Display_icon_Map();
+                }
+
                 // Add a marker in Delhi and move the camera
-                GetBusiness();
-            }catch (NullPointerException e){
+                // GetBusiness();
+            } catch (NullPointerException e) {
 
             }
         }
 
 
-      //  mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi));
-    }
-
-    private void GetBusiness(){
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    // Iterating over the results
-                    for (int i = 0; i < objects.size(); i++) {
-                        double queryLatitude = objects.get(i).getParseGeoPoint("location").getLatitude();
-                        double queryLongitude = objects.get(i).getParseGeoPoint("location").getLongitude();
-                        String business_name=  objects.get(i).get("businessName").toString();
-                        String addresse=  objects.get(i).get("address").toString();
-                        locationBusiness.add(new LocationBusiness(queryLatitude,queryLongitude,business_name,addresse));
-                    }
-
-                    for (LocationBusiness business : locationBusiness){
-                        Log.d("Busibb",business.get_businessName());
-                            LatLng delhi = new LatLng(business.get_latitude(), business.get_longitude());
-                            MarkerOptions markeroptions = new MarkerOptions();
-                            markeroptions.position(delhi);
-                            markeroptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_logo));
-                            markeroptions.title(business.get_businessName() + System.getProperty("line.separator") + business.get_addresse());
-                            mMap.addMarker(markeroptions);
-                    }
-                    //Place current location marker
-                }
-            }
-        });
+        //  mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi));
     }
 
 
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, gpsLocationListener);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
-    private final com.google.android.gms.location.LocationListener gpsLocationListener =new com.google.android.gms.location.LocationListener() {
-
-        @Override
-        public void onLocationChanged(final Location location) {
-            mLastLocation = location;
-            if (mCurrLocationMarker != null) {
-                mCurrLocationMarker.remove();
-            }
-
-            latitude=location.getLatitude();
-            longitude=location.getLongitude();
-
-            ParseGeoPoint geoPoint=new ParseGeoPoint(location.getLatitude(),location.getLongitude());
-            SaveLocationUser(geoPoint);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mMap.clear();
-                    for (LocationBusiness business : locationBusiness){
-                        if (distance(business.get_latitude(), business.get_longitude(), location.getLatitude(), location.getLongitude()) <= 500000) {
-                            LatLng delhi = new LatLng(business.get_latitude(), business.get_longitude());
-                            MarkerOptions markeroptions = new MarkerOptions();
-                            markeroptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_logo));
-                            markeroptions.position(delhi);
-                            markeroptions.title(business.get_businessName() + System.getProperty("line.separator") + business.get_addresse());
-                            mMap.addMarker(markeroptions);
-                        }
-                        else {
-                        }
-                    }
-                    //move map camera
-                }
-            }, 1000);
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-            //stop location updates
-           /* if (mGoogleApiClient != null) {
-                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, gpsLocationListener);
-           ic_launcher.png }*/
-        }
-    };
-
-
-    public static float distance(double latitudecatastrophe, double longitudecatastrophe, double latitude, double longitude){
-        Location loc1 = new Location("");
-        loc1.setLatitude(latitudecatastrophe);
-        loc1.setLongitude(longitudecatastrophe);
-
-        Location loc2 = new Location("");
-        loc2.setLatitude(latitude);
-        loc2.setLongitude(longitude);
-        float distanceInMeters = loc1.distanceTo(loc2);
-        Log.d("result", String.valueOf(distanceInMeters));
-        return distanceInMeters;
-    }
-
-    private void SaveLocationUser(ParseGeoPoint point){
-        try {
-            ParseUser parseUser = ParseUser.getCurrentUser();
-            parseUser.put("geoloc", point);
-            parseUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    // TODO Auto-generated method stub
-                    if (e != null){
-                        e.printStackTrace();
-                    }else{
-                        //updated successfully
-                    }
-                }
-            });
-        }catch (NullPointerException e){
-        }
-    }
 
 
     //Recycler
     ///////
-
-
-    public void ShowDonateView() {
-        recyclerFrame.setVisibility(View.VISIBLE);
-        if (Utils.isConnected(getApplicationContext())) {
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            recyclerview.setLayoutManager(layoutManager);
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(),
-                    layoutManager.getOrientation());
-            recyclerview.addItemDecoration(dividerItemDecoration);
-            adapter2 = new StoreAdapter2(getActivity(), list_dons, onItemDonateClickListener);
+    public void Initalize_RecyclerView() {
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerview.setLayoutManager(layoutManager);
+        if (isShop){
+            adapter2 = new AdapterPartenaireMapClient("", true, getActivity(), list_shop, onItemDonateClickListener);
             recyclerview.setAdapter(adapter2);
-            get_Charity();
-        } else {
+        }else {
+            adapter2 = new AdapterPartenaireMapClient("", false, getActivity(), list_shop, onItemDonateClickListener);
+            recyclerview.setAdapter(adapter2);
         }
     }
 
-    private void get_Charity() {
-        try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Charity");
-            query.findInBackground(new FindCallback<ParseObject>() {
-                public void done(List<ParseObject> commentList, ParseException e) {
-                    if (commentList != null) {
-                        for (final ParseObject object : commentList) {
-                            ParseFile image = (ParseFile) object.getParseFile("Logo");
-                            final String name = object.getString("name");
-                            final String description = object.getString("description");
-                            final String id = object.getObjectId();
-                            Log.d("obj", id);
-                            try {
-                                imageByte = image.getData();
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-                            list_dons.add(new CharityDons(id, name, description, imageByte));
+
+
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getParentFragment() instanceof MapCallback) {
+            onCloseMap = (MapCallback) getParentFragment();
+        } else {
+            throw new RuntimeException("The parent fragment must implement OnSelection");
+        }
+    }
+
+    //Callback ItemClick RecyclerView
+    @Override
+    public void onItemClick(int item, Object bo) {
+
+    }
+
+
+
+
+    View.OnClickListener closeMapListener =new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.close:
+                    onCloseMap.onClose();
+                    break;
+            }
+        }
+    };
+
+    View.OnClickListener categorie =new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.search_layout:
+                    //Show  "Categorie" expand collapse //
+                    if (!isShop) {
+                        if (issearch) {
+                            frameCategorie = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
+                            mViewcategorieColapse = vinflater.inflate(R.layout.layout_editingsequence, frameCategorie, false);
+                            frameCategorie.addView(mViewcategorieColapse);
+                            removeDuplicateCategories();
+                            gridview = (GridView) mViewcategorieColapse.findViewById(R.id.customgrid);
+                            gridview.setAdapter(new AdapterGridViewCategorie(getActivity(), list_categorie, images, onItemGridCategorieClickListener));
+                            Utils.expand(mViewcategorieColapse);
+                            issearch = false;
+                        } else {
+                            //  frameCategorie.removeView(mViewcategorieColapse);
+                            Utils.collapse(mViewcategorieColapse);
+                            issearch = true;
                         }
-
-                        adapter2.notifyDataSetChanged();
+                    }else {
+                        Toast.makeText(getActivity(),"Recherche uniquement pour les promotions",Toast.LENGTH_LONG).show();
                     }
-                }
-            });
-        } catch (NullPointerException f) {
+                    break;
+                case R.id.shop_BT:
+                    isShop=true;
+                    if (!isLocationUpdate()){
+                        ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();
+                    }
+                    ShowShop();
+                    break;
+                case R.id.promo_BT:
+                    isShop=false;
+                    if (!isLocationUpdate()){
+                        ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();
+                    }
+                    ShowSPromotion();
+                    break;
+            }
+        }
+    };
 
+    protected void Display_icon_Map() {
+        if (list_shop.size()>0 || list_shop.size()>0) {
+                    setIconMap();
+        }
+
+        if (mMap != null && latitude != 0.0) {
+            LatLng latLng = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
         }
     }
 
     @Override
-    public void onItemClick(int item, CharityDons bo) {
+    public boolean onMarkerClick(Marker marker) {
+        int position=-1;
+        int count=0;
 
+      /*  IconGenerator iconFactory = new IconGenerator(getActivity());
+        iconFactory.setColor(getResources().getColor(R.color.green));
+        addIcon(iconFactory, marker.getTitle(), marker.getPosition());*/
+
+        if (isShop && list_shop.size()>=1) {
+            count=list_shop.size();
+            for (Object busi : list_shop) {
+                position++;
+                if (((LocationBusiness) busi).get_businessName().equals(marker.getTitle())) {
+                    break;
+                }
+            }
+           // layoutManager.scrollToPositionWithOffset(position, 1);
+        }else {
+            if (list_shop.size()>=1) {
+                count=list_shop.size();
+                for (Object busi : list_shop) {
+                    position++;
+                    if (((LocationBusiness) busi).getDescription().equals(marker.getTitle())) {
+                        break;
+
+                    }
+                }
+              //  layoutManager.scrollToPositionWithOffset(position, 1);
+            }
+        }
+
+
+        return false;
+    }
+    private void setIconMap(){
+        if (mMap!=null){
+            mMap.clear();
+
+        }
+        if (isShop){
+            for (Object business : list_shop) {
+                if (Utils.distance(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude(), latitude, longitude) <= 500000) {
+                    LatLng delhi = new LatLng(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude());
+                    MarkerOptions markeroptions = new MarkerOptions();
+                    markeroptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_logo));
+                    markeroptions.position(delhi);
+                    markeroptions.title(((LocationBusiness) business).get_businessName());
+                    if (mMap!=null){
+                        mMap.addMarker(markeroptions).showInfoWindow();
+                    }
+                } else {
+                }
+            }
+
+        }else {
+            for (Object business : list_shop) {
+                if (Utils.distance(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude(), latitude, longitude) <= 500000) {
+                    LatLng delhi = new LatLng(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude());
+                    IconGenerator iconFactory = new IconGenerator(getActivity());
+                    addIcon(iconFactory, ((LocationBusiness) business).getReduction(), delhi);
+                } else {
+                }
+            }
+        }
+    }
+
+    /**
+     * Draws profile photos inside markers (using IconGenerator).
+     * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
+     */
+
+
+    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(String.valueOf(text)))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+        mMap.addMarker(markerOptions);
+    }
+
+    private CharSequence makeCharSequence() {
+        String prefix = "Mixing ";
+        String suffix = "different fonts";
+        String sequence = prefix + suffix;
+        SpannableStringBuilder ssb = new SpannableStringBuilder(sequence);
+        ssb.setSpan(new StyleSpan(ITALIC), 0, prefix.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new StyleSpan(BOLD), prefix.length(), sequence.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        return ssb;
+    }
+
+
+
+    public void ShowShop(){
+        adapter2 = new AdapterPartenaireMapClient("", true, getActivity(), list_shop, onItemDonateClickListener);
+        recyclerview.setAdapter(adapter2);
+        ((client_Container_Partenaire_fragment) getParentFragment()).GetBusiness(new client_Container_Partenaire_fragment.DataCallBack() {
+            @Override
+            public void onSuccess() {
+             //   HideNetworkView();
+                adapter2.notifyDataSetChanged();
+                Display_icon_Map();
+            }
+        });
+        isShop = true;
+    }
+
+    public void ShowSPromotion(){
+        adapter2 = new AdapterPartenaireMapClient("", false, getActivity(), list_shop, onItemDonateClickListener);
+        recyclerview.setAdapter(adapter2);
+        ((client_Container_Partenaire_fragment) getParentFragment()).get_Promo(new client_Container_Partenaire_fragment.DataCallBack() {
+            @Override
+            public void onSuccess() {
+             //   HideNetworkView();
+                adapter2.notifyDataSetChanged();
+                Display_icon_Map();
+            }
+        });
+
+        isShop = false;
+    }
+
+    /**
+     * GridView for Categories
+     */
+
+    //Create categorie grid
+    private void removeDuplicateCategories(){
+        Set<String> hs = new HashSet<>();
+        hs.addAll(list_categorie);
+        list_categorie.clear();
+        list_categorie.addAll(hs);
+    }
+
+
+    private void DisplayItemFromCategorie(String selectedCategorie){
+        list_shop.clear();
+        if (isShop){
+            adapter2 = new AdapterPartenaireMapClient("", true, getActivity(), list_shop, onItemDonateClickListener);
+        }else {
+            adapter2 = new AdapterPartenaireMapClient("", false, getActivity(), list_shop, onItemDonateClickListener);
+        }
+        Log.d("onItemCategorieClick",selectedCategorie);
+        for (LocationBusiness object : list_shop_filtered){
+            if(object.getCategorie().equals(selectedCategorie) && !object.isoffset()){
+                Log.d("onItemCategolickpassed",selectedCategorie);
+                list_shop.add(object);
+            }
+        }
+            if (list_shop.size()>1) {
+                LocationBusiness business = list_shop.get(list_shop.size() - 1);
+                Double lat = business.get_latitude();
+                Double lon = business.get_longitude();
+                String description = business.getDescription();
+                String prix = business.getPrix();
+                String reduction = business.getReduction();
+                String busines = business.get_businessName();
+                String categorie = business.getCategorie();
+                list_shop.add(new LocationBusiness(categorie,lat, lon, busines, 0 , description,prix,reduction, true));
+            }
+
+
+            recyclerview.setAdapter(adapter2);
+            adapter2.notifyDataSetChanged();
+            Display_icon_Map();
+            layoutManager.scrollToPosition(0);
+
+    }
+
+    @Override
+    public void onItemCategorieClick(int item, String categorie) {
+        Log.d("onItemCategorieClick","onItemCategorieClick");
+        if (isLocationUpdate()){
+            ((client_Container_Partenaire_fragment) getParentFragment()).RemoveLocationUpdate();
+        }
+        DisplayItemFromCategorie(categorie);
+        Utils.collapse(mViewcategorieColapse);
     }
 }

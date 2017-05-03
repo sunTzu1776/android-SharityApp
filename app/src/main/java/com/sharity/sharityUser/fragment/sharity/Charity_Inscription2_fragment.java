@@ -33,11 +33,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.sharity.sharityUser.GooglePlaces.ParseAutoCompleteAdapter;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.SignupPro.SignUpProPresenter;
-import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProView;
 import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.fragment.FragOne;
 import com.sharity.sharityUser.fragment.Inscription2CallBack;
 import com.sharity.sharityUser.fragment.pro.Pro_code_fragment;
 
@@ -49,8 +46,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static com.sharity.sharityUser.R.id.username;
 
 
 /**

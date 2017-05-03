@@ -85,9 +85,9 @@ public class AdapterHistory extends BaseAdapter {
             } else if(listViewItemType == 1) {
                 if(holder.payment!= null) {
                     if (context instanceof ProfilProActivity){
-                        holder.payment.setText("Payment to "+it.get_businessname());
-                    }else if (context instanceof ProfilActivity){
                         holder.payment.setText("Payment from "+it.get_businessname());
+                    }else if (context instanceof ProfilActivity){
+                        holder.payment.setText("Payment to "+it.get_businessname());
 
                     }
                 }

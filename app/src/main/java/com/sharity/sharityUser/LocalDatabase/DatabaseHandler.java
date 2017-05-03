@@ -278,6 +278,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return objectid;
     }
 
+    public String getBusinessLatitude() {
+        String selectQuery = "SELECT * FROM " + Business;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        String objectid = cursor.getString(9);
+        return objectid;
+    }
+
+    public String getBusinessLongitude() {
+        String selectQuery = "SELECT * FROM " + Business;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        String objectid = cursor.getString(10);
+        return objectid;
+    }
+
     public String getEmailverified() {
         String selectQuery = "SELECT * FROM " + Business;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -286,6 +304,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String objectid = cursor.getString(12);
         return objectid;
     }
+
 
     public int UpdateEmailVerified(Business user) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
@@ -33,6 +34,7 @@ import com.sharity.sharityUser.fonts.TextViewNotoSansRegular;
 import com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment;
 import com.sharity.sharityUser.fragment.sharity.Charity_Inscription_container_fragment;
 
+import static com.sharity.sharityUser.R.id.password_TextInputLayout;
 import static com.sharity.sharityUser.Utils.Utils.replaceFragmentWithAnimation;
 
 
@@ -51,8 +53,7 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
     private static String type;
     private TextView forgot_password;
     private ImageView logo;
-    private TextInputLayout username_TextInputLayout;
-    private TextInputLayout password_TextInputLayout;
+    private LottieAnimationView animationView;
 
     public static Pro_Login_fragment newInstance(String type) {
         Pro_Login_fragment myFragment = new Pro_Login_fragment();
@@ -69,14 +70,13 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
 
         type=getArguments().get("type").toString();
         logo=(ImageView)inflate.findViewById(R.id.logopro);
-        progress = (ProgressBar) inflate.findViewById(R.id.progress);
         inscription=(TextViewNotoSansRegular)inflate.findViewById(R.id.inscription);
         forgot_password=(TextView)inflate.findViewById(R.id.forgotpassword);
         login_BT = (TextViewNotoSansRegular) inflate.findViewById(R.id.login_BT);
         username = (EditText) inflate.findViewById(R.id.username_login);
         password = (EditText) inflate.findViewById(R.id.password_login);
-        username_TextInputLayout = (TextInputLayout) inflate.findViewById(R.id.username_TextInputLayout);
-        password_TextInputLayout = (TextInputLayout) inflate.findViewById(R.id.password_TextInputLayout);
+        animationView = (LottieAnimationView) inflate.findViewById(R.id.animation_view);
+        animationView.setAnimation("loading.json");
 
         inscription.setOnClickListener(this);
         login_BT.setOnClickListener(this);
@@ -107,6 +107,7 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
                 case R.id.login_BT:
                     if (type.equals("charite")) {
                         presenter.validateCredentials(getActivity(),"charite",username.getText().toString(), password.getText().toString());
+
                     }else {
                         presenter.validateCredentials(getActivity(),"pro",username.getText().toString(), password.getText().toString());
                     }
@@ -147,11 +148,15 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
     }
 
     @Override public void showProgress() {
-        progress.setVisibility(View.VISIBLE);
+        login_BT.setVisibility(View.INVISIBLE);
+        animationView.setVisibility(View.VISIBLE);
+        animationView.loop(true);
+        animationView.playAnimation();
     }
 
     @Override public void hideProgress() {
-        progress.setVisibility(View.GONE);
+        login_BT.setVisibility(View.VISIBLE);
+        animationView.setVisibility(View.INVISIBLE);
     }
 
     @Override public void setUsernameError() {

@@ -3,13 +3,22 @@
     <tab
         id="@+id/tab_option"
         icon="@drawable/icon_historique"
+        title="Historique"
          />
     <tab
         id="@+id/tab_profil"
         icon="@drawable/icon_profil"
-         />
+        title="Profil"
+
+        />
     <tab
         id="@+id/tab_partenaire"
         icon="@drawable/icon_partenaire"
-         />
+        title="Partenaire"
+        />
+    <tab
+        id="@+id/tab_mission"
+        icon="@drawable/icon_mission"
+        title="Mission"
+        />
 </tabs>

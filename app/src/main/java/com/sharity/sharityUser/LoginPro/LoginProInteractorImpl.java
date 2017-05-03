@@ -93,6 +93,8 @@ public class LoginProInteractorImpl implements LoginInteractor {
                         } else {
                             if (e.getCode() == 101) {
                                 listener.onUserError();
+                            }else {
+                                listener.onUserError();
                             }
                         }
                     }

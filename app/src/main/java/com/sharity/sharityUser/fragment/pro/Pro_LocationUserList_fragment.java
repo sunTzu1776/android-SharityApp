@@ -101,13 +101,13 @@ public class Pro_LocationUserList_fragment extends Fragment implements ToastInte
     private void CreateTransaction(UserLocation userid,String price) {
         Number num = Integer.parseInt(price);
         ParseObject object = new ParseObject("Transaction");
-        object.put("senderName", userid.getUsername());
+        object.put("sender_name", userid.getUsername());
         object.put("business", ParseObject.createWithoutData("Business", db.getBusinessId()));
-        object.put("recipientName", db.getBusinessName());
+        object.put("recipient_name", db.getBusinessName());
         object.put("value", num);
         object.put("approved", "NO");
         object.put("transactionType", 1);
-        object.put("currencyCode", "EUR");
+        object.put("currency_code", "EUR");
         object.put("customer", ParseObject.createWithoutData("_User", userid.getId()));
         object.saveInBackground(new SaveCallback() {
             @Override

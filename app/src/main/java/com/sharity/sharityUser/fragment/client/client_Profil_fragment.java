@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,7 +23,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +47,8 @@ import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.BO.User;
+import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
+import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Popup_onNotification;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
@@ -68,6 +74,12 @@ import static com.sharity.sharityUser.R.id.points;
 import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.activity.ProfilActivity.db;
 import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridview;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mViewcategorieColapse;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.vinflater;
 
 
 /**
@@ -75,37 +87,36 @@ import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
  */
 public class client_Profil_fragment extends Fragment implements Updateable,ProfilActivity.OnNotificationUpdateProfil, SwipeRefreshLayout.OnRefreshListener, StoreAdapter2.OnItemDonateClickListener {
 
-
+    private LayoutInflater vinflater;
+    protected ParseUser parseUser = ProfilActivity.parseUser;
     private int recycler_position = -1;
     private StoreAdapter2.OnItemDonateClickListener onItemDonateClickListener;
     private ArrayList<CharityDons> list_dons = new ArrayList<CharityDons>();
     private Profile profile;
-    private BroadcastReceiver statusReceiver;
-    private IntentFilter mIntent;
     private SwipeRefreshLayout swipeContainer;
     private View inflate;
     private RecyclerView recycler_charity;
-    StoreAdapter2 adapter2;
+    private StoreAdapter2 adapter2=null;
     private byte[] imageByte = null;
     private TextView username;
     private com.sharity.sharityUser.Utils.ProfilePictureView imageView;
-    protected ParseUser parseUser = ProfilActivity.parseUser;
 
-    //Field to donate to charity
+    //Field donation to charity
     private String CharityName;
     private String CharityId;
-    private String CharityPrice;
 
     private TextView points;
     private TextView do_donationTV;
     private TextView charity_description;
     private TextView sharepoints_moins;
     private TextView sharepoints_plus;
+    private TextView dummyanchor;
+
+
     private LinearLayout dons_view;
     private Button charity_dons_validate;
     private int sharepoints_user_donate = 0;
     private int sharepoints_user_temp;
-
     boolean donation=false;
 
 
@@ -120,15 +131,17 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        vinflater=inflater;
         inflate = inflater.inflate(R.layout.fragment_profile_client, container, false);
-
         ((ProfilActivity) getActivity()).setProfilListener(client_Profil_fragment.this);
         points = (TextView) inflate.findViewById(R.id.points);
 
         username = (TextView) inflate.findViewById(R.id.username_login);
         do_donationTV = (TextView) inflate.findViewById(R.id.do_donationTV);
+        dummyanchor = (TextView) inflate.findViewById(R.id.dummyanchor);
+
+
         charity_description = (TextView) inflate.findViewById(R.id.charity_description);
-        charity_dons_validate = (Button) inflate.findViewById(R.id.charity_dons_validate);
         sharepoints_moins = (TextView) inflate.findViewById(R.id.sharepoints_moins);
         sharepoints_plus = (TextView) inflate.findViewById(R.id.sharepoints_plus);
         dons_view = (LinearLayout) inflate.findViewById(R.id.dons_view);
@@ -136,9 +149,9 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         imageView = (com.sharity.sharityUser.Utils.ProfilePictureView) inflate.findViewById(R.id.picture_profil);
 
-
         swipeContainer.setOnRefreshListener(this);
         onItemDonateClickListener = this;
+
 
         do_donationTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,39 +159,13 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                 if (!donation){
                     points.setText(String.valueOf(0) + " : " + String.valueOf(sharepoints_user_temp));
                     ShowDonateView();
-                    do_donationTV.setText("Annuler le don");
-                    donation=true;
-                }else {
-                    list_dons.clear();
-                    sharepoints_user_donate=0;
-                    recycler_position=-1;
-                    sharepoints_moins.setVisibility(View.INVISIBLE);
-                    sharepoints_plus.setVisibility(View.INVISIBLE);
-                    dons_view.setVisibility(View.INVISIBLE);
                     do_donationTV.setText("faire un don");
-                    points.setText(String.valueOf(sharepoints_user_temp));
-                    donation=false;
+                    donation=true;
                 }
             }
         });
 
-        charity_dons_validate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (recycler_position >= 0) {
-                    if (CharityId != null) {
-                        if (sharepoints_user_donate > 0) {
-                            CreateTransaction(CharityName, CharityId, String.valueOf(sharepoints_user_donate));
-                        } else {
-                            Toast.makeText(getActivity(), "Veuillez envoyer une valeur supérieur à 0", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Veuillez séléctionner une charité", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+
 
         sharepoints_moins.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,11 +267,11 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                         int sharepoints = 0;
                         for (ParseObject object : commentList) {
                             if (object.getInt("transactionType") == 1) {
-                                int sp = object.getInt("value");
+                                int sp = object.getInt("sharepoints");
                                 sharepoints = sharepoints + sp;
                             }
                             if (object.getInt("transactionType") == 2) {
-                                int sp = object.getInt("value");
+                                int sp = object.getInt("sharepoints");
                                 sharepoints = sharepoints - sp;
                                 Log.d("sharepoints", String.valueOf(sp));
                                 //   sharepoints=sharepoints-sp;
@@ -338,28 +325,65 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         }
     }
 
+    boolean isextand= false;
 
     public void ShowDonateView() {
+        final RelativeLayout frameCategorie = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
+        final View mViewcategorieColapse = vinflater.inflate(R.layout.view_expand_donate, frameCategorie, false);
+        frameCategorie.addView(mViewcategorieColapse);
+       TextView valider = (TextView) mViewcategorieColapse.findViewById(R.id.valider);
+        TextView annuler = (TextView) mViewcategorieColapse.findViewById(R.id.annuler);
+        Utils.expand(mViewcategorieColapse);
+        isextand = true;
+
         sharepoints_moins.setVisibility(View.VISIBLE);
         sharepoints_plus.setVisibility(View.VISIBLE);
         recycler_charity.setVisibility(View.VISIBLE);
         charity_description.setVisibility(View.VISIBLE);
-        charity_dons_validate.setVisibility(View.VISIBLE);
         dons_view.setVisibility(View.VISIBLE);
 
         if (Utils.isConnected(getApplicationContext())) {
-
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            recycler_charity.setLayoutManager(layoutManager);
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycler_charity.getContext(),
-                    layoutManager.getOrientation());
-            recycler_charity.addItemDecoration(dividerItemDecoration);
-            adapter2 = new StoreAdapter2(getActivity(), list_dons, onItemDonateClickListener);
-            recycler_charity.setAdapter(adapter2);
             get_Charity();
+
         } else {
         }
+
+
+        valider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recycler_position >= 0) {
+                    if (CharityId != null) {
+                        if (sharepoints_user_donate > 0) {
+                            CreateTransaction(CharityName, CharityId, String.valueOf(sharepoints_user_donate));
+                        } else {
+                            Toast.makeText(getActivity(), "Veuillez envoyer une valeur supérieur à 0", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Veuillez séléctionner une charité", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        annuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                list_dons.clear();
+                sharepoints_user_donate=0;
+                recycler_position=-1;
+                sharepoints_moins.setVisibility(View.INVISIBLE);
+                sharepoints_plus.setVisibility(View.INVISIBLE);
+                dons_view.setVisibility(View.INVISIBLE);
+                do_donationTV.setText("faire un don");
+                points.setText(String.valueOf(sharepoints_user_temp));
+                donation=false;
+                Utils.collapse(mViewcategorieColapse);
+                frameCategorie.removeView(mViewcategorieColapse);
+                isextand = false;
+             }
+        });
     }
 
     private void get_Charity() {
@@ -382,7 +406,18 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                             list_dons.add(new CharityDons(id, name, description, imageByte));
                         }
 
-                        adapter2.notifyDataSetChanged();
+                        if (adapter2==null){
+                            LinearLayoutManager layoutManager
+                                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+                            recycler_charity.setLayoutManager(layoutManager);
+                            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycler_charity.getContext(),
+                                    layoutManager.getOrientation());
+                            recycler_charity.addItemDecoration(dividerItemDecoration);
+                            adapter2 = new StoreAdapter2(getActivity(), list_dons, onItemDonateClickListener);
+                            recycler_charity.setAdapter(adapter2);
+                        }else {
+                            adapter2.notifyDataSetChanged();
+                        }
                     }
                 }
             });
@@ -394,13 +429,13 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private void CreateTransaction(final String charityName, String charityId, final String price) {
         final Number num = Integer.parseInt(price);
         ParseObject object = new ParseObject("Transaction");
-        object.put("senderName", parseUser.getUsername());
+        object.put("sender_name", parseUser.getUsername());
         object.put("clientDonator", ParseObject.createWithoutData("_User", parseUser.getObjectId()));
-        object.put("recipientName", charityName);
-        object.put("value", num);
-        object.put("approved", "YES");
+        object.put("recipient_name", charityName);
+        object.put("sharepoints", num);
+        object.put("status", 2);
         object.put("transactionType", 2);
-        object.put("currencyCode", "EUR");
+        object.put("currency_code", "EUR");
         object.put("charity", ParseObject.createWithoutData("Charity", charityId));
 
         object.saveInBackground(new SaveCallback() {
@@ -477,6 +512,10 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
     @Override
     public void TaskOnNotification(String business, String sharepoints) {
+        Popup_onNotification onNotification=new Popup_onNotification();
+        if (dummyanchor!=null){
+            onNotification.displayPopupWindow(dummyanchor,getActivity(),"","");
+        }
         getTransaction();
     }
 }

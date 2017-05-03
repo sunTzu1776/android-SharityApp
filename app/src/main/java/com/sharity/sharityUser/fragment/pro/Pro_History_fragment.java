@@ -118,8 +118,17 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
 
                             String toto=sale.getString("username");
                             */
-                            String recipientName=object.getString("recipientName");
-                            String prix = String.valueOf(object.getInt("value"));
+                            String recipientName;
+                            String prix;
+                            if (indice.equals("payements")){
+                                prix  = String.valueOf(object.getInt("amount")/100);
+                                recipientName = String.valueOf(object.getString("recipient_name"));
+                            }
+                            else {
+                                prix  = String.valueOf(object.getInt("amount")/100);
+                                recipientName = String.valueOf(object.getString("recipient_name"));
+                            }
+
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());

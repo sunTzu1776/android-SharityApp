@@ -24,6 +24,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.parse.SubscriptionHandling;
+import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.ParsePushNotification.SendNotification;
 import com.sharity.sharityUser.R;
@@ -50,6 +52,8 @@ import okhttp3.Response;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 import static com.sharity.sharityUser.Application.getContext;
+import static com.sharity.sharityUser.Application.parseLiveQueryClient;
+import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.R.id.price;
 import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LocationUserActivity.parseUser;
@@ -122,8 +126,9 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         switch (view.getId()){
             case R.id.valider:
                 if (Utils.isConnected(getActivity())){
-                SendNotification sendNotification= new SendNotification(getActivity(),getActivity(),userLocation,toastInterface);
-                sendNotification.Send(amount_paiment.getText().toString());
+                    CreateTransaction(userLocation,amount_paiment.getText().toString());
+              //  SendNotification sendNotification= new SendNotification(getActivity(),getActivity(),userLocation,toastInterface);
+              ///  sendNotification.Send(amount_paiment.getText().toString());
                 }else {
                     Toast.makeText(getActivity(), "Veuillez vous connécter à un réseau", Toast.LENGTH_LONG).show();
                 }
@@ -156,15 +161,45 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
 
     private void CreateTransaction(final UserLocation userid, final String price) {
         Number num = Integer.parseInt(price);
-        ParseObject object = new ParseObject("Transaction");
-        object.put("senderName", db.getBusinessName());
+        int amount = Integer.parseInt(price)*100;
+        Number amount_cents = amount;
+
+        final ParseObject object = new ParseObject("Transaction");
         object.put("business", ParseObject.createWithoutData("Business", db.getBusinessId()));
-        object.put("recipientName", userid.getUsername());
-        object.put("value", num);
-        object.put("approved", "NO");
-        object.put("transactionType", 1);
-        object.put("currencyCode", "EUR");
         object.put("customer", ParseObject.createWithoutData("_User", userid.getId()));
+        object.put("sender_name", userid.getUsername());
+        object.put("recipient_name", db.getBusinessName());
+        object.put("amount", amount_cents);
+        object.put("currency_code", "EUR");
+        object.put("transactionType", 1);
+        object.put("status", 2);
+        object.put("sharepoints", num);
+
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    CreateCISSTransaction(object.getObjectId(),price,object);
+                }
+                else {
+                    Log.d(TAG, "ex" + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void CreateCISSTransaction(String transactionId,final String price,ParseObject transaction) {
+        Number num = Integer.parseInt(price);
+        int amount = Integer.parseInt(price)*100;
+        Number amount_cents = amount;
+        CISSTransaction object = new CISSTransaction();
+        object.put("approved", false);
+        object.put("needsProcessing", true);
+        object.put("TPEid",111222333);
+        object.put("amount", amount_cents);
+        object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
+        object.put("transactionId", transactionId);
+        object.put("transactionType", 1);
 
         object.saveInBackground(new SaveCallback() {
             @Override
@@ -194,7 +229,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
                         int Generated_sharepoints=0;
                         for (ParseObject object : commentList){
                             if (object.getInt("transactionType")==1){
-                                int sp = object.getInt("value");
+                                int sp = object.getInt("sharepoints");
                                 Generated_sharepoints=Generated_sharepoints+sp;
                             }
                         }
@@ -305,5 +340,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             Log.d("Exception", "JSON exception", ex);
         }
     }*/
+
+
 
 }

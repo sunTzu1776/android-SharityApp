@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -17,10 +18,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,13 +36,18 @@ import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
+import com.sharity.sharityUser.fragment.client.client_Container_Mission_fragment;
+import com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment;
+import com.sharity.sharityUser.fragment.client.client_Partenaire_list_fragment;
 import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
 import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 
 import java.util.ArrayList;
 
+import static com.sharity.sharityUser.R.id.latitude;
 import static com.sharity.sharityUser.R.id.tab_option;
+import static com.sharity.sharityUser.activity.ProfilActivity.TOTAL_PAGES;
 
 
 /**
@@ -47,29 +56,29 @@ import static com.sharity.sharityUser.R.id.tab_option;
 public class ProfilActivity extends AppCompatActivity implements OnTabSelectListener {
 
     public static DatabaseHandler db;
-    private BroadcastReceiver statusReceiver;
     private IntentFilter mIntent;
-    static int TOTAL_PAGES=3;
+    static int TOTAL_PAGES = 4;
     private ViewPager pager;
     private LocationManager manager;
-    boolean isOpaque = true;
     private Toolbar toolbar;
     private BottomBar bottomBar;
-    private TextView toolbarTitle;
-    boolean start =true;
+    public TextView toolbarTitle;
+    private boolean start = true;
     public static ProfilActivity clientProfilActivity;
     public static ParseUser parseUser;
     private DrawerLayout drawer_layout;
     private ListView myDrawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private ArrayList<Drawer> drawersItems= new ArrayList<Drawer>();
+    private ArrayList<Drawer> drawersItems = new ArrayList<Drawer>();
     private AdapterNews adapter;
     public OnNotificationUpdateProfil onNotificationUpdateProfil;
     public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
+    MyPagerAdapter mViewPagerAdapter;
 
     public interface OnNotificationUpdateHistoric {
         void TaskOnNotification(String business, String sharepoints);
     }
+
     public interface OnNotificationUpdateProfil {
         void TaskOnNotification(String business, String sharepoints);
     }
@@ -81,14 +90,14 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
         if (savedInstanceState == null) {
             manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            clientProfilActivity=this;
+            clientProfilActivity = this;
             db = new DatabaseHandler(this);
             parseUser = ParseUser.getCurrentUser();
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
-            drawer_layout=(DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawersItems.add(0, new Drawer(R.drawable.logo, "", 0));
             drawersItems.add(1, new Drawer(R.drawable.logo, "CGU", 1));
             drawersItems.add(2, new Drawer(R.drawable.logo, "Contacts", 1));
@@ -101,6 +110,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
             pager = (ViewPager) findViewById(R.id.pager);
             pager.setOffscreenPageLimit(0);
+            mViewPagerAdapter=new MyPagerAdapter(getSupportFragmentManager());
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(1, true);
             pager.setOnPageChangeListener(mPageChangeListener);
@@ -133,7 +143,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position){
+                    switch (position) {
                         case 0:
                             break;
                         case 1:
@@ -158,84 +168,36 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
     }
 
-    private FragmentStatePagerAdapter mViewPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-        @Override
-        public int getCount() {
-            return TOTAL_PAGES;
-        }
-
-        // Return the Fragment associated with a specified position.
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return History_container_fragment.newInstance();
-            } else if (position == 1) {
-                return client_Profil_fragment.newInstance();
-            } else if (position == 2) {
-                return client_PartenaireMap_fragment.newInstance();
-            }
-
-            return null;
-        }
 
 
-        // Remove a page for the given position. The adapter is responsible for removing the view from its container.
-        @Override
-        public void destroyItem(android.view.ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-        };
-
-        @Override
-        // To update fragment in ViewPager, we should override getItemPosition() method,
-        // in this method, we call the fragment's public updating method.
-        public int getItemPosition(Object object) {
-            return super.getItemPosition(object);
-        };
-    };
-
-
-
-    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
+    public ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             pager.setBackgroundColor(getResources().getColor(R.color.white));
 
-            if (start){
+            if (start) {
                 mViewPagerAdapter.notifyDataSetChanged();
-                start=false;
+                start = false;
             }
 
-            if (position==2){
+            if (position == 2) {
             }
         }
 
         @Override
         public void onPageSelected(int position) {
             setIndicator(position);
-            bottomBar.setInActiveTabColor(getResources().getColor(R.color.black));
+            bottomBar.setInActiveTabColor(getResources().getColor(R.color.white));
             bottomBar.setActiveTabColor(getResources().getColor(R.color.green));
-            if (position==0){
+            if (position == 0) {
                 toolbarTitle.setText("HISTORIQUE");
-            }else if (position==1){
+            } else if (position == 1) {
                 toolbarTitle.setText("PROFIL");
-            }else if (position==2){
+            } else if (position == 2) {
                 toolbarTitle.setText("PARTENAIRE");
-
-              /*  try{
-                    if (!manager.isProviderEnabled( LocationManager.GPS_PROVIDER) ) {
-                        Utils.showDialog3(ProfilActivity.this,"Please Enable your GPS","Location",false, new Utils.Click() {
-                            @Override
-                            public void Ok() {
-                            }
-                            @Override
-                            public void Cancel() {
-
-                            }
-                        });
-                    }
-                }catch (NullPointerException e){
-
-                }*/
+            }
+            else if (position == 3) {
+                toolbarTitle.setText("MISSION");
             }
         }
 
@@ -265,7 +227,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
         // Handle action buttons
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -285,27 +247,31 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     }
 
     private void buildTabs() {
-        bottomBar.setOnTabSelectListener(this,true);
+        bottomBar.setOnTabSelectListener(this, true);
         setIndicator(1);
-        bottomBar.setInActiveTabColor(getResources().getColor(R.color.black));
+        bottomBar.setInActiveTabColor(getResources().getColor(R.color.white));
         bottomBar.setActiveTabColor(getResources().getColor(R.color.green));
     }
 
     //Bottom Bar onCLick
     @Override
     public void onTabSelected(@IdRes int tabId) {
-        switch (tabId){
+        switch (tabId) {
             case tab_option:
-                pager.setCurrentItem(0,true);
-               // updateProfil();
+                pager.setCurrentItem(0, true);
+                // updateProfil();
                 break;
             case R.id.tab_profil:
-                pager.setCurrentItem(1,true);
+                pager.setCurrentItem(1, true);
                 //updateProfil();
                 break;
             case R.id.tab_partenaire:
-                pager.setCurrentItem(2,true);
-                updateProfil();
+                pager.setCurrentItem(2, true);
+               // updateProfil();
+                break;
+            case R.id.tab_mission:
+                pager.setCurrentItem(3, true);
+               // updateProfil();
                 break;
         }
     }
@@ -318,12 +284,14 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             case 102: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
-                    client_PartenaireMap_fragment client_PartenaireMap_fragment = (client_PartenaireMap_fragment) getSupportFragmentManager().findFragmentByTag("client_Partenaire_fragment");
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    if (client_PartenaireMap_fragment != null && client_PartenaireMap_fragment.isVisible()) {
-                        client_PartenaireMap_fragment.update();
+                    Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + pager.getCurrentItem());
+                    if (pager.getCurrentItem() == 1 && page != null) {
+                     //   ((client_Container_Partenaire_fragment)page);
+                        Log.d("BIGGRAF", "passed");
                     }
+
                 } else {
 
                     // permission denied, boo! Disable the
@@ -336,7 +304,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     }
 
-    public static ProfilActivity  getInstance(){
+    public static ProfilActivity getInstance() {
         return clientProfilActivity;
     }
 
@@ -348,31 +316,34 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         });
     }
 
-    public void onNotificationReceived_Display(){
-        if (bottomBar.getId()!=R.id.tab_profil){
+    public void onNotificationReceived_Display() {
+        if (bottomBar.getId() != R.id.tab_profil) {
             mPageChangeListener.onPageSelected(1);
         }
     }
 
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        actionBarDrawerToggle.syncState();
+        if (actionBarDrawerToggle!=null) {
+            actionBarDrawerToggle.syncState();
+        }
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+        if (actionBarDrawerToggle!=null) {
+            actionBarDrawerToggle.onConfigurationChanged(newConfig);
+        }
     }
 
     //Notification handler
     public void setProfilListener(ProfilActivity.OnNotificationUpdateProfil activityListener) {
         this.onNotificationUpdateProfil = activityListener;
     }
+
     public void setHistoricListener(ProfilActivity.OnNotificationUpdateHistoric activityListener) {
         this.onNotificationUpdateHistoric = activityListener;
     }
@@ -402,8 +373,9 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             String sharepoints = intent.getStringExtra("sharepoints");
             String business = intent.getStringExtra("business");
             int item = pager.getCurrentItem();
-            onNotificationUpdateHistoric.TaskOnNotification(business,sharepoints);
-            onNotificationUpdateProfil.TaskOnNotification(business,sharepoints);
+            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
+            onNotificationUpdateProfil.TaskOnNotification(business, sharepoints);
+            //onNotificationReceived_Display();
 
             // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
             // Popup_onNotification onNotification=new Popup_onNotification();
@@ -411,7 +383,90 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     };
 
+
+
+    protected class MyPagerAdapter extends FragmentStatePagerAdapter {
+
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return TOTAL_PAGES;
+        }
+
+        // Return the Fragment associated with a specified position.
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return History_container_fragment.newInstance();
+            } else if (position == 1) {
+                return client_Profil_fragment.newInstance();
+            } else if (position == 2) {
+                return client_Container_Partenaire_fragment.newInstance();
+            }
+            else if (position == 3) {
+                return client_Container_Mission_fragment.newInstance();
+            }
+
+            return null;
+        }
+
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+
+        @Override
+        // To update fragment in ViewPager, we should override getItemPosition() method,
+        // in this method, we call the fragment's public updating method.
+        public int getItemPosition(Object object) {
+            return super.getItemPosition(object);
+        };
+    };
+
+
+    @Override
+    public void onBackPressed() {
+        SparseArray<FragmentManager> managers = new SparseArray<>();
+        traverseManagers(getSupportFragmentManager(), managers, 0);
+        if (managers.size() > 0) {
+            managers.valueAt(managers.size() - 1).popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void traverseManagers(FragmentManager manager, SparseArray<FragmentManager> managers, int intent) {
+        if (manager.getBackStackEntryCount() > 0) {
+            managers.put(intent, manager);
+        }
+        if (manager.getFragments() == null) {
+            return;
+        }
+        for (Fragment fragment : manager.getFragments()) {
+            if (fragment != null) traverseManagers(fragment.getChildFragmentManager(), managers, intent + 1);
+        }
+    }
 }
+
+
 
 
 

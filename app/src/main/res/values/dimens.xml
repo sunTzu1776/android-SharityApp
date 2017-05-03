@@ -7,5 +7,6 @@
     <dimen name="title_sharity">22.5dp</dimen>
     <dimen name="sharity_subtitle">15dp</dimen>
 
-
+    <dimen name="custom_profile_image">50dp</dimen>
+    <dimen name="custom_profile_padding">2dp</dimen>
 </resources>

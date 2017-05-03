@@ -8,17 +8,15 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.fragment.FragOne;
+import com.sharity.sharityUser.fragment.Inscription1CallBack;
 import com.sharity.sharityUser.fragment.Inscription2CallBack;
-import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 
-public class PagerFragment extends Fragment implements FragOne, Inscription2CallBack {
+public class PagerFragment extends Fragment implements Inscription1CallBack, Inscription2CallBack {
   public ViewPager pager;
   private OnSelection onSelection;
-  FragOne onSelect;
+  Inscription1CallBack onSelect;
   Inscription2CallBack inscription2CallBack;
   public PagerInscriptionAdapter adapter;
 
@@ -93,8 +91,8 @@ public class PagerFragment extends Fragment implements FragOne, Inscription2Call
     }
 
     // check if parent Fragment implements listener
-    if (getParentFragment() instanceof FragOne) {
-      onSelect = (FragOne) getParentFragment();
+    if (getParentFragment() instanceof Inscription1CallBack) {
+      onSelect = (Inscription1CallBack) getParentFragment();
     } else {
       throw new RuntimeException("The parent fragment must implement OnSelection");
     }

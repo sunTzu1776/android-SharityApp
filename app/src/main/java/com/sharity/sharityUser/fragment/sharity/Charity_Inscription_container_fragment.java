@@ -5,40 +5,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.SignupPro.SignUpCharityPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProPresenter;
-import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
 import com.sharity.sharityUser.SignupPro.SignUpProView;
-import com.sharity.sharityUser.activity.MapActivity;
-import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
-import com.sharity.sharityUser.fragment.FragOne;
+import com.sharity.sharityUser.fragment.Inscription1CallBack;
 import com.sharity.sharityUser.fragment.Inscription2CallBack;
 import com.sharity.sharityUser.fragment.Updateable;
-import com.sharity.sharityUser.fragment.pagerHistoric.PagerFragment;
-import com.sharity.sharityUser.fragment.pro.History_container_fragment;
-
-import static com.sharity.sharityUser.R.id.Siret;
-import static com.sharity.sharityUser.R.id.username;
 
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Charity_Inscription_container_fragment extends Fragment implements Updateable, com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment.OnSelection,FragOne,Inscription2CallBack, SignUpProView {
+public class Charity_Inscription_container_fragment extends Fragment implements Updateable, com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment.OnSelection,Inscription1CallBack,Inscription2CallBack, SignUpProView {
 
     com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment.OnSelection onSelection;
-    FragOne onSelect;
+    Inscription1CallBack onSelect;
     private SignUpProPresenter presenter;
     ImageView circle_slide1;
     ImageView circle_slide2;

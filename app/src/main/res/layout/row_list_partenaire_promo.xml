@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:id="@+id/background"
+        android:focusableInTouchMode="false"
+        >
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/imageView"/>
+
+        <TextView android:textColor="#000000"
+            android:id="@+id/nom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="business name"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView" />
+
+
+        <TextView
+            android:textColor="#000000"
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:layout_marginTop="5dp"
+            tools:text="description"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_below="@+id/nom"
+            android:layout_toRightOf="@+id/imageView"
+            />
+
+
+        <TextView
+            android:id="@+id/prix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="prix"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="@color/green"
+            android:layout_below="@+id/description"
+            android:layout_toRightOf="@+id/imageView"
+             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reduction"
+            android:gravity="center"
+            tools:text="10%"
+            android:textColor="@color/green"
+            android:layout_below="@+id/nom"
+            android:layout_toRightOf="@+id/description"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBaseline="@+id/description"
+            />
+
+    </RelativeLayout>
+</LinearLayout>

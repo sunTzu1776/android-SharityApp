@@ -39,6 +39,12 @@
         <item name="colorControlActivated">@color/black</item>
     </style>
 
+    <style name="TextBottomBarAppearance" parent="TextAppearance.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColor">#FFEFEFEF</item>
+    </style>
+
+
     <style name="DrawerArrowStyleClient" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <!-- Hint color and label color in FALSE state -->
         <item name="spinBars">true</item>
@@ -53,5 +59,10 @@
 
     <style name="MaterialAnimations" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AutocompleteRemoveLine">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
     </style>
 </resources>

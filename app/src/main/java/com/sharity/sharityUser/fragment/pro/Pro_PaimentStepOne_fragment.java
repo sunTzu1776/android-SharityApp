@@ -4,6 +4,7 @@ package com.sharity.sharityUser.fragment.pro;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +30,13 @@ import com.sharity.sharityUser.fragment.Updateable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sharity.sharityUser.R.id.swipeContainer;
+
 
 /**
  * Created by Moi on 14/11/15.
  */
-public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable, View.OnClickListener {
+public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private double myBusiness_latitude=0.0;
     private double myBusiness_longitude=0.0;
@@ -45,6 +48,7 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
     private List<UserLocation> locationUser=new ArrayList<>();
     private TextView paiment_classique;
     private View inflate;
+    private SwipeRefreshLayout swipeContainer;
     GridView grid;
     private OnChildPaymentSelection onSelection;
 
@@ -69,6 +73,8 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_paimentstepone_pro, container, false);
         paiment_classique=(TextView)inflate.findViewById(R.id.paiment_classique);
+        swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this);
         paiment_classique.setOnClickListener(this);
         db = new DatabaseHandler(getActivity());
 
@@ -138,7 +144,6 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
             myBusiness_longitude = Double.valueOf(business.get_longitude());
             geoPoint = new ParseGeoPoint(Double.valueOf(business.getLatitude()), Double.valueOf(business.get_longitude()));
 
-
             final ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
             query.whereEqualTo("userIsClient", true);
             query.whereWithinKilometers("geoloc", geoPoint, 0.70);
@@ -147,6 +152,7 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
                     if (e == null) {
+                        locationUser.clear();
                         double queryLatitude = 0.0;
                         double queryLongitude = 0.0;
                         byte[] image = new byte[0];
@@ -172,10 +178,24 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
                                 locationUser.add(new UserLocation(userid, queryLatitude, queryLongitude, username, image, token));
                             }
                         }
+                        swipeContainer.setRefreshing(false);
                         adapter.notifyDataSetChanged();
                     }
                 }
             });
         }
+
     }
+
+    @Override
+    public void onRefresh() {
+        if (Utils.isConnected(getActivity())){
+            swipeContainer.setRefreshing(true);
+            GetClients();
+        }else {
+            swipeContainer.setRefreshing(false);
+            Toast.makeText(getActivity(),"Veuillez activer votre wifi ou réseau",Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

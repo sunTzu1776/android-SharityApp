@@ -1,76 +1,49 @@
 package com.sharity.sharityUser.fragment.sharity;
 
 
-import android.app.Dialog;
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
-import com.sharity.sharityUser.GooglePlaces.ParseAutoCompleteAdapter;
 import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.SignupPro.SignUpProPresenter;
-import com.sharity.sharityUser.SignupPro.SignUpProPresenterImpl;
-import com.sharity.sharityUser.SignupPro.SignUpProView;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
-import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.fragment.FragOne;
-import com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerFragment;
+import com.sharity.sharityUser.fragment.Inscription1CallBack;
 import com.sharity.sharityUser.fragment.pagerInscriptionSharity.PagerInscriptionAdapter;
-import com.sharity.sharityUser.fragment.pro.Pro_code_fragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.sharity.sharityUser.R.id.RIB;
-import static com.sharity.sharityUser.R.id.Siret;
-import static com.sharity.sharityUser.R.id.address;
-import static com.sharity.sharityUser.R.id.business_name;
-import static com.sharity.sharityUser.R.id.chief_name;
-import static com.sharity.sharityUser.R.id.tab_historique;
+import static android.view.View.Y;
 
 
 /**
@@ -91,7 +64,7 @@ public class Charity_Inscription1_fragment extends Fragment implements View.OnCl
     private Double longitude;
     private String type;
     private  CircleImageView profil;
-    private FragOne onSelect;
+    private Inscription1CallBack onSelect;
 
     public PagerInscriptionAdapter adapter;
 
@@ -180,8 +153,8 @@ public class Charity_Inscription1_fragment extends Fragment implements View.OnCl
 
 
         // check if parent Fragment implements listener
-        if (getParentFragment() instanceof FragOne) {
-            onSelect = (FragOne) getParentFragment();
+        if (getParentFragment() instanceof Inscription1CallBack) {
+            onSelect = (Inscription1CallBack) getParentFragment();
         } else {
             throw new RuntimeException("The parent fragment must implement OnSelection");
         }
@@ -233,7 +206,152 @@ public class Charity_Inscription1_fragment extends Fragment implements View.OnCl
         public void onPostExecute(Void result) {
             profil.setImageBitmap(yourSelectedImage);
             byte_pictureFB = DbBitmapUtility.getBytes(yourSelectedImage);
+           /* Bitmap toto = convertToMutable(getContext(),yourSelectedImage);
+            int [] allpixels = new int [toto.getHeight()*toto.getWidth()];
+
+            toto.getPixels(allpixels, 0, toto.getWidth(), 0, 0, toto.getWidth(), toto.getHeight());
+
+            for(int i = 0; i < allpixels.length; i++)
+            {
+
+                if (allpixels[i] >= 0xFF0f508f && allpixels[i] <= 0xFF204160)  {
+                    allpixels[i] = 0xFF000000;
+                }
+                if (allpixels[i] >= 0xFF145d96 && allpixels[i] <= 0xFF204160)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF145d96 && allpixels[i] <= 0xFF204160)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF012045 && allpixels[i] <= 0xFF062133)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF0a5dae && allpixels[i] <= 0xFF0e60b2)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF0a5dae && allpixels[i] <= 0xFF0e60b2)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF0d599f && allpixels[i] <= 0xFF193553)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] == 0xFF0c2740)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF0c2740)  {
+                    allpixels[i] = 0xFF000000;
+                }
+                if (allpixels[i] >= 0xFF1a4e7f)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF1a4e7f)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF2c71b2)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF2574bf)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF2d71b0)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+                if (allpixels[i] >= 0xFF5890c9 && allpixels[i]<= 0xFF6293c4)  {
+                    allpixels[i] = 0xFF000000;
+                }
+
+
+            toto.setPixels(allpixels, 0, toto.getWidth(), 0, 0, toto.getWidth(), toto.getHeight());
+            profil.setImageBitmap(toto);
+            convertBitmapToImage(toto);*/
             Log.d("UI thread", "I am the UI thread");
         }
+        }
+
+        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+        public Bitmap convertToMutable(final Context context, final Bitmap imgIn) {
+            final int width = imgIn.getWidth(), height = imgIn.getHeight();
+            final Bitmap.Config type = imgIn.getConfig();
+            File outputFile = null;
+            final File outputDir = context.getCacheDir();
+            try {
+                outputFile = File.createTempFile(Long.toString(System.currentTimeMillis()), null, outputDir);
+                outputFile.deleteOnExit();
+                final RandomAccessFile randomAccessFile = new RandomAccessFile(outputFile, "rw");
+                final FileChannel channel = randomAccessFile.getChannel();
+                final MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, imgIn.getRowBytes() * height);
+                imgIn.copyPixelsToBuffer(map);
+                imgIn.recycle();
+                final Bitmap result = Bitmap.createBitmap(width, height, type);
+                map.position(0);
+                result.copyPixelsFromBuffer(map);
+                channel.close();
+                randomAccessFile.close();
+                outputFile.delete();
+                return result;
+            } catch (final Exception e) {
+            } finally {
+                if (outputFile != null)
+                    outputFile.delete();
+            }
+            return null;
+        }
+
+        private void convertBitmapToImage(Bitmap bmp) {
+
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/Dummy");
+            if (!root.exists()) {
+                root.mkdirs();
+            } else {
+                System.out.print("Exists");
+            }
+
+            File f = new File(root, "filename.jpeg");
+            //Convert bitmap to byte array
+            Bitmap bitmap = bmp;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+
+            try {
+
+                f.createNewFile();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+            //write the bytes in file
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
     }
-}
+
+
