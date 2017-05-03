@@ -2,7 +2,6 @@ package com.sharity.sharityUser.BO;
 
 import com.fasterxml.jackson.core.SerializableString;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.clustering.ClusterItem;
 
 import java.io.Serializable;
 
