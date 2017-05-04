@@ -75,6 +75,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
     MyPagerAdapter mViewPagerAdapter;
 
+
     public interface OnNotificationUpdateHistoric {
         void TaskOnNotification(String business, String sharepoints);
     }

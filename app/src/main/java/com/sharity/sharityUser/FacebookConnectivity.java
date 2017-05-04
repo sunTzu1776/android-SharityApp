@@ -141,37 +141,33 @@ public class FacebookConnectivity {
                     @Override
                     public void done(ParseException e) {
                         Log.d("FacebookConnectivity", "Saved to parse");
-                        if (e!=null){
-
-                        }else {
-                            ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-                            String GCMsenderId=String.valueOf(R.string.parse_sender_id);
-                            installation.put("user", ParseObject.createWithoutData("_User", parseUser.getObjectId()));
-                            installation.put("badge", 0);
-                            installation.put("GCMSenderId", GCMsenderId);
-                            String[] array={"TransactionTestAndroid"};
-                            installation.put("channels", Arrays.asList(array));
-                            installation.saveInBackground();
-
-                            //Add user to localDB
-                            if (db.getUserCount()<=0){
-                                db.addUserProfil(UserSession);
-                                onFBUserCreated.OnFBUserCreated();
-                                Log.d("DB", "User Added");
-
-                            }else {
-                                db.deleteAllUser();
-                                db.addUserProfil(UserSession);
-                                onFBUserCreated.OnFBUserCreated();
-                                Log.d("DB", "User updated");
-                            }
-                        }
                     }
                 });
             }
         });
 
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        String GCMsenderId=String.valueOf(R.string.parse_sender_id);
+        installation.put("user", ParseObject.createWithoutData("_User", parseUser.getObjectId()));
+        installation.put("badge", 0);
+        installation.put("GCMSenderId", GCMsenderId);
+        String[] array={"TransactionTestAndroid"};
+        installation.put("channels", Arrays.asList(array));
+        installation.saveInBackground();
 
+
+        //Add user to localDB
+        if (db.getUserCount()<=0){
+            db.addUserProfil(UserSession);
+            onFBUserCreated.OnFBUserCreated();
+            Log.d("DB", "User Added");
+
+        }else {
+            db.deleteAllUser();
+            db.addUserProfil(UserSession);
+            onFBUserCreated.OnFBUserCreated();
+            Log.d("DB", "User updated");
+        }
     }
 
     public String getEmail() {
