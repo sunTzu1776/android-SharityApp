@@ -16,5 +16,5 @@ public interface LoginClientInteractor {
     }
 
     void loginFacebook(Activity context, OnLoginFinishedListener listener, CallbackManager manager);
-     void loginTwitter(Context context, final OnLoginFinishedListener listener);
+     void loginTwitter(final Activity context, final OnLoginFinishedListener listener);
     }

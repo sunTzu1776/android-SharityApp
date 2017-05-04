@@ -18,12 +18,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,6 +60,7 @@ import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,7 +102,8 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private StoreAdapter2 adapter2=null;
     private byte[] imageByte = null;
     private TextView username;
-    private com.sharity.sharityUser.Utils.ProfilePictureView imageView;
+    private com.sharity.sharityUser.Utils.ProfilePictureView picture_facebook;
+    private CircleImageView picture_twitter;
 
     //Field donation to charity
     private String CharityName;
@@ -147,7 +151,8 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         dons_view = (LinearLayout) inflate.findViewById(R.id.dons_view);
         recycler_charity = (RecyclerView) inflate.findViewById(R.id.recycler_charity);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
-        imageView = (com.sharity.sharityUser.Utils.ProfilePictureView) inflate.findViewById(R.id.picture_profil);
+        picture_facebook = (com.sharity.sharityUser.Utils.ProfilePictureView) inflate.findViewById(R.id.picture_facebook);
+        picture_twitter = (CircleImageView) inflate.findViewById(R.id.picture_twitter);
 
         swipeContainer.setOnRefreshListener(this);
         onItemDonateClickListener = this;
@@ -211,10 +216,19 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
     private void getProfilFromParse() {
         DatabaseHandler db = new DatabaseHandler(getActivity());
-        profile = Profile.getCurrentProfile();
-        imageView.setProfileId(profile.getId());
 
-        String objectId = getUserObjectId(getActivity());
+        //if user connected via Facebook, get picture profil
+        if (profile!= null){
+            profile = Profile.getCurrentProfile();
+            picture_facebook.setProfileId(profile.getId());
+        }else {
+            //if user connected via Twitter, get picture profil
+            String objectId = getUserObjectId(getActivity());
+            User user = db.getUser(objectId);
+            byte[] image = user.getPictureprofil();
+            Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
+            picture_twitter.setImageBitmap(PictureProfile);
+        }
 
         if (db.getUserCount() > 0 && Utils.isConnected(getContext())) {
             try {
@@ -226,17 +240,26 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                 swipeContainer.setRefreshing(false);
             }
         } else {
+            String objectId = getUserObjectId(getActivity());
             String usernameFB = profile.getName();
             User user = db.getUser(objectId);
             byte[] image = user.getPictureprofil();
             User update = new User(user.get_id(), usernameFB, user.get_email(), image);
             db.updateUser(update);
             Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
-            imageView.setProfileId(profile.getId());
+            picture_facebook.setProfileId(profile.getId());
             swipeContainer.setRefreshing(false);
             //DO network request to get User data
 
         }
+    }
+
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
     }
 
     private String getUserObjectId(Context context) {

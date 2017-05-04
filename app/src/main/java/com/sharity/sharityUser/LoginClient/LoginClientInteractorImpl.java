@@ -21,6 +21,7 @@ import com.parse.SaveCallback;
 import com.sharity.sharityUser.FacebookConnectivity;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.BO.User;
+import com.sharity.sharityUser.TwitterConnectivity;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -48,10 +49,11 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
     protected DatabaseHandler db;
     protected Activity mContext;
     @Override
-    public void loginTwitter(final Context context, final OnLoginFinishedListener listener) {
+    public void loginTwitter(final Activity context, final OnLoginFinishedListener listener) {
         ParseTwitterUtils.logIn(context, new LogInCallback() {
             @Override
             public void done(final ParseUser user, ParseException err) {
+                mContext=context;
                 if (user == null) {
                     Log.d("MyApp", "user cancelled login."+err.getMessage());
                     listener.onUsernameError();
@@ -59,32 +61,52 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
                     ParseUser.logOut();
                 } else if (user.isNew()) {
                     Log.d("MyApp", "signed up and logged in through Twitter!");
-                    getTwitterInfo_save();
-                    if (!ParseTwitterUtils.isLinked(user)) {
-                        ParseTwitterUtils.link(user, context, new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseTwitterUtils.isLinked(user)) {
-                                    Log.d("MyApp", "user logged in with Twitter!");
-                                }
+                    isnewUser=true;
+                    ObjectId_ToPref(user.getObjectId());
+                    TwitterConnectivity FBconnectivity=new TwitterConnectivity(context, AccessToken.getCurrentAccessToken(), user, isnewUser);
+                    FBconnectivity.getProfil(new TwitterConnectivity.OnTwitterUserCreated() {
+                        @Override
+                        public void UserCreated() {
+                            Log.d("TwitterConnectivity", "Saved to parse");
+                            AccessToken token = AccessToken.getCurrentAccessToken();
+                            if (!ParseTwitterUtils.isLinked(user)) {
+                                ParseTwitterUtils.link(user, context, new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException ex) {
+                                        if (ParseTwitterUtils.isLinked(user)) {
+                                            Log.d("MyApp", "user logged in with Twitter!");
+                                        }
+                                    }
+                                });
                             }
-                        });
-                    }
-                    listener.onSuccess();
+                            listener.onSuccess();
+                        }
+                    });
+
                 } else {
                     Log.d("MyApp", "User logged in through Twitter!");
-                    getTwitterInfo_save();
-                    if (!ParseTwitterUtils.isLinked(user)) {
-                        ParseTwitterUtils.link(user, context, new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseTwitterUtils.isLinked(user)) {
-                                    Log.d("MyApp", "user logged in with Twitter!");
-                                }
+                    isnewUser=false;
+                    ObjectId_ToPref(user.getObjectId());
+
+                    TwitterConnectivity FBconnectivity=new TwitterConnectivity(context, AccessToken.getCurrentAccessToken(), user, isnewUser);
+                    FBconnectivity.getProfil(new TwitterConnectivity.OnTwitterUserCreated() {
+                        @Override
+                        public void UserCreated() {
+                            Log.d("TwitterConnectivity", "Saved to parse");
+                            AccessToken token = AccessToken.getCurrentAccessToken();
+                            if (!ParseTwitterUtils.isLinked(user)) {
+                                ParseTwitterUtils.link(user, context, new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException ex) {
+                                        if (ParseTwitterUtils.isLinked(user)) {
+                                            Log.d("MyApp", "user logged in with Twitter!");
+                                        }
+                                    }
+                                });
                             }
-                        });
-                    }
-                    listener.onSuccess();
+                            listener.onSuccess();
+                        }
+                    });
                 }
             }
         });
@@ -179,43 +201,6 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
     }
 
 
-
-    private void getTwitterInfo_save(){
-        new Thread()
-        {
-            @Override
-            public void run() {
-                try {
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet verifyGet = new HttpGet(
-                            "https://api.twitter.com/1.1/account/verify_credentials.json");
-                    ParseTwitterUtils.getTwitter().signRequest(verifyGet);
-                    org.apache.http.HttpResponse response =  client.execute(verifyGet);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-                    StringBuilder builder = new StringBuilder();
-                    for (String line = null; (line = reader.readLine()) != null;) {
-                        builder.append(line).append("\n");
-                    }
-                    JSONObject credential = new JSONObject(builder.toString());
-                    final ParseUser parseUser = ParseUser.getCurrentUser();
-                    parseUser.setUsername(credential.getString("name"));
-                    parseUser.put("Twitter_screen_name", credential.getString("screen_name"));
-                    parseUser.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                        }
-                    });
-
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
 
 
     private void ObjectId_ToPref(String ObjectId){
