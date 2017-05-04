@@ -155,7 +155,6 @@ public class FacebookConnectivity {
         installation.put("channels", Arrays.asList(array));
         installation.saveInBackground();
 
-
         //Add user to localDB
         if (db.getUserCount()<=0){
             db.addUserProfil(UserSession);
