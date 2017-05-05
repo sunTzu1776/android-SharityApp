@@ -74,10 +74,13 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
+import static com.sharity.sharityUser.R.id.annuler;
 import static com.sharity.sharityUser.R.id.book_now;
 import static com.sharity.sharityUser.R.id.charity_description;
 import static com.sharity.sharityUser.R.id.points;
+import static com.sharity.sharityUser.R.id.success_donate_view;
 import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.R.layout.view_success_donate;
 import static com.sharity.sharityUser.activity.ProfilActivity.db;
 import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
@@ -125,7 +128,12 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private int sharepoints_user_donate = 0;
     private int sharepoints_user_temp;
     boolean donation=false;
-
+    private RelativeLayout frame_donate_validate;
+    private View view_donate_validate;
+    private View view_success_donate;
+    TextView success_donate_tobusiness;
+    TextView success_donate_sharepoint;
+    LinearLayout success_donate_view;
 
     public static client_Profil_fragment newInstance() {
         client_Profil_fragment myFragment = new client_Profil_fragment();
@@ -146,7 +154,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         username = (TextView) inflate.findViewById(R.id.username_login);
         do_donationTV = (TextView) inflate.findViewById(R.id.do_donationTV);
         dummyanchor = (TextView) inflate.findViewById(R.id.dummyanchor);
-
+        frame_donate_validate = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
 
         charity_description = (TextView) inflate.findViewById(R.id.charity_description);
         sharepoints_moins = (TextView) inflate.findViewById(R.id.sharepoints_moins);
@@ -258,13 +266,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         }
     }
 
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
 
     private String getUserObjectId(Context context) {
         SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
@@ -352,66 +353,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         }
     }
 
-    boolean isextand= false;
-
-    public void ShowDonateView() {
-        final RelativeLayout frameCategorie = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
-        final View mViewcategorieColapse = vinflater.inflate(R.layout.view_expand_donate, frameCategorie, false);
-        frameCategorie.addView(mViewcategorieColapse);
-       TextView valider = (TextView) mViewcategorieColapse.findViewById(R.id.valider);
-        TextView annuler = (TextView) mViewcategorieColapse.findViewById(R.id.annuler);
-        Utils.expand(mViewcategorieColapse);
-        isextand = true;
-
-        sharepoints_moins.setVisibility(View.VISIBLE);
-        sharepoints_plus.setVisibility(View.VISIBLE);
-        recycler_charity.setVisibility(View.VISIBLE);
-        charity_description.setVisibility(View.VISIBLE);
-        dons_view.setVisibility(View.VISIBLE);
-
-        if (Utils.isConnected(getApplicationContext())) {
-            get_Charity();
-
-        } else {
-        }
-
-
-        valider.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (recycler_position >= 0) {
-                    if (CharityId != null) {
-                        if (sharepoints_user_donate > 0) {
-                            CreateTransaction(CharityName, CharityId, String.valueOf(sharepoints_user_donate));
-                        } else {
-                            Toast.makeText(getActivity(), "Veuillez envoyer une valeur supérieur à 0", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Veuillez séléctionner une charité", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        annuler.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                list_dons.clear();
-                sharepoints_user_donate=0;
-                recycler_position=-1;
-                sharepoints_moins.setVisibility(View.INVISIBLE);
-                sharepoints_plus.setVisibility(View.INVISIBLE);
-                dons_view.setVisibility(View.INVISIBLE);
-                do_donationTV.setText("faire un don");
-                points.setText(String.valueOf(sharepoints_user_temp));
-                donation=false;
-                Utils.collapse(mViewcategorieColapse);
-                frameCategorie.removeView(mViewcategorieColapse);
-                isextand = false;
-             }
-        });
-    }
 
     private void get_Charity() {
         try {
@@ -471,6 +412,8 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                 if (e == null) {
                     final Number num = sharepoints_user_temp - Integer.parseInt(price);
                     UpdateUserSharepoints(num,charityName);
+                    frame_donate_validate.removeView(view_donate_validate);
+                    ShowSuccessDonation();
                 } else {
                     Log.d("Transaction", "ex" + e.getMessage());
                 }
@@ -493,7 +436,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                             if (e == null) {
                                 UpdateCharitySharepoints();
                                 points.setText(String.valueOf(sharepoints_user_donate) + " : " + String.valueOf(sharepoints_user_temp));
-                                Toast.makeText(getActivity(), "Don envoyé à "+ name, Toast.LENGTH_LONG).show();
                             } else {
                                 Log.d("okok", e.getMessage());
                             }
@@ -528,6 +470,107 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         });
     }
 
+    boolean isextand= false;
+
+    public void ShowDonateView() {
+        view_donate_validate = vinflater.inflate(R.layout.view_expand_donate, frame_donate_validate, false);
+        frame_donate_validate.addView(view_donate_validate);
+        TextView valider = (TextView) view_donate_validate.findViewById(R.id.valider);
+        TextView annuler = (TextView) view_donate_validate.findViewById(R.id.annuler);
+        Utils.expand(view_donate_validate);
+        isextand = true;
+
+        sharepoints_moins.setVisibility(View.VISIBLE);
+        sharepoints_plus.setVisibility(View.VISIBLE);
+        recycler_charity.setVisibility(View.VISIBLE);
+        charity_description.setVisibility(View.VISIBLE);
+        dons_view.setVisibility(View.VISIBLE);
+
+        if (Utils.isConnected(getApplicationContext())) {
+            get_Charity();
+
+        } else {
+        }
+
+
+        valider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recycler_position >= 0) {
+                    if (CharityId != null) {
+                        if (sharepoints_user_donate > 0) {
+                            CreateTransaction(CharityName, CharityId, String.valueOf(sharepoints_user_donate));
+                        } else {
+                            Toast.makeText(getActivity(), "Veuillez envoyer une valeur supérieur à 0", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Veuillez séléctionner une charité", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        annuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                list_dons.clear();
+                sharepoints_user_donate=0;
+                recycler_position=-1;
+                sharepoints_moins.setVisibility(View.INVISIBLE);
+                sharepoints_plus.setVisibility(View.INVISIBLE);
+                dons_view.setVisibility(View.INVISIBLE);
+                do_donationTV.setText("faire un don");
+                points.setText(String.valueOf(sharepoints_user_temp));
+                donation=false;
+                Utils.collapse(view_donate_validate);
+                frame_donate_validate.removeView(view_donate_validate);
+                isextand = false;
+            }
+        });
+    }
+
+    public void ShowSuccessDonation() {
+        dons_view.setVisibility(View.INVISIBLE);
+        view_success_donate = vinflater.inflate(R.layout.view_success_donate, frame_donate_validate, false);
+        frame_donate_validate.addView(view_success_donate);
+        TextView valider = (TextView) view_success_donate.findViewById(R.id.valider);
+        TextView partager = (TextView) view_success_donate.findViewById(R.id.partager);
+        Utils.expand(view_success_donate);
+
+        success_donate_tobusiness = (TextView) view_success_donate.findViewById(R.id.success_donate_tobusiness);
+        success_donate_sharepoint = (TextView) view_success_donate.findViewById(R.id.success_donate_sharepoint);
+        success_donate_sharepoint.setText(String.valueOf(sharepoints_user_donate)+" SHAREPOINTS "+"("+String.valueOf(sharepoints_user_donate)+"€)");
+        success_donate_tobusiness.setText("à "+CharityName);
+        if (Utils.isConnected(getApplicationContext())) {
+
+        } else {
+        }
+
+        valider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                list_dons.clear();
+                sharepoints_user_donate=0;
+                recycler_position=-1;
+                sharepoints_moins.setVisibility(View.INVISIBLE);
+                sharepoints_plus.setVisibility(View.INVISIBLE);
+                dons_view.setVisibility(View.INVISIBLE);
+                do_donationTV.setText("faire un don");
+                points.setText(String.valueOf(sharepoints_user_temp));
+                donation=false;
+                Utils.collapse(view_success_donate);
+                frame_donate_validate.removeView(view_success_donate);
+                isextand = false;
+            }
+        });
+
+        partager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+    }
 
     @Override
     public void onItemClick(int item, CharityDons bo) {

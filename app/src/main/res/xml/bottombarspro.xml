@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
-    <tab
-        id="@+id/tab_utilisateur"
-        icon="@drawable/icon_utilisateur"
-        />
-    <tab
-        id="@+id/tab_profil"
-        icon="@drawable/icon_profil"
-        />
+
     <tab
         id="@+id/tab_historique"
         icon="@drawable/icon_historique"
+        title="HISTORIQUE"
+
+        />
+
+    <tab
+        id="@+id/tab_profil"
+        icon="@drawable/icon_profil"
+        title="PROFIL"
+        />
+
+    <tab
+        id="@+id/tab_utilisateur"
+        icon="@drawable/icon_utilisateur"
+        title="PAIEMENT"
+        />
+
+    <tab
+        id="@+id/tab_mission"
+        icon="@drawable/icon_mission"
+        title="MISSION"
         />
 </tabs>

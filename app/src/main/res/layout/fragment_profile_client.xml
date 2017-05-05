@@ -196,24 +196,28 @@
             </RelativeLayout>
         </LinearLayout>
 
-        >
-        </LinearLayout>
+        > </LinearLayout>
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.8"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.8"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/dons_view"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:clickable="true"
         android:weightSum="2">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.6"
+            android:gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -223,7 +227,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center_vertical|center_horizontal|top"
-            android:layout_weight="0.8"
+            android:layout_weight="1.4"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -232,6 +236,52 @@
 
 
     </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/success_donate_view"
+        android:visibility="invisible"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        android:weightSum="4"
+        >
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+            android:textColor="#000000"
+           android:layout_weight="0.7"
+           android:textSize="17sp"
+           android:gravity="center_horizontal|center_vertical"
+           android:text="Tu viens de donner"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:textColor="@color/green"
+            android:textSize="18sp"
+            android:id="@+id/success_donate_sharepoint"
+            android:gravity="center_horizontal|center_vertical"
+            tools:text=" De SharePoint "/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:textColor="#000000"
+            android:textSize="17sp"
+            android:id="@+id/success_donate_tobusiness"
+            android:gravity="center_horizontal|center_vertical"
+            tools:text="à la ligue contre le cancer"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>
 
 </LinearLayout>
     </RelativeLayout>

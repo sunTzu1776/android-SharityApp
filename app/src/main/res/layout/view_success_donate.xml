@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_expand_success_donate"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:animateLayoutChanges="true"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/success_donate_view"
+            android:visibility="visible"
+            android:clickable="true"
+            android:layout_marginTop="20dp"
+            android:weightSum="3"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="17sp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Tu viens de donner"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/green"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/success_donate_sharepoint"
+                android:gravity="center_horizontal|center_vertical"
+                tools:text=" De SharePoint "/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/success_donate_tobusiness"
+                android:gravity="center_horizontal|center_vertical"
+                tools:text="à la ligue contre le cancer"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#75ba70"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/success_donate_view"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:id="@+id/valider"
+                    android:text="VALIDER"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF"
+                    android:layout_margin="8dp"
+                    android:id="@+id/partager"
+                    android:gravity="center"
+                    android:text="PARTAGER"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+</RelativeLayout>
