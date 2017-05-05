@@ -253,16 +253,13 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
             }
         } else {
             String objectId = getUserObjectId(getActivity());
-            String usernameFB = profile.getName();
             User user = db.getUser(objectId);
             byte[] image = user.getPictureprofil();
-            User update = new User(user.get_id(), usernameFB, user.get_email(), image);
-            db.updateUser(update);
             Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
-            picture_facebook.setProfileId(profile.getId());
+            picture_twitter.setImageBitmap(PictureProfile);
+            username.setText(user.get_name());
             swipeContainer.setRefreshing(false);
             //DO network request to get User data
-
         }
     }
 

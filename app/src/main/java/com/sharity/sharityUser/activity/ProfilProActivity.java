@@ -40,6 +40,8 @@ import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
 import java.util.ArrayList;
 
+import static com.sharity.sharityUser.R.id.tab_historique;
+import static com.sharity.sharityUser.R.id.tab_mission;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
 
 
@@ -51,7 +53,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
     private Boolean emailVerified;
     public static DatabaseHandler db;
-    static int TOTAL_PAGES=3;
+    static int TOTAL_PAGES=4;
     private ViewPager pager;
     private Toolbar toolbar;
     private BottomBar bottomBar;
@@ -193,10 +195,13 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return Pro_Paiment_fragment.newInstance();
+                return History_container_fragment.newInstance();
             } else if (position == 1) {
                 return Pro_Profil_Container_fragment.newInstance(profileSource);
             } else if (position == 2) {
+                return Pro_Paiment_fragment.newInstance();
+            }
+            else if (position == 3) {
                 return History_container_fragment.newInstance();
             }
 
@@ -214,15 +219,15 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         // To update fragment in ViewPager, we should override getItemPosition() method,
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
-            if (object instanceof Pro_Paiment_fragment) {
-                ((Pro_Paiment_fragment) object).update();
+            if (object instanceof History_container_fragment) {
+                ((History_container_fragment) object).update();
             }
             if (object instanceof Pro_Profil_Container_fragment) {
                 ((Pro_Profil_Container_fragment) object).update();
             }
 
-            if (object instanceof History_container_fragment) {
-                ((History_container_fragment) object).update();
+            if (object instanceof Pro_Paiment_fragment) {
+                ((Pro_Paiment_fragment) object).update();
             }
 
             return super.getItemPosition(object);
@@ -248,11 +253,14 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             bottomBar.setInActiveTabColor(getResources().getColor(R.color.black));
             bottomBar.setActiveTabColor(getResources().getColor(R.color.red));
             if (position==0){
-                toolbarTitle.setText("PAIMENT");
+                toolbarTitle.setText("HISTORIQUE");
             }else if (position==1){
                 toolbarTitle.setText("PROFIL");
             }else if (position==2){
-                toolbarTitle.setText("HISTORIQUE");
+                toolbarTitle.setText("PAIMENT");
+            }
+            else if (position==3){
+                toolbarTitle.setText("MISSIONS");
             }
         }
 
@@ -313,7 +321,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     @Override
     public void onTabSelected(@IdRes int tabId) {
         switch (tabId){
-            case tab_utilisateur:
+            case tab_historique:
                 pager.setCurrentItem(0,true);
                 mViewPagerAdapter.notifyDataSetChanged();
                 break;
@@ -321,8 +329,12 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 pager.setCurrentItem(1,true);
                 mViewPagerAdapter.notifyDataSetChanged();
                 break;
-            case R.id.tab_historique:
+            case tab_utilisateur:
                 pager.setCurrentItem(2,true);
+                mViewPagerAdapter.notifyDataSetChanged();
+                break;
+            case tab_mission:
+                pager.setCurrentItem(3,true);
                 mViewPagerAdapter.notifyDataSetChanged();
                 break;
         }
