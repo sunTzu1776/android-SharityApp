@@ -1,94 +1,53 @@
 package com.sharity.sharityUser.fragment.client;
 
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
-import com.facebook.login.widget.ProfilePictureView;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.CharityDons;
-import com.sharity.sharityUser.BO.History;
-import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
-import com.sharity.sharityUser.LocalDatabase.DbBitmapUtility;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.BO.User;
-import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
-import com.sharity.sharityUser.Utils.Popup_onNotification;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
-import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
-import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
-import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static android.R.attr.thumbnail;
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-import static com.sharity.sharityUser.Application.parseLiveQueryClient;
-import static com.sharity.sharityUser.Application.subscriptionHandling;
-import static com.sharity.sharityUser.R.id.annuler;
-import static com.sharity.sharityUser.R.id.book_now;
-import static com.sharity.sharityUser.R.id.charity_description;
-import static com.sharity.sharityUser.R.id.points;
-import static com.sharity.sharityUser.R.id.success_donate_view;
-import static com.sharity.sharityUser.R.id.swipeContainer;
-import static com.sharity.sharityUser.R.layout.view_success_donate;
-import static com.sharity.sharityUser.activity.ProfilActivity.db;
-import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridview;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mViewcategorieColapse;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.vinflater;
+
 
 
 /**
