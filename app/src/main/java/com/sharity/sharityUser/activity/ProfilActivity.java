@@ -1,5 +1,6 @@
 package com.sharity.sharityUser.activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,13 +30,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SubscriptionHandling;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.Drawer;
+import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
+import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.client.client_Container_Mission_fragment;
 import com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment;
 import com.sharity.sharityUser.fragment.client.client_Partenaire_list_fragment;
@@ -43,11 +52,20 @@ import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
 import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import static com.sharity.sharityUser.Application.parseLiveQueryClient;
+import static com.sharity.sharityUser.Application.subscriptionHandling;
+import static com.sharity.sharityUser.BO.CISSTransaction.transactionType;
+import static com.sharity.sharityUser.R.id.date;
 import static com.sharity.sharityUser.R.id.latitude;
+import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.R.id.tab_option;
 import static com.sharity.sharityUser.activity.ProfilActivity.TOTAL_PAGES;
+import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 
 
 /**
@@ -111,7 +129,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
             pager = (ViewPager) findViewById(R.id.pager);
             pager.setOffscreenPageLimit(0);
-            mViewPagerAdapter=new MyPagerAdapter(getSupportFragmentManager());
+            mViewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(1, true);
             pager.setOnPageChangeListener(mPageChangeListener);
@@ -165,10 +183,47 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                     }
                 }
             });
+
+            final ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
+            subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+            subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE, new
+                    SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
+                        @Override
+                        public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
+                            if (object.getBoolean("approved") == true && object.getInt("transactionType")==1) {
+                                if (object.getString("customer").equalsIgnoreCase(parseUser.getObjectId())){
+                                    Intent intent = new Intent("custom-event-name");
+                                    intent.putExtra("message", "This is my message!");
+                                    intent.putExtra("sharepoints", "");
+                                    intent.putExtra("business", "");
+                                    LocalBroadcastManager.getInstance(ProfilActivity.this).sendBroadcast(intent);
+
+                                    final int amount=object.getInt("amount");
+
+                                    if(!ProfilActivity.this.isFinishing()){
+                                        ProfilActivity.this.runOnUiThread(new Runnable() {
+                                            public void run() {
+                                                Utils.showDialog3(ProfilActivity.this, "Votre paiment d'un montant de "+amount/100+"€ à bien été validé", "Paiement", true, new Utils.Click() {
+                                                    @Override
+                                                    public void Ok() {
+                                                    }
+
+                                                    @Override
+                                                    public void Cancel() {
+
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                    Log.d("AEOEO", object.getString("transactionId"));
+                                }
+                            }
+                        }
+                    });
         }
 
     }
-
 
 
     public ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -196,8 +251,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 toolbarTitle.setText("PROFIL");
             } else if (position == 2) {
                 toolbarTitle.setText("PARTENAIRE");
-            }
-            else if (position == 3) {
+            } else if (position == 3) {
                 toolbarTitle.setText("MISSION");
             }
         }
@@ -268,11 +322,11 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 break;
             case R.id.tab_partenaire:
                 pager.setCurrentItem(2, true);
-               // updateProfil();
+                // updateProfil();
                 break;
             case R.id.tab_mission:
                 pager.setCurrentItem(3, true);
-               // updateProfil();
+                // updateProfil();
                 break;
         }
     }
@@ -289,7 +343,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
                     Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + pager.getCurrentItem());
                     if (pager.getCurrentItem() == 1 && page != null) {
-                     //   ((client_Container_Partenaire_fragment)page);
+                        //   ((client_Container_Partenaire_fragment)page);
                         Log.d("BIGGRAF", "passed");
                     }
 
@@ -327,7 +381,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if (actionBarDrawerToggle!=null) {
+        if (actionBarDrawerToggle != null) {
             actionBarDrawerToggle.syncState();
         }
     }
@@ -335,7 +389,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (actionBarDrawerToggle!=null) {
+        if (actionBarDrawerToggle != null) {
             actionBarDrawerToggle.onConfigurationChanged(newConfig);
         }
     }
@@ -374,8 +428,13 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             String sharepoints = intent.getStringExtra("sharepoints");
             String business = intent.getStringExtra("business");
             int item = pager.getCurrentItem();
-            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
-            onNotificationUpdateProfil.TaskOnNotification(business, sharepoints);
+            if (item!=1){
+                pager.setCurrentItem(1);
+                onNotificationUpdateProfil.TaskOnNotification(business, sharepoints);
+            }else {
+                onNotificationUpdateProfil.TaskOnNotification(business, sharepoints);
+            }
+//            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
             //onNotificationReceived_Display();
 
             // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
@@ -383,7 +442,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             // onNotification.displayPopupWindow(do_donationTV,getActivity(),business,sharepoints);
         }
     };
-
 
 
     protected class MyPagerAdapter extends FragmentStatePagerAdapter {
@@ -408,8 +466,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 return client_Profil_fragment.newInstance();
             } else if (position == 2) {
                 return client_Container_Partenaire_fragment.newInstance();
-            }
-            else if (position == 3) {
+            } else if (position == 3) {
                 return client_Container_Mission_fragment.newInstance();
             }
 
@@ -439,8 +496,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
             return super.getItemPosition(object);
-        };
-    };
+        }
+
+        ;
+    }
+
+    ;
 
 
     @Override
@@ -462,7 +523,8 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             return;
         }
         for (Fragment fragment : manager.getFragments()) {
-            if (fragment != null) traverseManagers(fragment.getChildFragmentManager(), managers, intent + 1);
+            if (fragment != null)
+                traverseManagers(fragment.getChildFragmentManager(), managers, intent + 1);
         }
     }
 }

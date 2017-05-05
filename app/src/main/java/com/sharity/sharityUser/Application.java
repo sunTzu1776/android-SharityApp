@@ -80,18 +80,6 @@ public class Application extends android.app.Application {
         parseUser = ParseUser.getCurrentUser();
 
         parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
-        ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
-        subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
-
-        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE, new
-                SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
-                    @Override
-                    public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
-                        if (object.getString("transactionId").equals("27stNpojGi") && object.getBoolean("approved")==true){
-                            Log.d("AEOEO",object.getString("transactionId"));
-                        }
-                    }
-                });
     }
 
 

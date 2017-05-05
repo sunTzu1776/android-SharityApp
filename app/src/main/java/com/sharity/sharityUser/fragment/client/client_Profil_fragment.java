@@ -42,6 +42,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.BO.UserLocation;
@@ -71,6 +72,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.R.attr.thumbnail;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.sharity.sharityUser.Application.parseLiveQueryClient;
+import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.R.id.book_now;
 import static com.sharity.sharityUser.R.id.charity_description;
 import static com.sharity.sharityUser.R.id.points;
@@ -156,6 +159,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
         swipeContainer.setOnRefreshListener(this);
         onItemDonateClickListener = this;
+
 
 
         do_donationTV.setOnClickListener(new View.OnClickListener() {
@@ -535,10 +539,10 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
     @Override
     public void TaskOnNotification(String business, String sharepoints) {
-        Popup_onNotification onNotification=new Popup_onNotification();
+     /*   Popup_onNotification onNotification=new Popup_onNotification();
         if (dummyanchor!=null){
             onNotification.displayPopupWindow(dummyanchor,getActivity(),"","");
-        }
+        }*/
         getTransaction();
     }
 }

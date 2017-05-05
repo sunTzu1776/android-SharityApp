@@ -55,6 +55,7 @@ import static com.sharity.sharityUser.Application.getContext;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.R.id.price;
+import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LocationUserActivity.parseUser;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
@@ -69,6 +70,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     GridView grid;
     private TextView valider;
     private EditText amount_paiment;
+    private EditText tpe;
     private TextView sharepoint_supplementary;
     private CircleImageView picture_profil;
     private TextView username_login;
@@ -95,6 +97,8 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         toastInterface=this;
         valider=(TextView)inflate.findViewById(R.id.valider);
         amount_paiment=(EditText)inflate.findViewById(R.id.amount_paiment);
+        tpe=(EditText)inflate.findViewById(R.id.tpe);
+
         sharepoint_supplementary=(TextView)inflate.findViewById(R.id.sharepoint_supplementary);
         picture_profil=(CircleImageView)inflate.findViewById(R.id.picture_profil);
         username_login=(TextView)inflate.findViewById(R.id.username_login);
@@ -126,7 +130,11 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         switch (view.getId()){
             case R.id.valider:
                 if (Utils.isConnected(getActivity())){
-                    CreateTransaction(userLocation,amount_paiment.getText().toString());
+                    if (amount_paiment.getText().toString().length()>0 && tpe.getText().toString().length()>0){
+                        CreateTransaction(userLocation,amount_paiment.getText().toString());
+                    }else {
+                        Toast.makeText(getActivity(), "Veuillez entrer un montant, et le numero de TPE", Toast.LENGTH_LONG).show();
+                    }
               //  SendNotification sendNotification= new SendNotification(getActivity(),getActivity(),userLocation,toastInterface);
               ///  sendNotification.Send(amount_paiment.getText().toString());
                 }else {
@@ -179,7 +187,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    CreateCISSTransaction(object.getObjectId(),price,object);
+                    CreateCISSTransaction(object.getObjectId(),price,object,userid.getId());
                 }
                 else {
                     Log.d(TAG, "ex" + e.getMessage());
@@ -188,23 +196,25 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         });
     }
 
-    private void CreateCISSTransaction(String transactionId,final String price,ParseObject transaction) {
+    private void CreateCISSTransaction(String transactionId,final String price,ParseObject transaction, String clientId) {
         Number num = Integer.parseInt(price);
         int amount = Integer.parseInt(price)*100;
         Number amount_cents = amount;
         CISSTransaction object = new CISSTransaction();
         object.put("approved", false);
         object.put("needsProcessing", true);
-        object.put("TPEid",206);
+        object.put("TPEid",Integer.parseInt(tpe.getText().toString()));
         object.put("amount", amount_cents);
         object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
         object.put("transactionId", transactionId);
         object.put("transactionType", 1);
+        object.put("customer", clientId);
 
         object.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    Toast.makeText(getActivity(), "Paiement envoyé", Toast.LENGTH_LONG).show();
                     UpdateBusiness();
                 }
                 else {
