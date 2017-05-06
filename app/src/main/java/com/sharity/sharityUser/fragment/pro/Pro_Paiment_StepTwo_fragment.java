@@ -25,6 +25,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.parse.SubscriptionHandling;
+import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.ParsePushNotification.SendNotification;
@@ -101,7 +102,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
 
         sharepoint_supplementary=(TextView)inflate.findViewById(R.id.sharepoint_supplementary);
         picture_profil=(CircleImageView)inflate.findViewById(R.id.picture_profil);
-        username_login=(TextView)inflate.findViewById(R.id.username_login);
+        username_login =(TextView)inflate.findViewById(R.id.username_login);
       // amount_paiment.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
         cash=(ImageView)inflate.findViewById(R.id.cash);
         CB=(ImageView)inflate.findViewById(R.id.CB);
@@ -117,6 +118,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             bmp = BitmapFactory.decodeByteArray(userLocation.getPictureProfil(), 0, userLocation.getPictureProfil().length);
             picture_profil.setImageBitmap(bmp);
         }
+        username_login.setText(userLocation.getUsername());
 
         return inflate;
     }
@@ -167,15 +169,15 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     }
 
 
-    private void CreateTransaction(final UserLocation userid, final String price) {
+    private void CreateTransaction(final UserLocation user, final String price) {
         Number num = Integer.parseInt(price);
         int amount = Integer.parseInt(price)*100;
         Number amount_cents = amount;
 
         final ParseObject object = new ParseObject("Transaction");
         object.put("business", ParseObject.createWithoutData("Business", db.getBusinessId()));
-        object.put("customer", ParseObject.createWithoutData("_User", userid.getId()));
-        object.put("sender_name", userid.getUsername());
+        object.put("customer", ParseObject.createWithoutData("_User", user.getId()));
+        object.put("sender_name", user.getUsername());
         object.put("recipient_name", db.getBusinessName());
         object.put("amount", amount_cents);
         object.put("currency_code", "EUR");
@@ -187,7 +189,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    CreateCISSTransaction(object.getObjectId(),price,object,userid.getId());
+                    CreateCISSTransaction(object.getObjectId(),price,object,user);
                 }
                 else {
                     Log.d(TAG, "ex" + e.getMessage());
@@ -196,10 +198,10 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         });
     }
 
-    private void CreateCISSTransaction(String transactionId,final String price,ParseObject transaction, String clientId) {
+    private void CreateCISSTransaction(final String transactionId, final String price, ParseObject transaction, final UserLocation client) {
         Number num = Integer.parseInt(price);
         int amount = Integer.parseInt(price)*100;
-        Number amount_cents = amount;
+        final Number amount_cents = amount;
         CISSTransaction object = new CISSTransaction();
         object.put("approved", false);
         object.put("needsProcessing", true);
@@ -208,13 +210,16 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
         object.put("transactionId", transactionId);
         object.put("transactionType", 1);
-        object.put("customer", clientId);
+        object.put("customer", client.getId());
 
         object.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    BusinessTransaction transaction=new BusinessTransaction(transactionId,"false",String.valueOf(amount_cents),client.getUsername(),"Payment");
+                    db.addBusinessTransaction(transaction);
                     Toast.makeText(getActivity(), "Paiement envoyé", Toast.LENGTH_LONG).show();
+                    Log.d("BusinessTransaction",String.valueOf(db.getBusinessTransactionCount()));
                     UpdateBusiness();
                 }
                 else {

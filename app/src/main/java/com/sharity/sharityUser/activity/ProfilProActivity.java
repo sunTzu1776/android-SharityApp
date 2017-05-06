@@ -7,11 +7,13 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,9 +28,12 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SubscriptionHandling;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import com.sharity.sharityUser.BO.Business;
+import com.sharity.sharityUser.BO.BusinessTransaction;
+import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
@@ -40,6 +45,9 @@ import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
 import java.util.ArrayList;
 
+import static com.parse.SubscriptionHandling.Event.UPDATE;
+import static com.sharity.sharityUser.Application.parseLiveQueryClient;
+import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.R.id.tab_historique;
 import static com.sharity.sharityUser.R.id.tab_mission;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
@@ -93,7 +101,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             drawersItems.add(2, new Drawer(R.drawable.logo, "Informations de profil", 1));
             drawersItems.add(3, new Drawer(R.drawable.logo, "CGU", 1));
             drawersItems.add(4, new Drawer(R.drawable.logo, "Contacts", 1));
-            drawersItems.add(5, new Drawer(R.drawable.logo, "Noter l'application", 1));
+            drawersItems.add(5, new Drawer(R.drawable.logo, "Noter l'app", 1));
             drawersItems.add(6, new Drawer(R.drawable.logo, "Déconnexion", 1));
 
             myDrawer = (ListView) findViewById(R.id.my_drawer);
@@ -182,6 +190,45 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 }
             }
         });
+
+
+            final ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
+        subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+        subscriptionHandling.handleEvent(UPDATE, new
+                SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
+                    @Override
+                    public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
+                        Log.d("BusinessCISSTransaction","UPDATE");
+                        if (object.getBoolean("approved") == true && object.getInt("transactionType")==1) {
+                            if (!db.getAllTransactions().isEmpty()){
+                            for (BusinessTransaction businessTransaction : db.getAllTransactions()) {
+                                if (object.getString("transactionId").equalsIgnoreCase(businessTransaction.getTransactionId())) {
+                                    db.deleteTransaction(object.getString("transactionId"));
+                                    final int amount=object.getInt("amount");
+
+                                    if(!ProfilProActivity.this.isFinishing()){
+                                        ProfilProActivity.this.runOnUiThread(new Runnable() {
+                                            public void run() {
+                                                Utils.showDialog3(ProfilProActivity.this, "Votre paiment d'un montant de "+amount/100+"€ à bien été validé", "Paiement", true, new Utils.Click() {
+                                                    @Override
+                                                    public void Ok() {
+                                                    }
+
+                                                    @Override
+                                                    public void Cancel() {
+
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                            }
+
+                        }
+                    }
+                });
 
     }
 

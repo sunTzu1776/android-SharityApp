@@ -8,8 +8,13 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.sharity.sharityUser.BO.Business;
+import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.User;
 
+import java.util.ArrayList;
+
+import static android.R.attr.name;
+import static com.facebook.internal.FacebookRequestErrorClassification.KEY_NAME;
 import static com.sharity.sharityUser.R.id.RIB;
 import static com.sharity.sharityUser.R.id.Siret;
 import static com.sharity.sharityUser.R.id.address;
@@ -52,6 +57,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SIRET = "siret";
     private static final String KEY_EMAILVERIFIED="emailverified";
 
+    private static final String BusinessTransaction = "BusinessTransaction";
+    private static final String KEY_BISTRANSOBJECTID = "objectidTransaction";
+    private static final String KEY_BISTRANSAPPROVED = "transactionApproved";
+    private static final String KEY_BISTRANSTYPE = "transactionType";
+    private static final String KEY_BISTRANSAMOUNT = "transactionAmount";
+    private static final String KEY_BISTRANSCLIENTNAME= "transactionClient";
 
 
     public DatabaseHandler(Context context) {
@@ -63,11 +74,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
          String CREATE_TABLE_IMAGE = "CREATE TABLE " + User + "("+KEY_OBJECTID + " TEXT,"+ KEY_USERNAME + " TEXT," + KEY_EMAIL + " TEXT," + KEY_IMAGE + " BLOB,"+ KEY_CODE + " TEXT);";
         db.execSQL(CREATE_TABLE_IMAGE);
+
         String CREATE_TABLE_BUSINESS = "CREATE TABLE " + Business + "("+KEY_BISOBJECTID + " TEXT,"+ KEY_BISUSERNAME + " TEXT," + KEY_OWNER +" TEXT,"
                 + KEY_OFFICERNAME +" TEXT," + KEY_BUSINESSNAME +" TEXT," + KEY_RIB +" TEXT,"+ KEY_SIRET +" TEXT,"
                 + KEY_TELEPHONE +" TEXT," + KEY_ADDRESS +" TEXT," + KEY_LATITUDE +" TEXT," + KEY_LONGITUDE +" TEXT,"+ KEY_MAIL +" TEXT,"+ KEY_EMAILVERIFIED + " TEXT);";
         db.execSQL(CREATE_TABLE_BUSINESS);
 
+        String CREATE_TABLE_BusinessTransactionPayment = "CREATE TABLE " + BusinessTransaction + "("+ KEY_BISTRANSOBJECTID +" TEXT," + KEY_BISTRANSAPPROVED +" TEXT," + KEY_BISTRANSAMOUNT +" TEXT,"+ KEY_BISTRANSCLIENTNAME +" TEXT,"+ KEY_BISTRANSTYPE + " TEXT);";
+        db.execSQL(CREATE_TABLE_BusinessTransactionPayment);
 
     }
 
@@ -78,7 +92,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + User);
         db.execSQL("DROP TABLE IF EXISTS " + Business);
-
+        db.execSQL("DROP TABLE IF EXISTS " + BusinessTransaction);
         onCreate(db);
     }
 
@@ -328,5 +342,71 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
+    /**
+     * BUSINESS TRANSACTION PAIMENT
+     *
+     * */
 
+    public void addBusinessTransaction(BusinessTransaction user) throws SQLiteException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_BISTRANSOBJECTID, user.getTransactionId());
+        cv.put(KEY_BISTRANSAPPROVED, user.isApproved());
+        cv.put(KEY_BISTRANSAMOUNT,user.getAmount());
+        cv.put(KEY_BISTRANSCLIENTNAME,user.getClientName());
+        cv.put(KEY_BISTRANSTYPE,user.getType());
+        db.insert(BusinessTransaction, null, cv);
+        db.close(); // Closing database connection
+    }
+
+
+    public String getTransaction(String objectidTransaction) {
+        Cursor cursor = null;
+        String empName = "";
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            cursor = db.rawQuery("SELECT objectidTransaction FROM BusinessTransaction WHERE objectidTransaction=?", new String[] {objectidTransaction + ""});
+            if(cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                empName = cursor.getString(cursor.getColumnIndex("objectidTransaction"));
+            }
+            return empName;
+        }finally {
+            cursor.close();
+        }
+    }
+
+    //---deletes a Transaction---
+
+
+    public Integer deleteTransaction (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("BusinessTransaction",KEY_BISTRANSOBJECTID +" = ? ",
+                new String[] { id });
+    }
+
+
+    public ArrayList<BusinessTransaction> getAllTransactions() {
+        ArrayList<BusinessTransaction> array_list = new ArrayList<BusinessTransaction>();
+
+        //hp = new HashMap();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from " + BusinessTransaction, null );
+        res.moveToFirst();
+
+        while(res.isAfterLast() == false){
+            array_list.add(new BusinessTransaction(res.getString(res.getColumnIndex(KEY_BISTRANSOBJECTID)),res.getString(res.getColumnIndex(KEY_BISTRANSAPPROVED)),res.getString(res.getColumnIndex(KEY_BISTRANSAMOUNT)),res.getString(res.getColumnIndex(KEY_BISTRANSCLIENTNAME)),res.getString(res.getColumnIndex(KEY_BISTRANSTYPE))));
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public int getBusinessTransactionCount() {
+        String countQuery = "SELECT  * FROM " + BusinessTransaction;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
 }
