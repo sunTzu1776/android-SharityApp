@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,16 +21,21 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SubscriptionHandling;
 import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.CISSTransaction;
+import com.sharity.sharityUser.BO.TPE;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.ParsePushNotification.SendNotification;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.Dialog_TPE_Businness;
 import com.sharity.sharityUser.Utils.ToastInterface;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LocationUserActivity;
@@ -56,6 +62,7 @@ import static com.sharity.sharityUser.Application.getContext;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.R.id.price;
+import static com.sharity.sharityUser.R.id.top;
 import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
 import static com.sharity.sharityUser.activity.LocationUserActivity.parseUser;
@@ -71,7 +78,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     GridView grid;
     private TextView valider;
     private EditText amount_paiment;
-    private EditText tpe;
+    private TextView tpe;
     private TextView sharepoint_supplementary;
     private CircleImageView picture_profil;
     private TextView username_login;
@@ -79,6 +86,9 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     private ImageView CB;
     private  UserLocation userLocation;
     private ToastInterface toastInterface;
+    private Dialog_TPE_Businness.TPEDialog tpeDialog;
+    private Dialog_TPE_Businness dialog;
+    private ParseObject tpeObject=null;
 
     public static Pro_Paiment_StepTwo_fragment newInstance(UserLocation userLocation) {
         Pro_Paiment_StepTwo_fragment myFragment = new Pro_Paiment_StepTwo_fragment();
@@ -98,7 +108,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         toastInterface=this;
         valider=(TextView)inflate.findViewById(R.id.valider);
         amount_paiment=(EditText)inflate.findViewById(R.id.amount_paiment);
-        tpe=(EditText)inflate.findViewById(R.id.tpe);
+        tpe=(TextView)inflate.findViewById(R.id.tpe);
 
         sharepoint_supplementary=(TextView)inflate.findViewById(R.id.sharepoint_supplementary);
         picture_profil=(CircleImageView)inflate.findViewById(R.id.picture_profil);
@@ -120,6 +130,36 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         }
         username_login.setText(userLocation.getUsername());
 
+        tpe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm= getActivity().getSupportFragmentManager();
+                dialog=new Dialog_TPE_Businness();
+                dialog.show(fm,"Dialog_TPE_Businness");
+                dialog.setOnDialogClickedListener(new Dialog_TPE_Businness.TPEDialog() {
+                    @Override
+                    public void onTPEValidate(ParseObject tpe1) {
+                        tpeObject= tpe1;
+                        Log.d("TPE",tpeObject.getString("name")+"  "+tpeObject.getObjectId());
+                        tpe.setText(tpeObject.getString("name"));
+                        if (dialog.isVisible()){
+                            if (dialog!=null){
+                                dialog.dismiss();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onTPECancel() {
+                        if (dialog.isVisible()){
+                            if (dialog!=null){
+                                dialog.dismiss();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
         return inflate;
     }
 
@@ -132,10 +172,12 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         switch (view.getId()){
             case R.id.valider:
                 if (Utils.isConnected(getActivity())){
-                    if (amount_paiment.getText().toString().length()>0 && tpe.getText().toString().length()>0){
-                        CreateTransaction(userLocation,amount_paiment.getText().toString());
-                    }else {
-                        Toast.makeText(getActivity(), "Veuillez entrer un montant, et le numero de TPE", Toast.LENGTH_LONG).show();
+                    if (tpeObject!=null) {
+                        if (amount_paiment.getText().toString().length() > 0 && tpe.getText().toString().length() > 0) {
+                            CreateTransaction(userLocation, amount_paiment.getText().toString());
+                        } else {
+                            Toast.makeText(getActivity(), "Veuillez entrer un montant, et le numero de TPE", Toast.LENGTH_LONG).show();
+                        }
                     }
               //  SendNotification sendNotification= new SendNotification(getActivity(),getActivity(),userLocation,toastInterface);
               ///  sendNotification.Send(amount_paiment.getText().toString());
@@ -205,7 +247,11 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         CISSTransaction object = new CISSTransaction();
         object.put("approved", false);
         object.put("needsProcessing", true);
-        object.put("TPEid",Integer.parseInt(tpe.getText().toString()));
+       // object.put("tpes", ParseObject.createWithoutData("TPE", tpeObject.get_id()));
+        ParseRelation<ParseObject> relation = object.getRelation("tpes");
+        relation.add(tpeObject);
+        object.put("tpes",relation);
+
         object.put("amount", amount_cents);
         object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
         object.put("transactionId", transactionId);
@@ -219,7 +265,6 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
                     BusinessTransaction transaction=new BusinessTransaction(transactionId,"false",String.valueOf(amount_cents),client.getUsername(),"Payment");
                     db.addBusinessTransaction(transaction);
                     Toast.makeText(getActivity(), "Paiement envoyé", Toast.LENGTH_LONG).show();
-                    Log.d("BusinessTransaction",String.valueOf(db.getBusinessTransactionCount()));
                     UpdateBusiness();
                 }
                 else {
@@ -288,6 +333,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     private void DoPaiment(){
 
     }
+
 
    /* Call post(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);

@@ -9,6 +9,7 @@ import static com.facebook.AccessToken.USER_ID_KEY;
 @ParseClassName("CISSTransaction")
 public class CISSTransaction extends ParseObject {
 
+
     public static final String approved = "approved";
     public static final String needsProcessing = "needsProcessing";
     public static final String TPEid = "TPEid";

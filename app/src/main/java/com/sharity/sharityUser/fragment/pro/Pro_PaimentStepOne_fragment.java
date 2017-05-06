@@ -145,7 +145,7 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
             geoPoint = new ParseGeoPoint(Double.valueOf(business.getLatitude()), Double.valueOf(business.get_longitude()));
 
             final ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
-            query.whereEqualTo("userIsClient", true);
+            query.whereEqualTo("type", 0);
             query.whereWithinKilometers("geoloc", geoPoint, 0.70);
 
             query.findInBackground(new FindCallback<ParseObject>() {

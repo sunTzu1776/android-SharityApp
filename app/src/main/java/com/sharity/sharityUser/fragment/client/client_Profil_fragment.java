@@ -36,6 +36,7 @@ import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.BO.User;
+import com.sharity.sharityUser.Utils.GPSservice;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
@@ -126,8 +127,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
         swipeContainer.setOnRefreshListener(this);
         onItemDonateClickListener = this;
-
-
 
         do_donationTV.setOnClickListener(new View.OnClickListener() {
             @Override

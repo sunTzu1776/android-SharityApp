@@ -120,8 +120,9 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
+                android:layout_height="0dp"
+                android:layout_weight="1.4"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:theme="@style/TextLabel"
                 >
@@ -132,7 +133,8 @@
                     android:id="@+id/amount_paiment"
                     android:textSize="15sp"
                     android:textColor="@color/black"
-                    android:layout_weight="2.5"
+                    android:layout_weight="2.2"
+                    android:layout_gravity="center_horizontal|center_vertical"
                     android:inputType="number"
                     android:ems="10"
                     android:gravity="bottom|center"
@@ -141,28 +143,43 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1.2"
                 android:gravity="center"
-                android:theme="@style/TextLabel"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:weightSum="3"
                 >
 
-                <EditText
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/tpe"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:textColor="@color/black"
-                    android:layout_weight="2.5"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:gravity="bottom|center"
-                    android:hint="TPE"
+                    android:gravity="center|bottom"
+                    android:text="Selectionner un TPE"
                     />
 
-            </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:gravity="center|top"
+                android:weightSum="100">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0.95dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_gravity="top"
+                    android:layout_weight="100"
+                    android:background="@color/red">
+                </View>
+            </LinearLayout>
 
         </LinearLayout>
 

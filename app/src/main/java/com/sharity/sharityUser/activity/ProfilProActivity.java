@@ -1,6 +1,9 @@
 package com.sharity.sharityUser.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -58,7 +61,7 @@ import static com.sharity.sharityUser.R.id.tab_utilisateur;
  */
 public class ProfilProActivity extends AppCompatActivity implements OnTabSelectListener {
 
-
+    private IntentFilter mIntent;
     private Boolean emailVerified;
     public static DatabaseHandler db;
     static int TOTAL_PAGES=4;
@@ -76,16 +79,19 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     public static ProfilProActivity profilProActivity;
     public static String profileSource;
     public ListenFromActivity activityListener;
-
+    private OnConfirmationPaiment onConfirmationPaiment;
     public interface ListenFromActivity {
         void doSomethingInFragment(String frag);
+    }
+
+    public interface OnConfirmationPaiment{
+        void TaskOnConfirmation(String amount, String clientName);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pro);
-
 
         if (savedInstanceState == null) {
             db = new DatabaseHandler(this);
@@ -206,22 +212,10 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                                     db.deleteTransaction(object.getString("transactionId"));
                                     final int amount=object.getInt("amount");
 
-                                    if(!ProfilProActivity.this.isFinishing()){
-                                        ProfilProActivity.this.runOnUiThread(new Runnable() {
-                                            public void run() {
-                                                Utils.showDialog3(ProfilProActivity.this, "Votre paiment d'un montant de "+amount/100+"€ à bien été validé", "Paiement", true, new Utils.Click() {
-                                                    @Override
-                                                    public void Ok() {
-                                                    }
-
-                                                    @Override
-                                                    public void Cancel() {
-
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
+                                    Intent intent = new Intent("paiment_businessEvent");
+                                    intent.putExtra("amount", String.valueOf(amount/100));
+                                    intent.putExtra("clientName","ee");
+                                    LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
                                 }
                             }
                             }
@@ -457,6 +451,64 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     {
         super.onConfigurationChanged(newConfig);
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            final String amount = intent.getStringExtra("amount");
+            String clientName = intent.getStringExtra("clientName");
+            int item = pager.getCurrentItem();
+            if (item!=2){
+                if(!ProfilProActivity.this.isFinishing()){
+                    ProfilProActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Utils.showDialog3(ProfilProActivity.this, "Votre paiment d'un montant de "+amount+"€ à bien été validé", "Paiement", true, new Utils.Click() {
+                                @Override
+                                public void Ok() {
+                                }
+
+                                @Override
+                                public void Cancel() {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }else {
+                onConfirmationPaiment.TaskOnConfirmation(amount, clientName);
+            }
+//            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
+            //onNotificationReceived_Display();
+
+            // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
+            // Popup_onNotification onNotification=new Popup_onNotification();
+            // onNotification.displayPopupWindow(do_donationTV,getActivity(),business,sharepoints);
+        }
+    };
+
+    //Notification handler
+    public void setConfirmationListener(ProfilProActivity.OnConfirmationPaiment onConfirmationPaiment) {
+        this.onConfirmationPaiment = onConfirmationPaiment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //registerReceiver(statusReceiver,mIntent);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("paiment_businessEvent"));
+    }
+
+    @Override
+    public void onPause() {
+        if (mIntent != null) {
+            this.unregisterReceiver(mMessageReceiver);
+            mIntent = null;
+        }
+        super.onPause();
     }
 
 }

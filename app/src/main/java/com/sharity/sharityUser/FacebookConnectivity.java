@@ -124,9 +124,8 @@ public class FacebookConnectivity {
             parseUser.put("fcm_device_id", getFCMToken(context));
         }
         parseUser.put("emailVerified",true);
-        parseUser.put("userIsBusiness",false);
-        parseUser.put("userIsCharity",false);
-        parseUser.put("userIsClient",true);
+        parseUser.put("type",0); //is user
+
 
         byte[] data = profil;
         String thumbName = parseUser.getUsername().replaceAll("\\s+", "");

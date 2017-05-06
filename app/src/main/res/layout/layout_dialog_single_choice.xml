@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_editingseq"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/title"
+            android:gravity="center_vertical"
+            android:textColor="@color/green"
+            android:textSize="16.5sp"
+            android:text="Sélectionner un TPE"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9">
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dumm1"
+            android:gravity="center_vertical"
+            android:textColor="@color/green"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            android:text=""
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/memoriser"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            android:text="Mémoriser pour les prochains paiements"
+            android:layout_marginLeft="15dp"
+            />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/memoriser"
+            android:gravity="right"
+            android:id="@+id/box_TPE"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dumm2"
+            android:gravity="center_vertical"
+            android:textColor="@color/green"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            android:text=""
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:layout_weight="0.3"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+       <TextView
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:text="ANNULER"
+           android:textColor="@color/black"
+           android:gravity="center"
+           android:id="@+id/annuler"
+           android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="VALIDER"
+            android:textColor="@color/red"
+            android:gravity="center"
+            android:id="@+id/valider"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:layout_weight="0.2"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="VALIDER"
+            android:textColor="@color/red"
+            android:gravity="center"
+            android:id="@+id/dummy"
+            android:visibility="invisible"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -233,7 +233,7 @@ public class Pro_Partenaire_fragment extends Fragment implements  GoogleApiClien
         locationUser.clear();
         mMap.clear();
         final ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
-        query.whereNotEqualTo("userIsBusiness",true);
+        query.whereNotEqualTo("type",1);
         query.whereWithinKilometers("geoloc", geoPoint, 0.70);
 
         query.findInBackground(new FindCallback<ParseObject>() {

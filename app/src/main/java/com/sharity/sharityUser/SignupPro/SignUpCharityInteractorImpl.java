@@ -168,10 +168,7 @@ public class SignUpCharityInteractorImpl implements SignUpProInteractor {
         user.setPassword(password);
         user.setEmail(email);
         if (_type.equals("charite")) {
-            user.put("userIsCharity", true);
-            user.put("userIsBusiness", false);
-            user.put("userIsClient",false);
-
+            user.put("type",2); //is charity
         }
 
         user.signUpInBackground(new SignUpCallback() {
