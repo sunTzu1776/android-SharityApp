@@ -55,7 +55,6 @@ public class LoginClientInteractorImpl implements LoginClientInteractor {
             public void done(final ParseUser user, ParseException err) {
                 mContext=context;
                 if (user == null) {
-                    Log.d("MyApp", "user cancelled login."+err.getMessage());
                     listener.onUsernameError();
                     error = true;
                     ParseUser.logOut();

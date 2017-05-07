@@ -57,6 +57,7 @@
             android:id="@+id/buttonmap"
             android:layout_margin="10dp"
             android:text="map"
+            android:visibility="invisible"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/border_color_button_pro"
