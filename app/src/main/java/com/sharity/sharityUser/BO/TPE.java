@@ -4,6 +4,8 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 /**
  * Created by Moi on 21/11/15.
  */
@@ -31,6 +33,7 @@ public class TPE extends ParseObject {
         put("name", value);
     }
 
+
     public String getTPEid() {
         return getString("TPEid");
     }
@@ -50,5 +53,20 @@ public class TPE extends ParseObject {
         return getString("objectId");
     }
 
+    public Date getcreatedAt() {
+        return getDate("createdAt");
+    }
+
+    public void setcreatedAt(Date value) {
+        put("createdAt", value);
+    }
+
+    public Date getupdatedAt() {
+        return getDate("updatedAt");
+    }
+
+    public void setupdatedAt(Date value) {
+        put("updatedAt", value);
+    }
 
 }

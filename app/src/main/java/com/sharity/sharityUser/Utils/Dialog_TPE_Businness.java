@@ -3,6 +3,7 @@ package com.sharity.sharityUser.Utils;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,11 +15,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -27,6 +30,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.BO.TPE;
+import com.sharity.sharityUser.BO.TPEBO;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.fragment.Inscription1CallBack;
@@ -34,7 +38,11 @@ import com.sharity.sharityUser.fragment.pro.Pro_Paiment_StepTwo_fragment;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.sharity.sharityUser.R.id.annuler;
+import static com.sharity.sharityUser.R.id.box_TPE;
 
 
 /**
@@ -43,6 +51,7 @@ import java.util.List;
 
 public class Dialog_TPE_Businness extends DialogFragment {
 
+    TPEBO TPE;
     private ArrayList<ParseObject> tpeList = new ArrayList<ParseObject>();
     private ArrayAdapter<String> adapter;
     private ArrayList<String> list = new ArrayList<String>();
@@ -52,7 +61,6 @@ public class Dialog_TPE_Businness extends DialogFragment {
     public interface TPEDialog{
         public void onTPEValidate(ParseObject tpe1);
         public void onTPECancel();
-
     }
 
     public static Dialog_TPE_Businness newInstance() {
@@ -70,11 +78,11 @@ public class Dialog_TPE_Businness extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-       View inflate = inflater.inflate(R.layout.layout_dialog_single_choice, container, false);
+       final View inflate = inflater.inflate(R.layout.layout_dialog_single_choice, container, false);
         listView = (ListView) inflate.findViewById(R.id.listview);
         TextView valider=(TextView) inflate.findViewById(R.id.valider);
         TextView annuler=(TextView) inflate.findViewById(R.id.annuler);
-
+        final CheckBox box_TPE=(CheckBox) inflate.findViewById(R.id.box_TPE);
 
         get_TPE();
 
@@ -91,8 +99,12 @@ public class Dialog_TPE_Businness extends DialogFragment {
                 if (selectedFromList!=null){
                 for (ParseObject tpe : tpeList){
                     if (selectedFromList.equalsIgnoreCase(tpe.getString("name"))){
-                        ParseObject tpe1= tpe;
-                        tpeDialog.onTPEValidate(tpe1);
+                        if (box_TPE.isChecked()){
+                          //  TPE=new TPEBO(tpe.get_id(),tpe.get_name(),tpe.get_TPEid(),tpe.getCreatedAt(),tpe.getUpdatedAt());
+                           // setTPE_Preferences(tpe);
+                        }
+                        //TPE=new TPEBO(tpe.get_id(),tpe.get_name(),tpe.get_TPEid(),tpe.getCreatedAt(),tpe.getUpdatedAt());
+                        tpeDialog.onTPEValidate(tpe);
                         break;
                     }
                 }
@@ -123,10 +135,11 @@ public class Dialog_TPE_Businness extends DialogFragment {
                             final String name = object.getString("name");
                             final String TPEid = String.valueOf(object.getInt("TPEid"));
                             final String id = object.getObjectId();
+                            final Date createdAt = object.getCreatedAt();
+                            final Date updatedAt = object.getUpdatedAt();
 
                             tpeList.add(object);
                             list.add(name);
-
                         }
                         String[] array = list.toArray(new String[0]);
 
@@ -141,6 +154,15 @@ public class Dialog_TPE_Businness extends DialogFragment {
         }
     }
 
+    private void setTPE_Preferences(ParseObject caisseid) {
+        SharedPreferences pref = getActivity().getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(caisseid); // myObject - instance of MyObject
+        editor.putString("TPEpref", json);
+        editor.commit();
+
+    }
 }
 
 

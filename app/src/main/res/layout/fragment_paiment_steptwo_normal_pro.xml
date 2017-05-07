@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="7.7"
+    android:weightSum="5"
     android:background="@color/white"
     tools:context="testappparse.guilla.com.testappparse.testappparse.guilla.com.sharity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="1.5"
         android:orientation="vertical"
         android:weightSum="7.7">
 
@@ -66,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_weight="0.8"
+        android:layout_weight="0.6"
         android:weightSum="2">
 
         <LinearLayout
@@ -105,102 +105,72 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="2"
-        android:gravity="center_horizontal|center_vertical">
+        android:layout_weight="1.2"
+        android:weightSum="2">
 
-
-        <LinearLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:gravity="bottom"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:layout_weight="0.3"
-            android:weightSum="2.5">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:theme="@style/TextLabel"
+            >
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1.4"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:theme="@style/TextLabel"
-                >
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/amount_paiment"
-                    android:textSize="15sp"
-                    android:textColor="@color/black"
-                    android:layout_weight="2.2"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:gravity="bottom|center"
-                    android:hint="prix"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1.2"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                android:weightSum="3"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tpe"
-                    android:textSize="13sp"
-                    android:textColor="@color/black"
-                    android:gravity="center|bottom"
-                    android:text="Selectionner un TPE"
-                    />
-
-            </LinearLayout>
-            <LinearLayout
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:gravity="center|top"
-                android:weightSum="100">
+                android:layout_height="match_parent"
+                android:id="@+id/amount_paiment"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:inputType="number"
+                android:ems="10"
+                android:gravity="bottom|center"
+                android:hint="prix"
+                />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0.95dp"
-                    android:layout_marginTop="1dp"
-                    android:layout_gravity="top"
-                    android:layout_weight="100"
-                    android:background="@color/red">
-                </View>
-            </LinearLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
 
-            <TextView
-                android:layout_width="match_parent"
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tpe"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:theme="@style/TextLabel"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:gravity="bottom|center_horizontal"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Selectionner un TPE"
+                    />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="montant du paiment"
-                android:id="@+id/paiment_classique"
-                android:gravity="center_horizontal|top"
-                android:textColor="@color/black"
-            />
+                android:layout_toRightOf="@+id/tpe"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/modifyTPE"
+                android:visibility="invisible"
+                android:layout_marginBottom="3dp"
+                android:src="@drawable/ic_error"
+                >
+            </ImageView>
 
         </RelativeLayout>
-
-
-
     </LinearLayout>
 
 
@@ -241,7 +211,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.7"
+        android:layout_weight="0.7"
         android:gravity="center_horizontal">
 
         <TextView

@@ -1,7 +1,9 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -32,6 +35,7 @@ import com.parse.SubscriptionHandling;
 import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.TPE;
+import com.sharity.sharityUser.BO.TPEBO;
 import com.sharity.sharityUser.BO.UserLocation;
 import com.sharity.sharityUser.ParsePushNotification.SendNotification;
 import com.sharity.sharityUser.R;
@@ -56,6 +60,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.R.attr.name;
+import static android.R.id.message;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 import static com.sharity.sharityUser.Application.getContext;
@@ -78,7 +84,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     GridView grid;
     private TextView valider;
     private EditText amount_paiment;
-    private TextView tpe;
+    private EditText tpe;
     private TextView sharepoint_supplementary;
     private CircleImageView picture_profil;
     private TextView username_login;
@@ -89,7 +95,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
     private Dialog_TPE_Businness.TPEDialog tpeDialog;
     private Dialog_TPE_Businness dialog;
     private ParseObject tpeObject=null;
-
+    private ImageView modifyTPE;
     public static Pro_Paiment_StepTwo_fragment newInstance(UserLocation userLocation) {
         Pro_Paiment_StepTwo_fragment myFragment = new Pro_Paiment_StepTwo_fragment();
         Bundle args = new Bundle();
@@ -108,64 +114,62 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         toastInterface=this;
         valider=(TextView)inflate.findViewById(R.id.valider);
         amount_paiment=(EditText)inflate.findViewById(R.id.amount_paiment);
-        tpe=(TextView)inflate.findViewById(R.id.tpe);
-
+        tpe=(EditText)inflate.findViewById(R.id.tpe);
         sharepoint_supplementary=(TextView)inflate.findViewById(R.id.sharepoint_supplementary);
         picture_profil=(CircleImageView)inflate.findViewById(R.id.picture_profil);
         username_login =(TextView)inflate.findViewById(R.id.username_login);
+        modifyTPE=(ImageView)inflate.findViewById(R.id.modifyTPE);
+
+
       // amount_paiment.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
         cash=(ImageView)inflate.findViewById(R.id.cash);
         CB=(ImageView)inflate.findViewById(R.id.CB);
-
-
         cash.setOnClickListener(this);
         CB.setOnClickListener(this);
         valider.setOnClickListener(this);
 
         userLocation= (UserLocation) getArguments().getSerializable("user");
+        username_login.setText(userLocation.getUsername());
+
         if (userLocation.getPictureProfil()!=null){
             Bitmap bmp = null;
             bmp = BitmapFactory.decodeByteArray(userLocation.getPictureProfil(), 0, userLocation.getPictureProfil().length);
             picture_profil.setImageBitmap(bmp);
         }
-        username_login.setText(userLocation.getUsername());
+
+      /*  if (getTPE_CheckEmpty(getActivity()).length()>1){
+            tpeObject=getTPE_Preference(getActivity());
+            tpe.setText("TPE : "+tpeObject.getString("name"));
+            modifyTPE.setVisibility(View.VISIBLE);
+        }else {
+            modifyTPE.setVisibility(View.INVISIBLE);
+        }     */
+
 
         tpe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm= getActivity().getSupportFragmentManager();
-                dialog=new Dialog_TPE_Businness();
-                dialog.show(fm,"Dialog_TPE_Businness");
-                dialog.setOnDialogClickedListener(new Dialog_TPE_Businness.TPEDialog() {
-                    @Override
-                    public void onTPEValidate(ParseObject tpe1) {
-                        tpeObject= tpe1;
-                        Log.d("TPE",tpeObject.getString("name")+"  "+tpeObject.getObjectId());
-                        tpe.setText(tpeObject.getString("name"));
-                        if (dialog.isVisible()){
-                            if (dialog!=null){
-                                dialog.dismiss();
-                            }
-                        }
-                    }
-                    @Override
-                    public void onTPECancel() {
-                        if (dialog.isVisible()){
-                            if (dialog!=null){
-                                dialog.dismiss();
-                            }
-                        }
-                    }
-                });
+                ShowTPEDialog();
+            }
+        });
+
+        modifyTPE.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // if (getTPE_CheckEmpty(getActivity()).length()>0){
+                    ShowTPEDialog();
+              //  }
             }
         });
 
         return inflate;
     }
 
+
     @Override
     public void update() {
     }
+
 
     @Override
     public void onClick(View view) {
@@ -188,7 +192,6 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             case R.id.cash:
                 cash.setImageResource(R.drawable.cash_icone_on);
                 CB.setImageResource(R.drawable.cb_icone);
-
                 break;
             case R.id.CB:
                 cash.setImageResource(R.drawable.cash_icone);
@@ -244,13 +247,11 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         Number num = Integer.parseInt(price);
         int amount = Integer.parseInt(price)*100;
         final Number amount_cents = amount;
-        CISSTransaction object = new CISSTransaction();
+        final CISSTransaction object = new CISSTransaction();
         object.put("approved", false);
         object.put("needsProcessing", true);
-       // object.put("tpes", ParseObject.createWithoutData("TPE", tpeObject.get_id()));
-        ParseRelation<ParseObject> relation = object.getRelation("tpes");
-        relation.add(tpeObject);
-        object.put("tpes",relation);
+    //    object.put("tpes", ParseObject.createWithoutData("TPE", tpeObject.getObjectId()));
+
 
         object.put("amount", amount_cents);
         object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
@@ -262,6 +263,10 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    ParseRelation<ParseObject> relation = object.getRelation("tpes");
+                    relation.add(tpeObject);
+                    object.saveInBackground();
+
                     BusinessTransaction transaction=new BusinessTransaction(transactionId,"false",String.valueOf(amount_cents),client.getUsername(),"Payment");
                     db.addBusinessTransaction(transaction);
                     Toast.makeText(getActivity(), "Paiement envoyé", Toast.LENGTH_LONG).show();
@@ -404,4 +409,46 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
 
 
 
+    private String getTPE_CheckEmpty(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        String json = pref.getString("TPEpref", "");
+        return json;
+    }
+
+    private ParseObject getTPE_Preference(Context context){
+        SharedPreferences pref = context.getSharedPreferences("Pref", getActivity().MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = pref.getString("TPEpref", "");
+        TPEBO tpe1 = gson.fromJson(json, TPEBO.class);
+        return tpeObject;
+    }
+
+    private void ShowTPEDialog(){
+        FragmentManager fm= getActivity().getSupportFragmentManager();
+        dialog=new Dialog_TPE_Businness();
+        dialog.show(fm,"Dialog_TPE_Businness");
+        dialog.setOnDialogClickedListener(new Dialog_TPE_Businness.TPEDialog() {
+
+            @Override
+            public void onTPEValidate(ParseObject tpe1) {
+                tpeObject=tpe1;
+                Log.d("TPE",tpeObject.getString("name")+"  "+tpeObject.getString("objectId"));
+                tpe.setText("TPE : "+tpeObject.getString("name"));
+                modifyTPE.setVisibility(View.VISIBLE);
+                if (dialog.isVisible()){
+                    if (dialog!=null){
+                        dialog.dismiss();
+                    }
+                }
+            }
+            @Override
+            public void onTPECancel() {
+                if (dialog.isVisible()){
+                    if (dialog!=null){
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
 }
