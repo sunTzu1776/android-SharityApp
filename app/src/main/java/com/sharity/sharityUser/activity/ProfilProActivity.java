@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import static com.parse.SubscriptionHandling.Event.UPDATE;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
+import static com.sharity.sharityUser.BO.CISSTransaction.transaction;
 import static com.sharity.sharityUser.R.id.tab_historique;
 import static com.sharity.sharityUser.R.id.tab_mission;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
@@ -80,6 +81,9 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     public static String profileSource;
     public ListenFromActivity activityListener;
     private OnConfirmationPaiment onConfirmationPaiment;
+    String client="";
+    ParseObject sale;
+
     public interface ListenFromActivity {
         void doSomethingInFragment(String frag);
     }
@@ -203,19 +207,28 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         subscriptionHandling.handleEvent(UPDATE, new
                 SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
                     @Override
-                    public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
+                    public void onEvent(ParseQuery<CISSTransaction> query, final CISSTransaction object) {
                         Log.d("BusinessCISSTransaction","UPDATE");
                         if (object.getBoolean("approved") == true && object.getInt("transactionType")==1) {
                             if (!db.getAllTransactions().isEmpty()){
                             for (BusinessTransaction businessTransaction : db.getAllTransactions()) {
                                 if (object.getString("transactionId").equalsIgnoreCase(businessTransaction.getTransactionId())) {
-                                    db.deleteTransaction(object.getString("transactionId"));
-                                    final int amount=object.getInt("amount");
+                                     sale = ParseObject.create("Transaction");
+                                    //Get Pointer customer
+                                    try {
+                                        sale=object.getParseObject("transaction").fetchIfNeeded();
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                         client=sale.getString("sender_name");
+                                        db.deleteTransaction(object.getString("transactionId"));
+                                        final int amount=object.getInt("amount");
 
-                                    Intent intent = new Intent("paiment_businessEvent");
-                                    intent.putExtra("amount", String.valueOf(amount/100));
-                                    intent.putExtra("clientName","ee");
-                                    LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
+                                        Intent intent = new Intent("paiment_businessEvent");
+                                        intent.putExtra("amount", String.valueOf(amount/100));
+                                        intent.putExtra("clientName",client);
+                                        LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
+
                                 }
                             }
                             }
