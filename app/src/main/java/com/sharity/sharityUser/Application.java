@@ -63,7 +63,6 @@ public class Application extends android.app.Application {
         super.onCreate();
         context = getApplicationContext();
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-
         mInstance = this;
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -74,6 +73,7 @@ public class Application extends android.app.Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.ParseAppId)) // correspond to APP_ID
                 .clientKey("034ba10e9b381a67c9a3340acc1ad2a425987c4176tfvbji876tghj")
+           //     .enableLocalDataStore()
                 .addNetworkInterceptor(new ParseLogInterceptor())
                 .server("https://sharity-back.com/parse").build());
 

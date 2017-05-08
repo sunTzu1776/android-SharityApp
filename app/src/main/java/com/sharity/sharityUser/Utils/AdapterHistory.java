@@ -14,6 +14,9 @@ import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
+import com.sharity.sharityUser.fonts.TextViewGeoManis;
+import com.sharity.sharityUser.fonts.TextViewNotoSansRegular;
+import com.sharity.sharityUser.fonts.TextViewRobotoThin;
 
 import java.util.ArrayList;
 
@@ -56,11 +59,11 @@ public class AdapterHistory extends BaseAdapter {
 
             } else if(listViewItemType == 1){
                 convertView = inflat.inflate(R.layout.row_payment_body_listview, null);
-                holder.payment = (TextView) convertView
+                holder.payment = (TextViewRobotoThin) convertView
                         .findViewById(R.id.payment);
-                holder.date_payment = (TextView) convertView
+                holder.date_payment = (TextViewRobotoThin) convertView
                         .findViewById(R.id.date);
-                holder.price_payment=(TextView)convertView.findViewById(R.id.price);
+                holder.price_payment=(TextViewGeoManis)convertView.findViewById(R.id.price);
             }
             if (listViewItemType == 2) {
                 convertView = inflat.inflate(R.layout.row_dons_header_listview, null);
@@ -136,7 +139,9 @@ public class AdapterHistory extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView  payment,date_payment,price_payment;
+        TextViewRobotoThin payment;
+        TextViewRobotoThin date_payment;
+        TextViewGeoManis price_payment;
         TextView dons,date_dons,price_dons;
 
         ImageView logo;

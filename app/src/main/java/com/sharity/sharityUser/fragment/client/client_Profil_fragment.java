@@ -41,6 +41,8 @@ import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
+import com.sharity.sharityUser.fonts.TextViewGeoManis;
+import com.sharity.sharityUser.fonts.TextViewMontserraThin;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private String CharityName;
     private String CharityId;
 
-    private TextView points;
+    private TextViewGeoManis points;
     private TextView do_donationTV;
     private TextView charity_description;
     private TextView sharepoints_moins;
@@ -109,8 +111,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         vinflater=inflater;
         inflate = inflater.inflate(R.layout.fragment_profile_client, container, false);
         ((ProfilActivity) getActivity()).setProfilListener(client_Profil_fragment.this);
-        points = (TextView) inflate.findViewById(R.id.points);
-
+        points = (TextViewGeoManis) inflate.findViewById(R.id.points);
         username = (TextView) inflate.findViewById(R.id.username_login);
         do_donationTV = (TextView) inflate.findViewById(R.id.do_donationTV);
         dummyanchor = (TextView) inflate.findViewById(R.id.dummyanchor);

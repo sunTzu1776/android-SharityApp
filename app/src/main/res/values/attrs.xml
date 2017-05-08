@@ -18,4 +18,12 @@
     <declare-styleable name="TextViewNoto">
         <attr name="NotoRegular" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="TextViewRobotoThin">
+        <attr name="RobotoThin" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewMontSerraThin">
+        <attr name="MontSerraThin" format="string"/>
+    </declare-styleable>
 </resources>

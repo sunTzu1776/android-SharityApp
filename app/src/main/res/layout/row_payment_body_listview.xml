@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-   >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,42 +18,46 @@
         android:orientation="vertical"
         >
 
-        <TextView
+        <com.sharity.sharityUser.fonts.TextViewRobotoThin
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:textSize="15.5sp"
             android:id="@+id/payment"
+            app:RobotoThin="robotothin.ttf"
             android:text="payment from"
             android:textColor="@color/black"
            />
 
 
-        <TextView
+        <com.sharity.sharityUser.fonts.TextViewRobotoThin
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/payment"
             android:id="@+id/date"
             android:textSize="12.5sp"
             android:text="date"
+            app:RobotoThin="robotothin.ttf"
             android:layout_marginTop="5dp"
             android:textColor="@color/black"
             android:layout_alignLeft="@+id/payment"
             android:layout_alignStart="@+id/payment" />
 
-        <TextView
+        <com.sharity.sharityUser.fonts.TextViewGeoManis
             android:text="price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/price"
             android:textSize="15.5sp"
             android:textColor="@color/black"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            app:GeomanisRegular="geomanistregular.ttf"
+            android:textStyle="bold"
             android:layout_marginRight="14dp"
-            android:layout_marginEnd="14dp" />
+            android:layout_marginEnd="14dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-</RelativeLayout>
+    </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

@@ -228,7 +228,6 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                                         intent.putExtra("amount", String.valueOf(amount/100));
                                         intent.putExtra("clientName",client);
                                         LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
-
                                 }
                             }
                             }

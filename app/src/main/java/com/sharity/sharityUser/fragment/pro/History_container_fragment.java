@@ -19,6 +19,8 @@ import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.activity.MapActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
+import com.sharity.sharityUser.fonts.TextViewGeoManis;
+import com.sharity.sharityUser.fonts.TextViewRobotoThin;
 import com.sharity.sharityUser.fragment.Updateable;
 import com.sharity.sharityUser.fragment.pagerHistoric.PagerFragment;
 
@@ -35,7 +37,7 @@ public class History_container_fragment extends Fragment implements Updateable, 
     ImageView circle_slide1;
     ImageView circle_slide2;
     View inflate;
-    private TextView payment;
+    private TextViewGeoManis payment;
     public static History_container_fragment newInstance() {
         History_container_fragment myFragment = new History_container_fragment();
         Bundle args = new Bundle();
@@ -54,7 +56,7 @@ public class History_container_fragment extends Fragment implements Updateable, 
         } else {
             ((ProfilActivity) getActivity()).setHistoricListener(History_container_fragment.this);
             inflate = inflater.inflate(R.layout.fragment_history_container_client, container, false);
-            payment=(TextView)inflate.findViewById(R.id.payment);
+            payment=(TextViewGeoManis)inflate.findViewById(R.id.payment);
             TextSpawnTitle();
 
         }

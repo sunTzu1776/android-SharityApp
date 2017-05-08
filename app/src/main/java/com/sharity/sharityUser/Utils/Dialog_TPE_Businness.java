@@ -51,7 +51,6 @@ import static com.sharity.sharityUser.R.id.box_TPE;
 
 public class Dialog_TPE_Businness extends DialogFragment {
 
-    TPEBO TPE;
     private ArrayList<ParseObject> tpeList = new ArrayList<ParseObject>();
     private ArrayAdapter<String> adapter;
     private ArrayList<String> list = new ArrayList<String>();
@@ -59,7 +58,7 @@ public class Dialog_TPE_Businness extends DialogFragment {
     private TPEDialog tpeDialog;
     private String selectedFromList;
     public interface TPEDialog{
-        public void onTPEValidate(ParseObject tpe1);
+        public void onTPEValidate(ParseObject tpe1, boolean isCheck);
         public void onTPECancel();
     }
 
@@ -78,7 +77,7 @@ public class Dialog_TPE_Businness extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-       final View inflate = inflater.inflate(R.layout.layout_dialog_single_choice, container, false);
+        final View inflate = inflater.inflate(R.layout.layout_dialog_single_choice, container, false);
         listView = (ListView) inflate.findViewById(R.id.listview);
         TextView valider=(TextView) inflate.findViewById(R.id.valider);
         TextView annuler=(TextView) inflate.findViewById(R.id.annuler);
@@ -89,7 +88,7 @@ public class Dialog_TPE_Businness extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                 selectedFromList = (listView.getItemAtPosition(i).toString());
+                selectedFromList = (listView.getItemAtPosition(i).toString());
             }
         });
 
@@ -97,17 +96,17 @@ public class Dialog_TPE_Businness extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (selectedFromList!=null){
-                for (ParseObject tpe : tpeList){
-                    if (selectedFromList.equalsIgnoreCase(tpe.getString("name"))){
-                        if (box_TPE.isChecked()){
-                          //  TPE=new TPEBO(tpe.get_id(),tpe.get_name(),tpe.get_TPEid(),tpe.getCreatedAt(),tpe.getUpdatedAt());
-                           // setTPE_Preferences(tpe);
+                    for (ParseObject tpe : tpeList){
+                        if (selectedFromList.equalsIgnoreCase(tpe.getString("name"))){
+                            boolean check=false;
+                            if (box_TPE.isChecked()){
+                                check=true;
+                            }
+                            ParseObject tpe1= tpe;
+                            tpeDialog.onTPEValidate(tpe1,check);
+                            break;
                         }
-                        //TPE=new TPEBO(tpe.get_id(),tpe.get_name(),tpe.get_TPEid(),tpe.getCreatedAt(),tpe.getUpdatedAt());
-                        tpeDialog.onTPEValidate(tpe);
-                        break;
                     }
-                }
                 }else {
                     Toast.makeText(getActivity(),"Veuillez séléctionner un TPE",Toast.LENGTH_LONG).show();
                 }
@@ -143,8 +142,8 @@ public class Dialog_TPE_Businness extends DialogFragment {
                         }
                         String[] array = list.toArray(new String[0]);
 
-                            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_single_choice,array);
-                            listView.setAdapter(adapter);
+                        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_single_choice,array);
+                        listView.setAdapter(adapter);
 
                     }
                 }

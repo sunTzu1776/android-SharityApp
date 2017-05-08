@@ -191,12 +191,11 @@
                     android:textSize="@dimen/login_pro_buttondone"
                     android:textColor="@color/red"
                     android:background="@color/transparent"
-                    app:GeomanisRegular="geomanis.ttf"
+                    app:NotoRegular="notosansuiregular.ttf"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     style="?android:attr/borderlessButtonStyle"
                     android:id="@+id/login_BT"
-                    app:NotoRegular="notosansuiregular.ttf"
 
                     />
 

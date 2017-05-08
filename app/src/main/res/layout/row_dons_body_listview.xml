@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,41 +18,44 @@
             android:orientation="vertical"
             >
 
-            <TextView
+            <com.sharity.sharityUser.fonts.TextViewRobotoThin
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:textSize="15.5sp"
                 android:id="@+id/dons"
+                app:RobotoThin="robotothin.ttf"
                 android:text="payment from"
                 android:textColor="@color/black"
                 />
 
 
-            <TextView
+            <com.sharity.sharityUser.fonts.TextViewRobotoThin
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dons"
                 android:id="@+id/date_dons"
                 android:textSize="12.5sp"
                 android:text="date"
+                app:RobotoThin="robotothin.ttf"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/black"
                 android:layout_alignLeft="@+id/dons"
                 android:layout_alignStart="@+id/dons" />
 
-            <TextView
+            <com.sharity.sharityUser.fonts.TextViewGeoManis
                 android:text="price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/price_dons"
                 android:textSize="15.5sp"
                 android:textColor="@color/black"
-                android:layout_centerVertical="true"
+                app:GeomanisRegular="geomanistregular.ttf"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="14dp"
-                android:layout_marginEnd="14dp" />
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
     </RelativeLayout>
