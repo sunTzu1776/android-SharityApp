@@ -18,26 +18,24 @@
         android:orientation="vertical"
         >
 
-        <com.sharity.sharityUser.fonts.TextViewRobotoThin
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:textSize="15.5sp"
             android:id="@+id/payment"
-            app:RobotoThin="robotothin.ttf"
             android:text="payment from"
             android:textColor="@color/black"
            />
 
 
-        <com.sharity.sharityUser.fonts.TextViewRobotoThin
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/payment"
             android:id="@+id/date"
             android:textSize="12.5sp"
             android:text="date"
-            app:RobotoThin="robotothin.ttf"
             android:layout_marginTop="5dp"
             android:textColor="@color/black"
             android:layout_alignLeft="@+id/payment"

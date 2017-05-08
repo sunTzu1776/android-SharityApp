@@ -121,6 +121,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         picture_profil = (CircleImageView) inflate.findViewById(R.id.picture_profil);
         username_login = (TextView) inflate.findViewById(R.id.username_login);
         modifyTPE = (ImageView) inflate.findViewById(R.id.modifyTPE);
+        modifyTPE.setVisibility(View.INVISIBLE);
 
 
         // amount_paiment.getBackground().setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
@@ -435,7 +436,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
                 tpeObject=tpe1;
                 Log.d("TPE",tpeObject.getString("name")+"  "+tpeObject.getObjectId());
                 tpe.setText("TPE : "+tpeObject.getString("name"));
-                modifyTPE.setVisibility(View.VISIBLE);
+                modifyTPE.setVisibility(View.INVISIBLE);
 
               /*  if (!isCheck){
                     Log.d("TPE","notCheck");

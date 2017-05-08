@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -51,7 +55,10 @@ import java.util.ArrayList;
 import static com.parse.SubscriptionHandling.Event.UPDATE;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
+import static com.sharity.sharityUser.BO.CISSTransaction.amount;
 import static com.sharity.sharityUser.BO.CISSTransaction.transaction;
+import static com.sharity.sharityUser.R.id.montant_SP;
+import static com.sharity.sharityUser.R.id.montant_recue;
 import static com.sharity.sharityUser.R.id.tab_historique;
 import static com.sharity.sharityUser.R.id.tab_mission;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
@@ -397,11 +404,15 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     @Override
     public void onBackPressed() {
         SparseArray<FragmentManager> managers = new SparseArray<>();
-        traverseManagers(getSupportFragmentManager(), managers, 0);
-        if (managers.size() > 0) {
-            managers.valueAt(managers.size() - 1).popBackStackImmediate();
-        } else {
-            super.onBackPressed();
+        try {
+            traverseManagers(getSupportFragmentManager(), managers, 0);
+            if (managers.size() > 0) {
+                managers.valueAt(managers.size() - 1).popBackStackImmediate();
+            } else {
+                super.onBackPressed();
+            }
+        }catch (IllegalStateException e){
+
         }
     }
 
@@ -470,13 +481,13 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             final String amount = intent.getStringExtra("amount");
-            String clientName = intent.getStringExtra("clientName");
+            final String clientName = intent.getStringExtra("clientName");
             int item = pager.getCurrentItem();
             if (item!=2){
                 if(!ProfilProActivity.this.isFinishing()){
                     ProfilProActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
-                            Utils.showDialog3(ProfilProActivity.this, "Votre paiment d'un montant de "+amount+"€ à bien été validé", "Paiement", true, new Utils.Click() {
+                            Utils.showDialog3(ProfilProActivity.this, SetMontantRecu(amount,clientName), "Paiement", true, new Utils.Click() {
                                 @Override
                                 public void Ok() {
                                 }
@@ -523,6 +534,39 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         super.onPause();
     }
 
+
+
+    private String SetMontantRecu(String recu, String client){
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        String red = "+" +recu+"€";
+        SpannableString redSpannable= new SpannableString(red);
+        redSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), 0, red.length(), 0);
+        builder.append(redSpannable);
+
+        String black = " RECUE.";
+        SpannableString whiteSpannable= new SpannableString(black);
+        whiteSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black.length(), 0);
+        builder.append(whiteSpannable);
+
+        String green = " +" +recu+"SP";
+        SpannableString greenpannable= new SpannableString(green);
+        greenpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green)), 0, green.length(), 0);
+        builder.append(greenpannable);
+
+        String black2 = " envoyés à "+client;
+        SpannableString blackSpannable= new SpannableString(black2);
+        blackSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black2.length(), 0);
+        builder.append(blackSpannable);
+        String result= builder.toString();
+        return result;
+    }
+
+
+
+    private void SettextMontantSP(){
+
+    }
 }
 
 
