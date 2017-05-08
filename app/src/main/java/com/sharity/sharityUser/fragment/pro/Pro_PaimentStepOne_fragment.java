@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharity.sharityUser.R.id.swipeContainer;
 
@@ -54,7 +57,7 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
 
 
     public interface OnChildPaymentSelection{
-        public void OnSelectGrid(UserLocation user, int i);
+        public void OnSelectGrid(UserLocation user, int i,CircleImageView imageView);
         public void Classique();
 
     }
@@ -95,7 +98,9 @@ public class Pro_PaimentStepOne_fragment extends Fragment implements Updateable,
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 final UserLocation User = (UserLocation) grid.getAdapter().getItem(position);
-                onSelection.OnSelectGrid(User, position);
+                final CircleImageView image = (CircleImageView) view.findViewById(R.id.grid_image);
+
+                onSelection.OnSelectGrid(User, position,image);
             }
         });
 

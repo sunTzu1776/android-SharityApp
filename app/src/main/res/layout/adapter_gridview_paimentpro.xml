@@ -10,6 +10,9 @@
         android:layout_width="65dp"
         android:layout_height="65dp"
         tools:src="@drawable/logo"
+        style="@style/MaterialAnimations.Icon.Small"
+        android:src="@drawable/circle"
+        android:transitionName="reveal"
         android:layout_gravity="center_vertical">
     </de.hdodenhof.circleimageview.CircleImageView>
 

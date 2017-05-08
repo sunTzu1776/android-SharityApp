@@ -37,8 +37,8 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/ic_launcher"
                 android:id="@+id/picture_profil"
-                style="@style/MaterialAnimations"
-                android:transitionName="transition"
+                style="@style/MaterialAnimations.Icon.Big"
+                android:transitionName="reveal"
                 app:civ_border_width="1dp"
                 app:civ_border_color="@color/blue"/>
 
@@ -240,6 +240,7 @@
             android:layout_gravity="center"
             android:id="@+id/valider"
             android:padding="10dp"
+            android:textSize="@dimen/login_pro_buttondone"
             android:gravity="center_horizontal"
             android:textColor="@color/red"
             />

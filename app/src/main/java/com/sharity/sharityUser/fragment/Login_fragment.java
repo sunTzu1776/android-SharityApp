@@ -4,10 +4,15 @@ package com.sharity.sharityUser.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +31,7 @@ import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.pro.Pro_Login_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Paiment_StepTwo_Classique_fragment;
 
 import static com.sharity.sharityUser.Utils.Utils.replaceFragmentWithAnimation;
 
@@ -82,15 +88,25 @@ public class Login_fragment extends Fragment implements View.OnClickListener, Lo
 
     @Override
     public void onClick(View view) {
+        FragmentManager fm = getFragmentManager();
         switch (view.getId()) {
             case R.id.pro_login_acces:
                 ParseUser.logOut();
-                replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("pro"),getFragmentManager(),"Login_Pro_fragment");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Utils.AnimationSlideFragment(getActivity(),fm,R.id.login,Pro_Login_fragment.newInstance("pro"),"Login_Pro_fragment", Gravity.RIGHT,true);
+                }else {
+                    replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("pro"),getFragmentManager(),"Login_Pro_fragment");
+                }
                 break;
 
             case R.id.charite_login_acces:
                 ParseUser.logOut();
-                replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("charite"),getFragmentManager(),"Login_Pro_fragment");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Utils.AnimationSlideFragment(getActivity(),fm,R.id.login,Pro_Login_fragment.newInstance("charite"),"Login_Pro_fragment", Gravity.RIGHT,true);
+                }else {
+                    replaceFragmentWithAnimation(R.id.login,Pro_Login_fragment.newInstance("charite"),getFragmentManager(),"Login_Pro_fragment");
+                }
+
                 break;
 
             case R.id.twitter_login:

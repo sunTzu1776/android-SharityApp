@@ -7,10 +7,17 @@ import android.graphics.Point;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +29,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sharity.sharityUser.R;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.R.attr.tag;
 import static android.R.id.message;
@@ -304,6 +313,52 @@ public class Utils {
         locationB.setLongitude(longitude);
         float distance = locationA.distanceTo(locationB);
         return distance;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void AnimationShareElementSlideFragment(Context context, FragmentManager fm, int containerid, Fragment fragment, String fragmentName, CircleImageView squareBlue, boolean overlap) {
+
+        Fade slideTransition = new Fade(Fade.IN);
+        slideTransition.setDuration(context.getResources().getInteger(R.integer.anim_duration_long));
+
+        ChangeBounds changeBoundsTransition = new ChangeBounds();
+        changeBoundsTransition.setDuration(context.getResources().getInteger(R.integer.anim_duration_long));
+
+        fragment.setEnterTransition(slideTransition);
+        fragment.setAllowEnterTransitionOverlap(overlap);
+        fragment.setAllowReturnTransitionOverlap(overlap);
+        fragment.setSharedElementEnterTransition(changeBoundsTransition);
+        fm.beginTransaction()
+                .replace(containerid, fragment,fragmentName)
+                .addToBackStack(null)
+                .addSharedElement(squareBlue, "reveal")
+                .commit();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void AnimationFadeFragment(Context context, FragmentManager fm, int containerid, Fragment fragment, String fragmentName, int fadeingMode, boolean overlap) {
+        Fade slideTransition = new Fade(fadeingMode);
+        slideTransition.setDuration(context.getResources().getInteger(R.integer.anim_duration_long));
+        fragment.setEnterTransition(slideTransition);
+        fragment.setAllowEnterTransitionOverlap(overlap);
+        fragment.setAllowReturnTransitionOverlap(overlap);
+        fm.beginTransaction()
+                .replace(containerid, fragment,fragmentName)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void AnimationSlideFragment(Context context, FragmentManager fm, int containerid, Fragment fragment, String fragmentName, int slidingMode, boolean overlap) {
+        Slide slideTransition = new Slide(slidingMode); //Gravity.RIGHT..
+        slideTransition.setDuration(context.getResources().getInteger(R.integer.anim_duration_long));
+        fragment.setEnterTransition(slideTransition);
+        fragment.setAllowEnterTransitionOverlap(overlap);
+        fragment.setAllowReturnTransitionOverlap(overlap);
+        fm.beginTransaction()
+                .replace(containerid, fragment,fragmentName)
+                .addToBackStack(null)
+                .commit();
     }
 }
 

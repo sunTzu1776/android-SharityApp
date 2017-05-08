@@ -3,11 +3,13 @@ package com.sharity.sharityUser.fragment.pro;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,9 +100,17 @@ public class Pro_Login_fragment extends Fragment implements LoginProView,View.On
             switch(view.getId()) {
                 case R.id.inscription:
                     if (type.equals("pro")){
-                        replaceFragmentWithAnimation(R.id.login,Pro_Inscription_fragment.newInstance(type),getFragmentManager(),"Inscription_Pro_fragment");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Utils.AnimationSlideFragment(getActivity(),getFragmentManager(),R.id.login,Pro_Inscription_fragment.newInstance(type),"Inscription_Pro_fragment", Gravity.RIGHT,true);
+                        }else {
+                            replaceFragmentWithAnimation(R.id.login,Pro_Inscription_fragment.newInstance(type),getFragmentManager(),"Inscription_Pro_fragment");
+                        }
                     }else {
-                        replaceFragmentWithAnimation(R.id.login,Charity_Inscription_container_fragment.newInstance(),getFragmentManager(),"Charity_Inscription_container_fragment");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Utils.AnimationSlideFragment(getActivity(),getFragmentManager(),R.id.login,Charity_Inscription_container_fragment.newInstance(),"Charity_Inscription_container_fragment", Gravity.RIGHT,true);
+                        }else {
+                            replaceFragmentWithAnimation(R.id.login,Charity_Inscription_container_fragment.newInstance(),getFragmentManager(),"Charity_Inscription_container_fragment");
+                        }
                     }
                     break;
 

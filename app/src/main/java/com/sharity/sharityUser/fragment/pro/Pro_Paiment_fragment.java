@@ -2,13 +2,21 @@ package com.sharity.sharityUser.fragment.pro;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sharity.sharityUser.BO.UserLocation;
@@ -19,6 +27,9 @@ import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.R.attr.fragment;
 import static com.sharity.sharityUser.R.id.user;
 
 
@@ -61,17 +72,31 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
  * GridView user is selected.
  * */
     @Override
-    public void OnSelectGrid(UserLocation user, int i) {
+    public void OnSelectGrid(UserLocation user, int i, CircleImageView imageView) {
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_StepTwo_fragment.newInstance(user),fm,"Pro_Paiment_StepTwo_fragment",true);
+        Pro_Paiment_StepTwo_fragment fragmentB = Pro_Paiment_StepTwo_fragment.newInstance(user);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Utils.AnimationFadeFragment(getActivity(),fm,R.id.Fragment_container,fragmentB,"Pro_Paiment_StepTwo_fragment", Fade.IN,false);
+        }else {
+            Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_StepTwo_fragment.newInstance(user),fm,"Pro_Paiment_StepTwo_fragment",true);
+        }
     }
+
+
+
     /*
 * Classique Paiment selected
 * */
     @Override
     public void Classique() {
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),fm,"Pro_Paiment_StepTwo_fragment",true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Utils.AnimationFadeFragment(getActivity(),fm,R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),"Pro_Paiment_StepTwo_Classique_fragment", Fade.IN,true);
+        }else {
+            Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,new Pro_Paiment_StepTwo_Classique_fragment(),fm,"Pro_Paiment_StepTwo_Classique_fragment",true);
+        }
+
     }
 
     private void Display_Paiment_Confirmation(String montant, String clientName){
