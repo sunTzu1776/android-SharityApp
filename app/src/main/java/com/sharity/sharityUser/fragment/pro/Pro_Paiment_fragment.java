@@ -101,7 +101,7 @@ public class Pro_Paiment_fragment extends Fragment implements Updateable,Pro_Pai
 
     private void Display_Paiment_Confirmation(String montant, String clientName){
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_Confirmation_fragment.newInstance(montant,clientName),fm,"Pro_Paiment_StepTwo_fragment",true);
+        Utils.replaceFragmentWithAnimationVertical(R.id.Fragment_container,Pro_Paiment_Confirmation_fragment.newInstance(montant,clientName),fm,"Display_Paiment_Confirmation",false);
     }
 
 

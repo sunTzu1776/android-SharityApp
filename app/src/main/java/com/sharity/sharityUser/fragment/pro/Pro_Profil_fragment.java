@@ -108,7 +108,11 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
         });
 
         if (isAdded()) {
-            getProfilFromParse();
+            try {
+                getProfilFromParse();
+            }catch (NullPointerException e){
+
+            }
            // CreatePromo();
         }
 
