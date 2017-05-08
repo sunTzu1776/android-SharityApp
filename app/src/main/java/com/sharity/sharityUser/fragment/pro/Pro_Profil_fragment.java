@@ -126,51 +126,54 @@ public class Pro_Profil_fragment extends Fragment implements Updateable,SwipeRef
     private void getProfilFromParse() {
         final String objectid = db.getBusinessId();
         Business business = db.getBusiness(objectid);
+        try {
+            if (Utils.isConnected(getContext())) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
+                query.whereEqualTo("objectId", objectid);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if (e == null) {
+                            String _user_name = "";
+                            String _email = "";
+                            String _phone = "";
+                            String _RIB = "";
+                            int _generated_sharepoints = 0;
 
-        if (Utils.isConnected(getContext())) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
-            query.whereEqualTo("objectId", objectid);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    if (e == null) {
-                        String _user_name="";
-                        String _email="";
-                        String _phone="";
-                        String _RIB="";
-                        int _generated_sharepoints=0;
+                            for (ParseObject object : objects) {
+                                _user_name = object.getString("officerName");
+                                _email = object.getString("email");
+                                _phone = object.getString("telephoneNumber");
+                                _RIB = object.getString("RIB");
+                                _generated_sharepoints = object.getInt("generated_sharepoints");
+                            }
 
-                        for (ParseObject object : objects){
-                            _user_name = object.getString("officerName");
-                            _email = object.getString("email");
-                            _phone = object.getString("telephoneNumber");
-                            _RIB = object.getString("RIB");
-                            _generated_sharepoints = object.getInt("generated_sharepoints");
+                            username.setText(_user_name);
+                            email.setText(_email);
+                            phone.setText(_phone);
+                            RIB_value.setText(_RIB);
+                            sharepoint_generated.setText(String.valueOf(_generated_sharepoints));
+                            swipeContainer.setRefreshing(false);
+
+                        } else {
+
                         }
 
-                        username.setText(_user_name);
-                        email.setText(_email);
-                        phone.setText(_phone);
-                        RIB_value.setText(_RIB);
-                        sharepoint_generated.setText(String.valueOf(_generated_sharepoints));
-                        swipeContainer.setRefreshing(false);
-
-                    } else {
-
                     }
+                });
 
-                }
-            });
+                Log.d("emailVerified", business.getEmailveried());
+                db.close();
+            } else {
+                username.setText(business.get_officerName());
+                email.setText(business.get_email());
+                phone.setText(business.get_telephoneNumber());
+                RIB_value.setText(business.get_RIB());
+            }
+        } catch (NullPointerException e) {
 
-            Log.d("emailVerified",business.getEmailveried());
-            db.close();
         }
-        else {
-            username.setText(business.get_officerName());
-            email.setText(business.get_email());
-            phone.setText(business.get_telephoneNumber());
-            RIB_value.setText(business.get_RIB());
-        }
+
     }
 
     @Override
