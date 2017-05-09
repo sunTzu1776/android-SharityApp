@@ -48,21 +48,11 @@ import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
 import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
 import com.sharity.sharityUser.Utils.AdapterPartenaireMapClient;
 import com.sharity.sharityUser.Utils.GPSservice;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.sharity.sharityUser.R.id.business_name;
-import static com.sharity.sharityUser.R.id.distance;
-import static com.sharity.sharityUser.R.id.frame_expand;
 import static com.sharity.sharityUser.R.id.latitude;
 import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
@@ -137,6 +127,7 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
         onItemGridCategorieClickListener=this;
         search_layout.setOnClickListener(this);
         type.setText("PROMOTION");
+        gpSservice=new GPSservice(getContext());
 
         Initalize_RecyclerView();
         StartLocation();
@@ -238,6 +229,7 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
 
     @Override
     public void onRefresh() {
+            gpSservice.getState();
         if (gpSservice.isGPSEnabled() && gpSservice.isNetworkEnabled()){
             swipeContainer.setRefreshing(true);
             if (!isShop) {

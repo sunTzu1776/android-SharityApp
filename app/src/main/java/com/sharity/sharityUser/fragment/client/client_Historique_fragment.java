@@ -49,7 +49,6 @@ import static com.sharity.sharityUser.R.id.animation_nonetwork;
 import static com.sharity.sharityUser.R.id.forgot_pass;
 import static com.sharity.sharityUser.R.id.frame_nonetwork;
 import static com.sharity.sharityUser.activity.ProfilActivity.parseUser;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mGoogleApiClient;
 
 
 /**

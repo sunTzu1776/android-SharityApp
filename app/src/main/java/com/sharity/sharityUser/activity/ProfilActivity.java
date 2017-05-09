@@ -9,10 +9,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,8 +33,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -44,6 +52,8 @@ import com.sharity.sharityUser.BO.History;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
+import com.sharity.sharityUser.Utils.LocationUser;
+import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.client.client_Container_Mission_fragment;
 import com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment;
@@ -62,8 +72,11 @@ import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.BO.CISSTransaction.transactionType;
 import static com.sharity.sharityUser.R.id.date;
 import static com.sharity.sharityUser.R.id.latitude;
+import static com.sharity.sharityUser.R.id.longitude;
 import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.R.id.tab_option;
+import static com.sharity.sharityUser.R.id.user;
+import static com.sharity.sharityUser.activity.LoginActivity.callbackManager;
 import static com.sharity.sharityUser.activity.ProfilActivity.TOTAL_PAGES;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
 
@@ -92,6 +105,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     public OnNotificationUpdateProfil onNotificationUpdateProfil;
     public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
     MyPagerAdapter mViewPagerAdapter;
+    public static LocationUser locationUser=null;
 
 
     public interface OnNotificationUpdateHistoric {
@@ -108,10 +122,13 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         setContentView(R.layout.activity_profile);
 
         if (savedInstanceState == null) {
+            parseUser = ParseUser.getCurrentUser();
             manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+
+
             clientProfilActivity = this;
             db = new DatabaseHandler(this);
-            parseUser = ParseUser.getCurrentUser();
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
@@ -131,7 +148,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             pager.setOffscreenPageLimit(0);
             mViewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
             pager.setAdapter(mViewPagerAdapter);
-            pager.setCurrentItem(1, true);
+            pager.setCurrentItem(2, true);
             pager.setOnPageChangeListener(mPageChangeListener);
             mViewPagerAdapter.notifyDataSetChanged();
             buildTabs();
@@ -288,6 +305,15 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     }
 
+    @Override
+    public void onStop() {
+        if (locationUser != null) {
+            if (locationUser.mGoogleApiClient.isConnected()) {
+                locationUser.mGoogleApiClient.disconnect();
+            }
+        }
+        super.onStop();
+    }
 
     @Override
     protected void onDestroy() {
@@ -303,7 +329,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
     private void buildTabs() {
         bottomBar.setOnTabSelectListener(this, true);
-        setIndicator(1);
+        setIndicator(2);
         bottomBar.setInActiveTabColor(getResources().getColor(R.color.white));
         bottomBar.setActiveTabColor(getResources().getColor(R.color.green));
     }
@@ -333,6 +359,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+     //   locationUser.onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -341,11 +373,16 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + pager.getCurrentItem());
-                    if (pager.getCurrentItem() == 1 && page != null) {
+                       if (pager.getCurrentItem() == 2) {
+                           client_Container_Partenaire_fragment clientProfilFragment = (client_Container_Partenaire_fragment) mViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
+                           clientProfilFragment.buildGoogleApiClient();
+                       }
+
+                //    if (pager.getCurrentItem() == 1) {
+                 //     client_Profil_fragment clientProfilFragment = (client_Profil_fragment) mViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
+                 //       clientProfilFragment.setUserLocation();
+                        Log.d("Network granted", "passed");
                         //   ((client_Container_Partenaire_fragment)page);
-                        Log.d("BIGGRAF", "passed");
-                    }
 
                 } else {
 

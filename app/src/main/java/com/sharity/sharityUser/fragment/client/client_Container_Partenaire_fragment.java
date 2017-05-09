@@ -1,6 +1,8 @@
 package com.sharity.sharityUser.fragment.client;
 
 
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,9 +27,15 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -53,6 +61,7 @@ import com.sharity.sharityUser.fragment.Updateable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
 import static com.sharity.sharityUser.R.id.swipeContainer;
 
 
@@ -60,7 +69,7 @@ import static com.sharity.sharityUser.R.id.swipeContainer;
  * Created by Moi on 14/11/15.
  */
 public class client_Container_Partenaire_fragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, Updateable, MapCallback {
+        GoogleApiClient.OnConnectionFailedListener, Updateable, MapCallback, ResultCallback<LocationSettingsResult> {
 
     protected static ArrayList<LocationBusiness> list_shop = new ArrayList<>();
     protected static ArrayList<LocationBusiness> list_shop_filtered = new ArrayList<LocationBusiness>();
@@ -70,8 +79,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     protected static double latitude = 0.0;
     protected static double longitude = 0.0;
     protected static boolean isShop = true;
-    protected static LocationRequest mLocationRequest;
-    protected static GoogleApiClient mGoogleApiClient;
     protected PermissionRuntime permissionRuntime;
     protected static Location mLastLocation;
     protected static Marker mCurrLocationMarker;
@@ -86,10 +93,11 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     protected static GridView gridview;
     protected static ArrayList<Integer> images = new ArrayList<>();
     protected static GoogleMap mMap=null;
-
+    int REQUEST_CHECK_SETTINGS = 100;
     protected static boolean isLocationUpdate=false;
     int size_listshopNew=0;
-
+    public static LocationRequest mLocationRequest;
+    public static GoogleApiClient mGoogleApiClient;
 
     public static client_Container_Partenaire_fragment newInstance() {
         client_Container_Partenaire_fragment myFragment = new client_Container_Partenaire_fragment();
@@ -105,18 +113,22 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         inflate = inflater.inflate(R.layout.fragment_partenaire_container_client, container, false);
 
 
-        permissionRuntime = new PermissionRuntime(getActivity());
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                final PermissionRuntime permissionRuntime = new PermissionRuntime(getActivity());
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    if (mGoogleApiClient == null) {
+                        buildGoogleApiClient();
+                    }
+                } else {
+                    permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+                }
+            }
+        }, 2500);
 
-        } else {
-            permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
-        }
 
-        if (mGoogleApiClient == null) {
-            buildGoogleApiClient();
-        }
         client_Partenaire_list_fragment fragTwo = client_Partenaire_list_fragment.newInstance(false);
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -155,6 +167,8 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -165,19 +179,26 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        OpenGPSettings();
+
         if (getContext() != null) {
             if (ContextCompat.checkSelfPermission(getActivity(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
+
+                    if (ProfilActivity.locationUser!=null){
+                        if (ProfilActivity.locationUser.mGoogleApiClient.isConnected()){
+                            ProfilActivity.locationUser.mGoogleApiClient.disconnect();
+                        }
+                    }
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
                     Log.d("latlat", String.valueOf(latitude));
                     geoPoint = new ParseGeoPoint(latitude, longitude);
                     client_Partenaire_list_fragment list_fragment = (client_Partenaire_list_fragment) getChildFragmentManager().findFragmentByTag("client_Partenaire_list_fragment");
-
                     if (list_fragment!=null && list_fragment.isVisible()) {
                         list_fragment.HideNetworkView();
                         list_fragment.ShowShop();
@@ -217,7 +238,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
     }
 
     @Override
@@ -260,6 +280,15 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         }
     };
 
+    private void OpenGPSettings(){
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        builder.setAlwaysShow(true);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(this);
+    }
 
     //Save current coordinate location in user Parse.
     private static void SaveLocationUser(ParseGeoPoint point) {
@@ -432,6 +461,33 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         } catch (NullPointerException f) {
         }
     }
+
+    @Override
+    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+        final Status status = locationSettingsResult.getStatus();
+        switch (status.getStatusCode()) {
+            case LocationSettingsStatusCodes.SUCCESS:
+                // NO need to show the dialog;
+                break;
+
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                //  GPS disabled show the user a dialog to turn it on
+                try {
+                    // Show the dialog by calling startResolutionForResult(), and check the result
+                    // in onActivityResult().
+                    status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+
+                } catch (IntentSender.SendIntentException e) {
+                    //failed to show dialog
+                }
+                break;
+
+            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                // Location settings are unavailable so not possible to show any dialog now
+                break;
+        }
+    }
+
 
     protected interface DataCallBack{
         public void onSuccess();

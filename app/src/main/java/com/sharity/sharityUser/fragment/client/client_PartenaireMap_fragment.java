@@ -160,6 +160,7 @@ public class client_PartenaireMap_fragment extends Fragment implements
                     == PackageManager.PERMISSION_GRANTED) {
                 mapView.getMapAsync(this);
             } else {
+                Log.d("PermissionRuTime","client_PartenaireMap_fragment");
                 permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
             }
         }

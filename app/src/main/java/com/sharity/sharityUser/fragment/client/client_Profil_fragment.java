@@ -4,11 +4,13 @@ package com.sharity.sharityUser.fragment.client;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -37,6 +40,7 @@ import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.Utils.GPSservice;
+import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
@@ -176,9 +180,9 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         });
 
         getProfilFromParse();
-
         return inflate;
     }
+
 
 
     @Override
@@ -543,5 +547,27 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
             onNotification.displayPopupWindow(dummyanchor,getActivity(),"","");
         }*/
         getTransaction();
+    }
+
+
+    public void UpdateUserLocation(final double latitude, final double longitude) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("_User");
+        query.getInBackground(parseUser.getObjectId(), new GetCallback<ParseObject>() {
+            public void done(ParseObject gameScore, ParseException e) {
+                if (e == null) {
+                  ParseGeoPoint point = new ParseGeoPoint(latitude, longitude);
+                    gameScore.put("geoloc", point);
+                    gameScore.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                            } else {
+                                Log.d("okok", e.getMessage());
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 }

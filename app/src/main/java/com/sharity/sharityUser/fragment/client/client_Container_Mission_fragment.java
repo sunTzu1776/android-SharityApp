@@ -36,7 +36,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.MapCallback;
@@ -47,9 +46,7 @@ import java.util.List;
 
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mGoogleApiClient;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mLastLocation;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mLocationRequest;
 
 
 /**

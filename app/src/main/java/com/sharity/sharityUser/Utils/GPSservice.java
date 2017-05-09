@@ -36,7 +36,6 @@ public class GPSservice {
 
     public void getState(){
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        // getting GPS status
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -51,9 +50,6 @@ public class GPSservice {
 
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                Log.d("Network", "NO network");
-            } else {
                 this.canGetLocation = true;
                 Log.d("Network", String.valueOf(isNetworkEnabled));
                 if (isNetworkEnabled) {
@@ -75,7 +71,6 @@ public class GPSservice {
 
                 }
                 if (isGPSEnabled) {
-                    if (location == null) {
                         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         locationManager.requestLocationUpdates(
                                 LocationManager.GPS_PROVIDER,
@@ -90,10 +85,9 @@ public class GPSservice {
                                 longitude = location.getLongitude();
                             }
                         }
-                        }
                     }
                 }
-            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +107,7 @@ public class GPSservice {
     public final LocationListener gpsLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
-            Log.d("latlat", String.valueOf(location.getLatitude()));
+            Log.d("latitudeLocatruc", String.valueOf(location.getLatitude()));
         }
 
         @Override
