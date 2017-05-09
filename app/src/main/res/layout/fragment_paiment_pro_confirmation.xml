@@ -22,10 +22,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/titletext"
             android:visibility="visible"
             android:text="PAIEMENT VALIDE"
             android:gravity="center"
+            android:id="@+id/state"
             android:textSize="19sp" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_margin="10dp"
             android:gravity="center"
             android:textSize="17dp"
-            android:id="@+id/text_dialog"
+            android:id="@+id/ticket"
             android:layout_centerHorizontal="true" />
 
         <TextView

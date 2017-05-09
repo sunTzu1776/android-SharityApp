@@ -191,7 +191,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
     private void getProfilFromParse() {
         DatabaseHandler db = new DatabaseHandler(getActivity());
-
         //if user connected via Facebook, get picture profil
         if (profile!= null){
             profile = Profile.getCurrentProfile();

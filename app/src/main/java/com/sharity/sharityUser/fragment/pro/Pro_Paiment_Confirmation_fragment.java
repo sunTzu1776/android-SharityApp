@@ -35,12 +35,17 @@ public class Pro_Paiment_Confirmation_fragment extends Fragment implements Updat
 
     private String mMontant_recue;
     private String client_name;
+    private boolean approved;
+    private TextView ticket;
+    private TextView state;
 
-    public static Pro_Paiment_Confirmation_fragment newInstance(String montant_recue, String client_name) {
+    public static Pro_Paiment_Confirmation_fragment newInstance(String montant_recue, String client_name,boolean approved) {
         Pro_Paiment_Confirmation_fragment myFragment = new Pro_Paiment_Confirmation_fragment();
         Bundle args = new Bundle();
         args.putString("client_name",client_name);
         args.putString("montant_recue",montant_recue);
+        args.putBoolean("approved",approved);
+
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -52,12 +57,26 @@ public class Pro_Paiment_Confirmation_fragment extends Fragment implements Updat
         inflate = inflater.inflate(R.layout.fragment_paiment_pro_confirmation, container, false);
         montant_recue=(TextView)inflate.findViewById(R.id.montant_recue);
         montant_SP=(TextView)inflate.findViewById(R.id.montant_SP);
+        ticket=(TextView)inflate.findViewById(R.id.ticket);
+        state=(TextView)inflate.findViewById(R.id.state);
 
         client_name=getArguments().getString("client_name");
         mMontant_recue=getArguments().getString("montant_recue");
+        approved=getArguments().getBoolean("approved");
 
-        SettextMontantRecu();
-        SettextMontantSP();
+        if (approved){
+            state.setText("PAIEMENT VALIDE");
+            ticket.setVisibility(View.VISIBLE);
+            montant_SP.setVisibility(View.VISIBLE);
+            montant_recue.setVisibility(View.VISIBLE);
+            SettextMontantRecu();
+            SettextMontantSP();
+        }else {
+            state.setText("PAIEMENT REFUSE");
+            ticket.setVisibility(View.INVISIBLE);
+            montant_SP.setVisibility(View.INVISIBLE);
+            montant_recue.setVisibility(View.INVISIBLE);
+        }
 
         return inflate;
     }

@@ -96,7 +96,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     }
 
     public interface OnConfirmationPaiment{
-        void TaskOnConfirmation(String amount, String clientName);
+        void TaskOnConfirmation(String amount, String clientName,boolean isApproved);
     }
 
     @Override
@@ -216,10 +216,12 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                     @Override
                     public void onEvent(ParseQuery<CISSTransaction> query, final CISSTransaction object) {
                         Log.d("BusinessCISSTransaction","UPDATE");
-                        if (object.getBoolean("approved") == true && object.getInt("transactionType")==1) {
+                        if (object.getBoolean("processed") == true && object.getInt("transactionType")==1) {
                             if (!db.getAllTransactions().isEmpty()){
                             for (BusinessTransaction businessTransaction : db.getAllTransactions()) {
                                 if (object.getString("transactionId").equalsIgnoreCase(businessTransaction.getTransactionId())) {
+                                    boolean isApproved= object.getBoolean("approved");
+
                                      sale = ParseObject.create("Transaction");
                                     //Get Pointer customer
                                     try {
@@ -228,14 +230,17 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                                         e.printStackTrace();
                                     }
                                          client=sale.getString("sender_name");
-                                        db.deleteTransaction(object.getString("transactionId"));
+                                         db.deleteTransaction(object.getString("transactionId"));
                                         final int amount=object.getInt("amount");
 
                                         Intent intent = new Intent("paiment_businessEvent");
                                         intent.putExtra("amount", String.valueOf(amount/100));
                                         intent.putExtra("clientName",client);
-                                        LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
+                                        intent.putExtra("approved", isApproved);
+
+                                    LocalBroadcastManager.getInstance(ProfilProActivity.this).sendBroadcast(intent);
                                 }
+
                             }
                             }
 
@@ -484,6 +489,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
+            final boolean approved = intent.getBooleanExtra("approved",false);
             final String amount = intent.getStringExtra("amount");
             final String clientName = intent.getStringExtra("clientName");
             int item = pager.getCurrentItem();
@@ -491,7 +497,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 if(!ProfilProActivity.this.isFinishing()){
                     ProfilProActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
-                            Utils.showDialog3(ProfilProActivity.this, SetMontantRecu(amount,clientName), "Paiement", true, new Utils.Click() {
+                            Utils.showDialog3(ProfilProActivity.this, SetMontantRecu(amount,clientName,approved), "Paiement", true, new Utils.Click() {
                                 @Override
                                 public void Ok() {
                                 }
@@ -505,7 +511,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                     });
                 }
             }else {
-                onConfirmationPaiment.TaskOnConfirmation(amount, clientName);
+                onConfirmationPaiment.TaskOnConfirmation(amount, clientName,approved);
             }
 //            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
             //onNotificationReceived_Display();
@@ -540,29 +546,34 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
 
 
-    private String SetMontantRecu(String recu, String client){
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+    private String SetMontantRecu(String recu, String client,boolean approved){
+        String result;
+        if (approved){
+            SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        String red = "+" +recu+"€";
-        SpannableString redSpannable= new SpannableString(red);
-        redSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), 0, red.length(), 0);
-        builder.append(redSpannable);
+            String red = "+" +recu+"€";
+            SpannableString redSpannable= new SpannableString(red);
+            redSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), 0, red.length(), 0);
+            builder.append(redSpannable);
 
-        String black = " RECUE.";
-        SpannableString whiteSpannable= new SpannableString(black);
-        whiteSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black.length(), 0);
-        builder.append(whiteSpannable);
+            String black = " RECUE.";
+            SpannableString whiteSpannable= new SpannableString(black);
+            whiteSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black.length(), 0);
+            builder.append(whiteSpannable);
 
-        String green = " +" +recu+"SP";
-        SpannableString greenpannable= new SpannableString(green);
-        greenpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green)), 0, green.length(), 0);
-        builder.append(greenpannable);
+            String green = " +" +recu+"SP";
+            SpannableString greenpannable= new SpannableString(green);
+            greenpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green)), 0, green.length(), 0);
+            builder.append(greenpannable);
 
-        String black2 = " envoyés à "+client;
-        SpannableString blackSpannable= new SpannableString(black2);
-        blackSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black2.length(), 0);
-        builder.append(blackSpannable);
-        String result= builder.toString();
+            String black2 = " envoyés à "+client;
+            SpannableString blackSpannable= new SpannableString(black2);
+            blackSpannable.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, black2.length(), 0);
+            builder.append(blackSpannable);
+             result= builder.toString();
+        }else {
+            result="PAIMENT REFUSE";
+        }
         return result;
     }
 
