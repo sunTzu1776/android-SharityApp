@@ -265,6 +265,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 return History_container_fragment.newInstance();
             }
 
+
             return null;
         }
 
@@ -286,6 +287,9 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 ((Pro_Profil_Container_fragment) object).update();
             }
 
+            if (object instanceof Pro_Paiment_fragment) {
+                ((Pro_Paiment_fragment) object).update();
+            }
             if (object instanceof Pro_Paiment_fragment) {
                 ((Pro_Paiment_fragment) object).update();
             }

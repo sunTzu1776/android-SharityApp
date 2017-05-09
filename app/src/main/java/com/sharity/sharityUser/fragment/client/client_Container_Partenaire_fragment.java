@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -15,7 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +60,7 @@ import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
+import com.sharity.sharityUser.fragment.pro.Pro_Paiment_StepTwo_Classique_fragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +131,11 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     @Override
     public void onOpen(ArrayList<LocationBusiness> data, boolean type) {
         FragmentManager fm = getChildFragmentManager();
-        Utils.replaceFragmentWithAnimationVertical(R.id.content, client_PartenaireMap_fragment.newInstance(data, type), fm, "client_PartenaireMap_fragment", true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Utils.AnimationSlideFragment(getActivity(),fm,R.id.content,client_PartenaireMap_fragment.newInstance(data, type),"client_PartenaireMap_fragment", Gravity.BOTTOM,true);
+        }else {
+            Utils.replaceFragmentWithAnimationVertical(R.id.content, client_PartenaireMap_fragment.newInstance(data, type), fm, "client_PartenaireMap_fragment", true);
+        }
     }
 
     // Callback close map when user click close map.

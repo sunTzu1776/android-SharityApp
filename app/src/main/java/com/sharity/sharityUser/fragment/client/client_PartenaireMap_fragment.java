@@ -389,22 +389,9 @@ public class client_PartenaireMap_fragment extends Fragment implements
                     break;
                 }
             }
-           // layoutManager.scrollToPositionWithOffset(position, 1);
-        }else {
-            if (list_shop.size()>=1) {
-                count=list_shop.size();
-                for (Object busi : list_shop) {
-                    position++;
-                    if (((LocationBusiness) busi).getDescription().equals(marker.getTitle())) {
-                        break;
-
-                    }
-                }
-              //  layoutManager.scrollToPositionWithOffset(position, 1);
-            }
+            recyclerview.getLayoutManager().scrollToPosition(position);
+            // layoutManager.scrollToPositionWithOffset(position, 1);
         }
-
-
         return false;
     }
     private void setIconMap(){
