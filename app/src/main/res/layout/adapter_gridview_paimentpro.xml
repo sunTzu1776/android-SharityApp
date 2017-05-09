@@ -2,18 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="5dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/grid_image"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         tools:src="@drawable/logo"
         style="@style/MaterialAnimations.Icon.Small"
         android:src="@drawable/circle"
         android:transitionName="reveal"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/blue">
     </de.hdodenhof.circleimageview.CircleImageView>
 
     <TextView
@@ -23,8 +26,10 @@
         android:layout_below="@+id/grid_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:textSize="14.5sp"
+        android:maxLines="1"
+        android:textColor="@color/blue"
         android:gravity="center"
         tools:text="toto">
     </TextView>
