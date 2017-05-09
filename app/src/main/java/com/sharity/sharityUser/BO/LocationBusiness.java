@@ -21,23 +21,19 @@ import static com.sharity.sharityUser.R.id.username;
  */
 public class LocationBusiness implements Serializable {
 
-    String categorie;
+    private String categorie;
     //private variables
-    double _latitude;
-    double _longitude;
+    private double _latitude;
+    private double _longitude;
     String _businessName;
-    String _addresse;
+    private String _addresse;
     byte[] picture;
     float distance;
     boolean isoffset;
-    // Empty constructor
-    String description;
-    String prix;
-    String reduction;
+    private String description;
+    private String prix;
+    private String reduction;
 
-
-
-    LatLng Position = new LatLng(0.0, 0.0);
 
     public LocationBusiness() {
 
