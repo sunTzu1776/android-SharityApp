@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Paiment_Confirmation_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
@@ -90,7 +92,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
     private OnConfirmationPaiment onConfirmationPaiment;
     String client="";
     ParseObject sale;
-
+    MyPagerAdapter mViewPagerAdapter;
     public interface ListenFromActivity {
         void doSomethingInFragment(String frag);
     }
@@ -127,6 +129,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
             pager = (ViewPager) findViewById(R.id.pager);
             pager.setOffscreenPageLimit(0);
+            mViewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(1,true);
             profileSource="Profil";
@@ -250,7 +253,13 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
     }
 
-    private FragmentStatePagerAdapter mViewPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+    protected class MyPagerAdapter extends FragmentStatePagerAdapter {
+
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
         @Override
         public int getCount() {
             return TOTAL_PAGES;
@@ -275,13 +284,31 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
         }
 
 
-        // Remove a page for the given position. The adapter is responsible for removing the view from its container.
         @Override
-        public void destroyItem(android.view.ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-        };
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
 
         @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+
+        @Override
+        // To update fragment in ViewPager, we should override getItemPosition() method,
+        // in this method, we call the fragment's public updating method.
+        public int getItemPosition(Object object) {
+            return super.getItemPosition(object);
+        }
+
+      /*  @Override
         // To update fragment in ViewPager, we should override getItemPosition() method,
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
@@ -300,7 +327,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             }
 
             return super.getItemPosition(object);
-        };
+        };*/
     };
 
 
@@ -511,14 +538,32 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                     });
                 }
             }else {
-                onConfirmationPaiment.TaskOnConfirmation(amount, clientName,approved);
-            }
-//            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
-            //onNotificationReceived_Display();
+                Pro_Paiment_fragment pro_paiment_fragment=(Pro_Paiment_fragment) mViewPagerAdapter.getRegisteredFragment(2);
+                if (pro_paiment_fragment!=null){
+                    if (pro_paiment_fragment.isAdded()){
+                        onConfirmationPaiment.TaskOnConfirmation(amount, clientName,approved);
+                    }else {
+                        if(!ProfilProActivity.this.isFinishing()){
+                            ProfilProActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Utils.showDialog3(ProfilProActivity.this, SetMontantRecu(amount,clientName,approved), "Paiement", true, new Utils.Click() {
+                                        @Override
+                                        public void Ok() {
+                                        }
 
-            // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
-            // Popup_onNotification onNotification=new Popup_onNotification();
-            // onNotification.displayPopupWindow(do_donationTV,getActivity(),business,sharepoints);
+                                        @Override
+                                        public void Cancel() {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+               // FragmentManager fm = getSupportFragmentManager();
+              //  Utils.replaceFragmentWithAnimationVertical(R.id.container, Pro_Paiment_Confirmation_fragment.newInstance(amount,clientName,approved),fm,"Display_Paiment_Confirmation",true);
+            }
         }
     };
 
