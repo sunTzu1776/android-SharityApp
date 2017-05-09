@@ -145,13 +145,16 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     * */
 
     public synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
+        try {
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleApiClient.connect();
+        }catch (NullPointerException e){
 
+        }
     }
 
     @Override

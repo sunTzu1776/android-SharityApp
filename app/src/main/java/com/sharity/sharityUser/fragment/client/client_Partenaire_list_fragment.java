@@ -95,7 +95,8 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
     private LottieAnimationView animation_nonetwork;
     private GPSservice gpSservice;
     private  RelativeLayout frame_expand;
-
+    private RelativeLayout frame_progress_data;
+    private LottieAnimationView animation_progress_data;
     public static client_Partenaire_list_fragment newInstance(boolean FromCloseMap) {
         client_Partenaire_list_fragment myFragment = new client_Partenaire_list_fragment();
         Bundle args = new Bundle();
@@ -116,9 +117,13 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
         frame_expand = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         frame_nonetwork = (RelativeLayout) inflate.findViewById(R.id.frame_nonetwork);
+
         active_network = (Button) inflate.findViewById(R.id.active_network);
         search_layout = (LinearLayout) inflate.findViewById(R.id.search_layout);
         animation_nonetwork = (LottieAnimationView) inflate.findViewById(R.id.animation_nonetwork);
+
+        frame_progress_data = (RelativeLayout) inflate.findViewById(R.id.frame_progress_data);
+        animation_progress_data = (LottieAnimationView) inflate.findViewById(R.id.animation_progress_data);
 
         map = (Button) inflate.findViewById(R.id.map);
         type = (Button) inflate.findViewById(R.id.type);
@@ -296,9 +301,7 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
     public void StartLocation(){
         gpSservice = new GPSservice(getContext());
         gpSservice.getState();
-        if (mGoogleApiClient != null && latitude!=0.0) {
-            mGoogleApiClient.connect();
-        }
+
         if (!gpSservice.isGPSEnabled()|| !Utils.isConnected(getContext())){
             ShowNetworkView();
         }else {
@@ -351,6 +354,17 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
 
 
 
+    public void ShowProgress(){
+        frame_progress_data.setVisibility(View.VISIBLE);
+        animation_progress_data.setAnimation("loading.json");
+        animation_progress_data.loop(true);
+        animation_progress_data.playAnimation();
+    }
+
+    public void HideProgress(){
+        frame_progress_data.setVisibility(View.INVISIBLE);
+        animation_progress_data.cancelAnimation();
+    }
 
     public void ShowNetworkView(){
         frame_nonetwork.setVisibility(View.VISIBLE);
