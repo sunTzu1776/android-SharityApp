@@ -8,10 +8,16 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -70,6 +76,7 @@ import java.util.List;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.BO.CISSTransaction.transactionType;
+import static com.sharity.sharityUser.R.id.coordinatorLayout;
 import static com.sharity.sharityUser.R.id.date;
 import static com.sharity.sharityUser.R.id.latitude;
 import static com.sharity.sharityUser.R.id.longitude;
@@ -106,7 +113,8 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
     MyPagerAdapter mViewPagerAdapter;
     public static LocationUser locationUser=null;
-
+    public static PermissionRuntime permissionRuntime;
+    private  CoordinatorLayout coordinatorLayout;
 
     public interface OnNotificationUpdateHistoric {
         void TaskOnNotification(String business, String sharepoints);
@@ -124,7 +132,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         if (savedInstanceState == null) {
             parseUser = ParseUser.getCurrentUser();
             manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
+            permissionRuntime = new PermissionRuntime(ProfilActivity.this);
 
 
             clientProfilActivity = this;
@@ -142,6 +150,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
             myDrawer = (ListView) findViewById(R.id.my_drawer);
             adapter = new AdapterNews(ProfilActivity.this, drawersItems);
+            coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinatorLayout);
             myDrawer.setAdapter(adapter);
 
             pager = (ViewPager) findViewById(R.id.pager);
@@ -372,22 +381,45 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                        if (pager.getCurrentItem() == 2) {
                            client_Container_Partenaire_fragment clientProfilFragment = (client_Container_Partenaire_fragment) mViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
                            clientProfilFragment.buildGoogleApiClient();
                        }
-
-                //    if (pager.getCurrentItem() == 1) {
-                 //     client_Profil_fragment clientProfilFragment = (client_Profil_fragment) mViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
-                 //       clientProfilFragment.setUserLocation();
                         Log.d("Network granted", "passed");
-                        //   ((client_Container_Partenaire_fragment)page);
 
-                } else {
+                }else {
+                    // permission was not granted
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(ProfilActivity.this, permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)) {
+                        Utils.showDialogPermission(ProfilActivity.this,"L'application Sharity recquiert votre localisation pour le service de paiment et d'achat à proximité","Permission",false, new Utils.Click() {
+                            @Override
+                            public void Ok() {
+                                ActivityCompat.requestPermissions(ProfilActivity.this,
+                                        new String[]{permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION},
+                                        permissionRuntime.Code_ACCESS_FINE_LOCATION);
+                            }
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                            @Override
+                            public void Cancel() {
+
+                            }
+                        });
+                    } else {
+                        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Autoriser l'accès à la localisation", Snackbar.LENGTH_LONG);
+                        snackbar.setAction("PARAMETRES", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (ProfilActivity.this == null) {
+                                    return;
+                                }
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", ProfilActivity.this.getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            }
+                        });
+                        snackbar.show();
+                    }
                 }
                 return;
             }

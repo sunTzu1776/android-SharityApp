@@ -199,6 +199,49 @@ public class Utils {
 
     }
 
+    public static void showDialogPermission(Context activity, String message, String title, Boolean hideCancel, final Click ok) {
+
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_permissions);
+
+        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
+        text.setText(message);
+
+        TextView titleTV = (TextView) dialog.findViewById(R.id.titletext);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.cancel_btn);
+        if (hideCancel) {
+            cancelBtn.setVisibility(View.INVISIBLE);
+            cancelBtn.setClickable(false);
+        } else {
+            cancelBtn.setVisibility(View.VISIBLE);
+            cancelBtn.setClickable(true);
+        }
+
+        titleTV.setText(title);
+        titleTV.setVisibility(View.VISIBLE);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ok.Ok();
+                dialog.dismiss();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ok.Cancel();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
+
     public interface ProcessEmail {
         void SetEmail(String email);
 
@@ -359,7 +402,6 @@ public class Utils {
                 .addToBackStack(null)
                 .commit();
     }
-
 
 
 }

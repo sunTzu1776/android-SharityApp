@@ -63,6 +63,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.activity.ProfilActivity.permissionRuntime;
 
 
 /**
@@ -79,7 +80,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     protected static double latitude = 0.0;
     protected static double longitude = 0.0;
     protected static boolean isShop = true;
-    protected PermissionRuntime permissionRuntime;
     protected static Location mLastLocation;
     protected static Marker mCurrLocationMarker;
     private View inflate;
@@ -221,7 +221,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    final PermissionRuntime permissionRuntime = new PermissionRuntime(getActivity());
                     if (ContextCompat.checkSelfPermission(getActivity(),
                             permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
@@ -232,6 +231,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                     } else {
                         permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
                     }
+
                 }
             }, 2000);
         }else {
