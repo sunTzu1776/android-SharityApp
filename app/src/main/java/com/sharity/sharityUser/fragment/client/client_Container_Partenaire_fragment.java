@@ -112,28 +112,13 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_partenaire_container_client, container, false);
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                final PermissionRuntime permissionRuntime = new PermissionRuntime(getActivity());
-                if (ContextCompat.checkSelfPermission(getActivity(),
-                        permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    if (mGoogleApiClient == null) {
-                        buildGoogleApiClient();
-                    }
-                } else {
-                    permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
-                }
-            }
-        }, 2500);
-
-
         client_Partenaire_list_fragment fragTwo = client_Partenaire_list_fragment.newInstance(false);
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.content, fragTwo, "client_Partenaire_list_fragment");
         ft.commit();
+
+
         return inflate;
     }
 
@@ -149,8 +134,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     @Override
     public void onClose() {
         ((ProfilActivity)getActivity()).onBackPressed();
-        //  FragmentManager fm = getChildFragmentManager();
-      //  Utils.replaceFragmentWithAnimationVertical(R.id.content, client_Partenaire_list_fragment.newInstance(true), fm, "client_Partenaire_list_fragment", false);
     }
 
     @Override
@@ -173,7 +156,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(5000);
@@ -188,11 +170,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
 
-                    if (ProfilActivity.locationUser!=null){
-                        if (ProfilActivity.locationUser.mGoogleApiClient.isConnected()){
-                            ProfilActivity.locationUser.mGoogleApiClient.disconnect();
-                        }
-                    }
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
@@ -237,6 +214,36 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
 
     @Override
     public void onStart() {
+        if (mGoogleApiClient == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final PermissionRuntime permissionRuntime = new PermissionRuntime(getActivity());
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        if (mGoogleApiClient == null) {
+                            Log.d("mGoogleApiClient", "Start connection");
+                            buildGoogleApiClient();
+                        }
+                    } else {
+                        permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
+                    }
+                }
+            }, 2000);
+        }else {
+                if (!mGoogleApiClient.isConnected()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            buildGoogleApiClient();
+                        }
+                    }, 1000);
+                   Log.d("mGoogleApiClient", "Disconnected");
+                }
+        }
+
+
         super.onStart();
     }
 
@@ -479,6 +486,8 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
 
                 } catch (IntentSender.SendIntentException e) {
                     //failed to show dialog
+                }catch (NullPointerException e){
+
                 }
                 break;
 
