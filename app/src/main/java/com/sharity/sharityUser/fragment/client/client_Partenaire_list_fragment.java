@@ -97,10 +97,9 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
     private  RelativeLayout frame_expand;
     private RelativeLayout frame_progress_data;
     private LottieAnimationView animation_progress_data;
-    public static client_Partenaire_list_fragment newInstance(boolean FromCloseMap) {
+    public static client_Partenaire_list_fragment newInstance() {
         client_Partenaire_list_fragment myFragment = new client_Partenaire_list_fragment();
         Bundle args = new Bundle();
-        args.putBoolean("fromCloseMap", FromCloseMap);
         myFragment.setArguments(args);
         return myFragment;
     }

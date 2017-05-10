@@ -145,12 +145,8 @@ public class client_PartenaireMap_fragment extends Fragment implements
 
         isShop = getArguments().getBoolean("type");
 
-        if (isShop) {
-            list_shop = (ArrayList<LocationBusiness>) getArguments().getSerializable("data");
+        list_shop = (ArrayList<LocationBusiness>) getArguments().getSerializable("data");
 
-        } else {
-            list_shop = (ArrayList<LocationBusiness>) getArguments().getSerializable("data");
-        }
 
         Initalize_RecyclerView();
         if (mGoogleApiClient != null) {
@@ -198,7 +194,7 @@ public class client_PartenaireMap_fragment extends Fragment implements
                         if (mMap != null && latitude!=null) {
                             try {
                                 LatLng latLng = new LatLng(Double.valueOf(latitude.getText().toString()), Double.valueOf(longitude.getText().toString()));
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                             } catch (NumberFormatException e) {
 
                             }

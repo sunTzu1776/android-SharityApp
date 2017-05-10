@@ -40,6 +40,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -115,7 +116,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_partenaire_container_client, container, false);
 
-        client_Partenaire_list_fragment fragTwo = client_Partenaire_list_fragment.newInstance(false);
+        client_Partenaire_list_fragment fragTwo = client_Partenaire_list_fragment.newInstance();
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.content, fragTwo, "client_Partenaire_list_fragment");
@@ -140,7 +141,12 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     // Callback close map when user click close map.
     @Override
     public void onClose() {
-        ((ProfilActivity)getActivity()).onBackPressed();
+        try {
+            ((ProfilActivity)getActivity()).onBackPressed();
+
+        }catch (IllegalStateException e){
+
+        }
     }
 
     @Override
