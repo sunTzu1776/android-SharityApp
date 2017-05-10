@@ -69,7 +69,6 @@ import static com.sharity.sharityUser.fragment.client.client_Container_Partenair
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isShop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.latitude;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;

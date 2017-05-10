@@ -67,6 +67,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.activity.ProfilActivity.isShop;
 import static com.sharity.sharityUser.activity.ProfilActivity.permissionRuntime;
 
 
@@ -83,7 +84,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     protected static ParseGeoPoint geoPoint;
     protected static double latitude = 0.0;
     protected static double longitude = 0.0;
-    protected static boolean isShop = true;
     protected static Location mLastLocation;
     protected static Marker mCurrLocationMarker;
     private View inflate;

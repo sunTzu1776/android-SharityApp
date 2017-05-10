@@ -61,6 +61,7 @@ android {
     }
 }
 
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     provided files('libs/httpclient-4.0.3.jar')

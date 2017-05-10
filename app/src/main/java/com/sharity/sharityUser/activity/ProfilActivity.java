@@ -73,6 +73,8 @@ import com.sharity.sharityUser.fragment.client.client_Partenaire_list_fragment;
 import com.sharity.sharityUser.fragment.client.client_Profil_fragment;
 import com.sharity.sharityUser.fragment.client.client_PartenaireMap_fragment;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
+import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     public static DatabaseHandler db;
     private IntentFilter mIntent;
     static int TOTAL_PAGES = 4;
-    private ViewPager pager;
+    public ViewPager pager;
     private LocationManager manager;
     private Toolbar toolbar;
     private BottomBar bottomBar;
@@ -121,6 +123,8 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     public static LocationUser locationUser=null;
     public static PermissionRuntime permissionRuntime;
     private  CoordinatorLayout coordinatorLayout;
+    public static boolean isShop = true;
+
 
     public interface OnNotificationUpdateHistoric {
         void TaskOnNotification(String business, String sharepoints);
@@ -168,7 +172,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             myDrawer.setAdapter(adapter);
 
             pager = (ViewPager) findViewById(R.id.pager);
-            pager.setOffscreenPageLimit(0);
+            pager.setOffscreenPageLimit(3);
             mViewPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
             pager.setAdapter(mViewPagerAdapter);
             pager.setCurrentItem(2, true);
@@ -293,6 +297,18 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                 toolbarTitle.setText("HISTORIQUE");
             } else if (position == 1) {
                 toolbarTitle.setText("PROFIL");
+              final client_Profil_fragment clientProfilFragment=(client_Profil_fragment)mViewPagerAdapter.getRegisteredFragment(position);
+               if (clientProfilFragment!=null){
+                   if (clientProfilFragment.isAdded()){
+                       new Handler().postDelayed(new Runnable() {
+                           @Override
+                           public void run() {
+                               clientProfilFragment.update();
+
+                           }
+                            }, 500);
+                   }
+               }
             } else if (position == 2) {
                 toolbarTitle.setText("PARTENAIRE");
             } else if (position == 3) {
@@ -580,12 +596,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
         @Override
         // To update fragment in ViewPager, we should override getItemPosition() method,
+        // in this method, we call the fragment's public updating method
+        // To update fragment in ViewPager, we should override getItemPosition() method,
         // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
             return super.getItemPosition(object);
-        }
-
-        ;
+        };
     }
 
     ;

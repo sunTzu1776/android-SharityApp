@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -37,8 +38,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
-import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.BO.User;
+import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.GPSservice;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
@@ -50,6 +51,8 @@ import com.sharity.sharityUser.fonts.TextViewMontserraThin;
 import com.sharity.sharityUser.fragment.Updateable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.animationDuration;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -94,7 +97,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     TextView success_donate_tobusiness;
     TextView success_donate_sharepoint;
     LinearLayout success_donate_view;
-
+    private CircularProgressBar circularProgressBar;
     public static client_Profil_fragment newInstance() {
         client_Profil_fragment myFragment = new client_Profil_fragment();
         Bundle args = new Bundle();
@@ -122,8 +125,11 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         recycler_charity = (RecyclerView) inflate.findViewById(R.id.recycler_charity);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
-        onItemDonateClickListener = this;
+        circularProgressBar=(CircularProgressBar)inflate.findViewById(R.id.circularprogress);
+        int animationDuration = 3000; // 2500ms = 2,5s
+        circularProgressBar.setProgressWithAnimation(0);
 
+        onItemDonateClickListener = this;
         do_donationTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,6 +184,18 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
 
     @Override
     public void update() {
+        Log.d("clicli","update");
+        int animationDuration2 = 100; // 2500ms = 2,5s
+        points.setText(String.valueOf(sharepoints_user_temp));
+        username.setText(String.valueOf(sharepoints_user_temp));
+        int animationDuration = 3000; // 2500ms = 2,5s
+        circularProgressBar.setProgress(0);
+        if (sharepoints_user_temp<=1000){
+            circularProgressBar.setProgressWithAnimation(sharepoints_user_temp/10,animationDuration);
+        }else if(sharepoints_user_temp>1000 && sharepoints_user_temp<10000){
+            circularProgressBar.setProgressWithAnimation(sharepoints_user_temp/100,animationDuration);
+        }
+        circularProgressBar.invalidate();
     }
 
     private void getProfilFromParse() {
@@ -237,6 +255,14 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                             }
                         }
                         points.setText(String.valueOf(sharepoints));
+                        username.setText(String.valueOf(sharepoints));
+                        int animationDuration = 3000; // 2500ms = 2,5s
+                        if (sharepoints<=1000){
+                            circularProgressBar.setProgressWithAnimation(sharepoints/10,animationDuration);
+                        }else if(sharepoints>1000 && sharepoints<10000){
+                            circularProgressBar.setProgressWithAnimation(sharepoints/100,animationDuration);
+                        }
+
                         sharepoints_user_temp = sharepoints;
                         Log.d("sharepoints", String.valueOf(sharepoints));
                         swipeContainer.setRefreshing(false);
@@ -256,7 +282,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
                     String user_name = object.getString("username");
-                    username.setText(user_name);
                     object.put("sharepoints", sharepoints);
                     object.saveInBackground(new SaveCallback() {
                         @Override

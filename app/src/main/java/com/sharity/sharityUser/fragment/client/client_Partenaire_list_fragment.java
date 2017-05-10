@@ -49,18 +49,19 @@ import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
 import com.sharity.sharityUser.Utils.AdapterPartenaireMapClient;
 import com.sharity.sharityUser.Utils.GPSservice;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
 import java.util.HashSet;
 import java.util.Set;
 import static com.sharity.sharityUser.R.id.latitude;
 import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.activity.ProfilActivity.isShop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridview;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isShop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop_filtered;
@@ -324,7 +325,11 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
             }
         });
 
-        ((client_Container_Partenaire_fragment) getParentFragment()).ChangeTitleActivity("SHOP");
+
+        if (((ProfilActivity)getActivity()).pager.getCurrentItem()==3){
+            ((client_Container_Partenaire_fragment) getParentFragment()).ChangeTitleActivity("SHOP");
+        }
+
         type.setText("PROMOTION");
         type.setTextColor(getResources().getColor(R.color.blue));
         isShop = true;
@@ -334,7 +339,11 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
     public void ShowSPromotion(){
         adapter2 = new AdapterPartenaireClient("client_Partenaire_list_fragment", false, getActivity(), list_shop, onItemDonateClickListener);
         recyclerview.setAdapter(adapter2);
-        ((client_Container_Partenaire_fragment) getParentFragment()).ChangeTitleActivity("PROMOTION");
+
+        if (((ProfilActivity)getActivity()).pager.getCurrentItem()==2) {
+            ((client_Container_Partenaire_fragment) getParentFragment()).ChangeTitleActivity("PROMOTION");
+        }
+
         type.setText("SHOP");
         type.setTextColor(getResources().getColor(R.color.green));
 
