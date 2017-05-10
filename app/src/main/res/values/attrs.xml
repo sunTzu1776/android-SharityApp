@@ -26,4 +26,9 @@
     <declare-styleable name="TextViewMontSerraThin">
         <attr name="MontSerraThin" format="string"/>
     </declare-styleable>
+
+
+    <declare-styleable name="GradualGrowingLine">
+        <attr name="android:background"/>
+    </declare-styleable>
 </resources>
