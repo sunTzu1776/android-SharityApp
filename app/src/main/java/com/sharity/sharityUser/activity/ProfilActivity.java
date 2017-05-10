@@ -5,8 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.Profile;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -55,8 +59,10 @@ import com.roughike.bottombar.OnTabSelectListener;
 import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.BO.History;
+import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.AdapterDrawer;
 import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.Utils.LocationUser;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
@@ -108,7 +114,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     private ListView myDrawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ArrayList<Drawer> drawersItems = new ArrayList<Drawer>();
-    private AdapterNews adapter;
+    private AdapterDrawer adapter;
     public OnNotificationUpdateProfil onNotificationUpdateProfil;
     public OnNotificationUpdateHistoric onNotificationUpdateHistoric;
     MyPagerAdapter mViewPagerAdapter;
@@ -141,15 +147,23 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
+            DatabaseHandler db = new DatabaseHandler(ProfilActivity.this);
+                String objectId = getUserObjectId(ProfilActivity.this);
+                User user = db.getUser(objectId);
+                byte[] image = user.getPictureprofil();
+                Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
+                String name= user.get_name();
+
             drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawersItems.add(0, new Drawer(R.drawable.logo, "", 0));
-            drawersItems.add(1, new Drawer(R.drawable.logo, "CGU", 1));
-            drawersItems.add(2, new Drawer(R.drawable.logo, "Contacts", 1));
-            drawersItems.add(3, new Drawer(R.drawable.logo, "Noter l'application", 1));
-            drawersItems.add(4, new Drawer(R.drawable.logo, "Déconnexion", 1));
+            drawersItems.add(0, new Drawer(null, "SHARITY", -1));
+            drawersItems.add(1, new Drawer(PictureProfile, name, 0));
+            drawersItems.add(2, new Drawer(null, "CGU", 1));
+            drawersItems.add(3, new Drawer(null, "Contacts", 1));
+            drawersItems.add(4, new Drawer(null, "Noter l'application", 1));
+            drawersItems.add(5, new Drawer(null, "Déconnexion", 1));
 
             myDrawer = (ListView) findViewById(R.id.my_drawer);
-            adapter = new AdapterNews(ProfilActivity.this, drawersItems);
+            adapter = new AdapterDrawer(ProfilActivity.this, drawersItems);
             coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinatorLayout);
             myDrawer.setAdapter(adapter);
 
@@ -200,6 +214,10 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
 
                             break;
                         case 4:
+
+                            break;
+
+                        case 5:
                             //Disconnection
                             parseUser.logOut();
                             Intent intent = new Intent(ProfilActivity.this, LoginActivity.class);
@@ -595,6 +613,12 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             if (fragment != null)
                 traverseManagers(fragment.getChildFragmentManager(), managers, intent + 1);
         }
+    }
+
+    private String getUserObjectId(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("User_ObjectId", "");         // getting String
+        return accountDisconnect;
     }
 }
 

@@ -13,11 +13,24 @@ import static com.sharity.sharityUser.R.array.items;
 
 public class Drawer {
 
+
     int logo;
     String items;
     int type;
+    Bitmap PictureProfile;
+
+    //business
     public Drawer(int logo, String items, int type){
         this.logo=logo;
+        this.items=items;
+        this.type=type;
+        this.type=type;
+    }
+
+
+    //client
+    public Drawer(Bitmap PictureProfile, String items, int type){
+        this.PictureProfile=PictureProfile;
         this.items=items;
         this.type=type;
         this.type=type;
@@ -33,5 +46,9 @@ public class Drawer {
 
     public String getItems() {
         return items;
+    }
+
+    public Bitmap getPictureProfile() {
+        return PictureProfile;
     }
 }

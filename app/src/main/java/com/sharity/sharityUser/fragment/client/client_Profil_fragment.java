@@ -48,13 +48,9 @@ import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fonts.TextViewGeoManis;
 import com.sharity.sharityUser.fonts.TextViewMontserraThin;
 import com.sharity.sharityUser.fragment.Updateable;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 
 /**
@@ -74,8 +70,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private StoreAdapter2 adapter2=null;
     private byte[] imageByte = null;
     private TextView username;
-    private com.sharity.sharityUser.Utils.ProfilePictureView picture_facebook;
-    private CircleImageView picture_twitter;
 
     //Field donation to charity
     private String CharityName;
@@ -127,9 +121,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         dons_view = (LinearLayout) inflate.findViewById(R.id.dons_view);
         recycler_charity = (RecyclerView) inflate.findViewById(R.id.recycler_charity);
         swipeContainer = (SwipeRefreshLayout) inflate.findViewById(R.id.swipeContainer);
-        picture_facebook = (com.sharity.sharityUser.Utils.ProfilePictureView) inflate.findViewById(R.id.picture_facebook);
-        picture_twitter = (CircleImageView) inflate.findViewById(R.id.picture_twitter);
-
         swipeContainer.setOnRefreshListener(this);
         onItemDonateClickListener = this;
 
@@ -192,17 +183,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     private void getProfilFromParse() {
         DatabaseHandler db = new DatabaseHandler(getActivity());
         //if user connected via Facebook, get picture profil
-        if (profile!= null){
-            profile = Profile.getCurrentProfile();
-            picture_facebook.setProfileId(profile.getId());
-        }else {
-            //if user connected via Twitter, get picture profil
-            String objectId = getUserObjectId(getActivity());
-            User user = db.getUser(objectId);
-            byte[] image = user.getPictureprofil();
-            Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
-            picture_twitter.setImageBitmap(PictureProfile);
-        }
+
 
         if (db.getUserCount() > 0 && Utils.isConnected(getContext())) {
             try {
@@ -213,15 +194,6 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                 getActivity().finish();
                 swipeContainer.setRefreshing(false);
             }
-        } else {
-            String objectId = getUserObjectId(getActivity());
-            User user = db.getUser(objectId);
-            byte[] image = user.getPictureprofil();
-            Bitmap PictureProfile = BitmapFactory.decodeByteArray(image, 0, image.length);
-            picture_twitter.setImageBitmap(PictureProfile);
-            username.setText(user.get_name());
-            swipeContainer.setRefreshing(false);
-            //DO network request to get User data
         }
     }
 

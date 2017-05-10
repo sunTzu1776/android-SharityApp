@@ -88,6 +88,7 @@ dependencies {
     compile 'com.matthew-tamlin:sliding-intro-screen:3.2.0'
     compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'com.google.android.gms:play-services-places:10.0.1'
+    compile 'com.mikhaellopez:circularprogressbar:1.1.1'
     compile 'com.parse:parse-livequery-android:1.0.2' // for Parse Live Queries
     compile('com.facebook.android:facebook-android-sdk:4.8.2') {
         exclude module: 'bolts-android'
