@@ -21,7 +21,6 @@ import static com.sharity.sharityUser.R.id.username;
  */
 public class LocationBusiness implements Serializable {
 
-    private String categorie;
     //private variables
     private double _latitude;
     private double _longitude;
@@ -33,7 +32,7 @@ public class LocationBusiness implements Serializable {
     private String description;
     private String prix;
     private String reduction;
-
+    private String categorie;
 
     public LocationBusiness() {
 
@@ -47,13 +46,14 @@ public class LocationBusiness implements Serializable {
         this._addresse = addresse;
     }
 
-    public LocationBusiness(double latitude, double longitude, String businessName, float distance, byte[] picture, boolean isOffset) {
+    public LocationBusiness(double latitude, double longitude, String businessName,String categorie, float distance, byte[] picture, boolean isOffset) {
         this._latitude = latitude;
         this._longitude = longitude;
         this._businessName = businessName;
         this.picture = picture;
         this.distance=distance;
         this.isoffset=isOffset;
+        this.categorie=categorie;
     }
 
     public LocationBusiness(String categorie,double latitude, double longitude, String businessName, float distance, String description,String prix,String reduction, boolean isOffset) {

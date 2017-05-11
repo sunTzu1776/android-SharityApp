@@ -59,10 +59,12 @@ import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.activity.ProfilActivity.isShop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.getList_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridViewCategorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridview;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorieReal;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop_filtered;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.longitude;
@@ -163,7 +165,9 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
                 gpSservice.getState();
                 if (gpSservice.isGPSEnabled() && gpSservice.isNetworkEnabled()){
                     if (!isLocationUpdate()){
-                        ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();
+                        if (mGoogleApiClient.isConnected()) {
+                            ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();
+                        }
                     }
                     if (on){
                        ShowShop();
@@ -254,23 +258,30 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
         switch (view.getId()) {
             case R.id.search_layout:
                 //Show  "Categorie" expand collapse //
-                if (!isShop) {
+
                     if (issearch) {
                         frameCategorie = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
                         mViewcategorieColapse = vinflater.inflate(R.layout.layout_editingsequence, frameCategorie, false);
                         frameCategorie.addView(mViewcategorieColapse);
-                        removeDuplicateCategories();
                         gridview = (GridView) mViewcategorieColapse.findViewById(R.id.customgrid);
-                        gridview.setAdapter(new AdapterGridViewCategorie(getActivity(), list_categorie, images, onItemGridCategorieClickListener));
+                        gridViewCategorie=new AdapterGridViewCategorie(getActivity(), list_categorieReal, onItemGridCategorieClickListener);
+
+                        if (getList_categorie().isEmpty()){
+                            ((client_Container_Partenaire_fragment)getParentFragment()).get_Categorie(new client_Container_Partenaire_fragment.DataCallBack() {
+                                @Override
+                                public void onSuccess() {
+                                    gridViewCategorie.notifyDataSetChanged();
+                                }
+                            });
+                        }else {
+                            gridview.setAdapter(gridViewCategorie);
+                        }
                         Utils.expand(mViewcategorieColapse);
                         issearch = false;
                     } else {
                         //  frameCategorie.removeView(mViewcategorieColapse);
                         Utils.collapse(mViewcategorieColapse);
                         issearch = true;
-                    }
-                } else {
-                        Toast.makeText(getActivity(),"Recherche uniquement pour les promotions",Toast.LENGTH_LONG).show();
                     }
                 break;
 
@@ -403,13 +414,6 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
      * GridView for Categories
      */
 
-    //Create categorie grid
-    private void removeDuplicateCategories(){
-        Set<String> hs = new HashSet<>();
-        hs.addAll(list_categorie);
-        list_categorie.clear();
-        list_categorie.addAll(hs);
-    }
 
 
     private void DisplayItemFromCategorie(String selectedCategorie){
@@ -421,9 +425,12 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
         }
         Log.d("onItemCategorieClick",selectedCategorie);
         for (LocationBusiness object : list_shop_filtered){
-            if(object.getCategorie().equals(selectedCategorie) && !object.isoffset()){
-                Log.d("onItemCategolickpassed",selectedCategorie);
-                list_shop.add(object);
+            if(object.getCategorie()!=null) {
+                if (object.getCategorie().equals(selectedCategorie) && !object.isoffset()) {
+                    Log.d("onItemCategolickpassed", selectedCategorie);
+                    list_shop.add(object);
+                    break;
+                }
             }
         }
         if (list_shop.size()>1) {
@@ -444,7 +451,7 @@ public class client_Partenaire_list_fragment extends Fragment implements Updatea
 
     @Override
     public void onItemCategorieClick(int item, String categorie) {
-        Log.d("onItemCategorieClick","onItemCategorieClick");
+        Log.d("onItemCategorielist",categorie);
         if (isLocationUpdate()){
             ((client_Container_Partenaire_fragment) getParentFragment()).RemoveLocationUpdate();
         }

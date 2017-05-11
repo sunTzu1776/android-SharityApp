@@ -67,10 +67,12 @@ import static com.sharity.sharityUser.R.id.swipeContainer;
 import static com.sharity.sharityUser.R.id.userlist;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.getList_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridViewCategorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.latitude;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorie;
+import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorieReal;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_shop_filtered;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.longitude;
@@ -324,9 +326,21 @@ public class client_PartenaireMap_fragment extends Fragment implements
                             frameCategorie = (RelativeLayout) inflate.findViewById(R.id.frame_expand);
                             mViewcategorieColapse = vinflater.inflate(R.layout.layout_editingsequence, frameCategorie, false);
                             frameCategorie.addView(mViewcategorieColapse);
-                            removeDuplicateCategories();
                             gridview = (GridView) mViewcategorieColapse.findViewById(R.id.customgrid);
-                            gridview.setAdapter(new AdapterGridViewCategorie(getActivity(), list_categorie, images, onItemGridCategorieClickListener));
+                            gridViewCategorie=new AdapterGridViewCategorie(getActivity(), list_categorieReal, onItemGridCategorieClickListener);
+
+                            if (getList_categorie().isEmpty()){
+                                ((client_Container_Partenaire_fragment)getParentFragment()).get_Categorie(new client_Container_Partenaire_fragment.DataCallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        gridViewCategorie.notifyDataSetChanged();
+                                    }
+                                });
+                            }else {
+                                gridview.setAdapter(gridViewCategorie);
+                            }
+
+
                             Utils.expand(mViewcategorieColapse);
                             issearch = false;
                         } else {
@@ -481,14 +495,6 @@ public class client_PartenaireMap_fragment extends Fragment implements
      * GridView for Categories
      */
 
-    //Create categorie grid
-    private void removeDuplicateCategories(){
-        Set<String> hs = new HashSet<>();
-        hs.addAll(list_categorie);
-        list_categorie.clear();
-        list_categorie.addAll(hs);
-    }
-
 
     private void DisplayItemFromCategorie(String selectedCategorie){
         list_shop.clear();
@@ -526,7 +532,7 @@ public class client_PartenaireMap_fragment extends Fragment implements
 
     @Override
     public void onItemCategorieClick(int item, String categorie) {
-        Log.d("onItemCategorieClick","onItemCategorieClick");
+        Log.d("onItemCategoriemap","onItemCategorieClick");
         if (isLocationUpdate()){
             ((client_Container_Partenaire_fragment) getParentFragment()).RemoveLocationUpdate();
         }

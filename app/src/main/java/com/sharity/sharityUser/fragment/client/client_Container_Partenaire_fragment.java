@@ -43,15 +43,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.sharity.sharityUser.BO.Category;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
+import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
 import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
 import com.sharity.sharityUser.Utils.GPSservice;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
@@ -66,7 +70,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.sharity.sharityUser.R.id.nom;
 import static com.sharity.sharityUser.R.id.swipeContainer;
+import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.ProfilActivity.isShop;
 import static com.sharity.sharityUser.activity.ProfilActivity.permissionRuntime;
 
@@ -79,7 +85,8 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
 
     protected static ArrayList<LocationBusiness> list_shop = new ArrayList<>();
     protected static ArrayList<LocationBusiness> list_shop_filtered = new ArrayList<LocationBusiness>();
-    protected static ArrayList<String> list_categorie = new ArrayList<String>();
+    protected static ArrayList<Category> list_categorieReal = new ArrayList<Category>();
+
     protected static FrameLayout recyclerFrame;
     protected static ParseGeoPoint geoPoint;
     protected static double latitude = 0.0;
@@ -102,6 +109,9 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     int size_listshopNew=0;
     public static LocationRequest mLocationRequest;
     public static GoogleApiClient mGoogleApiClient;
+    public static AdapterGridViewCategorie gridViewCategorie;
+    public static String categorie;
+
 
     public static client_Container_Partenaire_fragment newInstance() {
         client_Container_Partenaire_fragment myFragment = new client_Container_Partenaire_fragment();
@@ -165,6 +175,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
+            get_Categorie();
         }catch (NullPointerException e){
 
         }
@@ -362,20 +373,38 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
             if (mMap!=null){
                 mMap.clear();
             }
+
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Business");
             if (client_Container_Partenaire_fragment.latitude != 0.0) {
                 query.whereWithinKilometers("location", geoPoint, 0.70);
-            }
-            query.findInBackground(new FindCallback<ParseObject>() {
+            }query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
                     if (e == null) {
                         list_shop.clear();
+                        list_shop_filtered.clear();
                         // Iterating over the results
+
                         for (int i = 0; i < objects.size(); i++) {
                             double queryLatitude = objects.get(i).getParseGeoPoint("location").getLatitude();
                             double queryLongitude = objects.get(i).getParseGeoPoint("location").getLongitude();
                             String business_name = objects.get(i).get("businessName").toString();
+
+                            ParseRelation<ParseObject> relation = objects.get(i).getRelation("categories");
+                            relation.getQuery().findInBackground(new FindCallback<ParseObject>() {
+
+                                @Override
+                                public void done(List<ParseObject> results, ParseException e) {
+                                    if (e != null) {
+                                        // There was an error
+                                    } else {
+                                        for (ParseObject object : results){
+                                            categorie =object.getString("name");
+                                        }
+                                    }
+                                }
+                            });
+
                             // String addresse=  objects.get(i).get("address").toString();
                             float distance = Utils.distance(client_Container_Partenaire_fragment.latitude, longitude, queryLatitude, queryLongitude);
                             ParseFile image = objects.get(i).getParseFile("logo");
@@ -389,21 +418,20 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                                 imageByte = null;
                                 e1.printStackTrace();
                             }
-                            list_shop.add(new LocationBusiness(queryLatitude, queryLongitude, business_name, distance, imageByte, false));
+                            list_shop.add(new LocationBusiness(queryLatitude, queryLongitude, business_name,categorie, distance, imageByte, false));
                         }//Place current location marker
-
+                        list_shop_filtered.addAll(list_shop);
                         //Create offset with last business
                         if (list_shop.size() > 1) {
                             Object business = list_shop.get(list_shop.size() - 1);
                             Double lat = ((LocationBusiness) business).get_latitude();
                             Double lon = ((LocationBusiness) business).get_longitude();
                             String mbusiness = ((LocationBusiness) business).get_businessName();
+                            String categorie = ((LocationBusiness) business).getCategorie();
                             float mdistance = ((LocationBusiness) business).getDistance();
                             byte[] pic = ((LocationBusiness) business).getPicture();
-
-                            list_shop.add(new LocationBusiness(lat, lon, mbusiness, mdistance, pic, true));
+                            list_shop.add(new LocationBusiness(lat, lon, mbusiness,categorie, mdistance, pic, true));
                         }
-
                         dataCallBack.onSuccess();
                     }
                 }
@@ -429,12 +457,11 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                     if (commentList != null) {
                         list_shop.clear();
                         list_shop_filtered.clear();
-                        list_categorie.clear();
                         images.clear();
                         for (final ParseObject object : commentList) {
                             //   ParseFile image = (ParseFile) object.getParseFile("Logo");
                             final String prix = object.getString("prix");
-                            final String description = object.getString("description");
+                            final String description = object.getString("title");
                             final String reduction = object.getString("reduction");
                             String businessName=object.getString("businessName");
                             String mcategorie=object.getString("categorie");
@@ -456,9 +483,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                             }*/
 
                             list_shop.add(new LocationBusiness(mcategorie,latitude, longitude, businessName, 0 , description,prix,reduction, false));
-                            list_categorie.add(mcategorie);
-                            images.add(R.mipmap.ic_launcher);
-
                         }
 
                         list_shop_filtered.addAll(list_shop);
@@ -472,7 +496,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                             String reduction = ((LocationBusiness) business).getReduction();
                             String busines = ((LocationBusiness) business).get_businessName();
                             String categorie = ((LocationBusiness) business).getCategorie();
-
                             list_shop.add(new LocationBusiness(categorie,lat, lon, busines, 0 , description,prix,reduction, true));
                         }
 
@@ -483,6 +506,61 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
             });
         } catch (NullPointerException f) {
         }
+    }
+
+    public void get_Categorie(final DataCallBack callBack) {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Category");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> commentList, ParseException e) {
+                    if (commentList != null) {
+                        list_categorieReal.clear();
+                        for (final ParseObject object : commentList) {
+                            final String objectId = object.getObjectId();
+                            String name=object.getString("name");
+                               ParseFile image = (ParseFile) object.getParseFile("image");
+                            try {
+                                imageByte = image.getData();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            list_categorieReal.add(new Category(objectId,name,imageByte));
+                        }
+                        callBack.onSuccess();
+                    }
+                }
+            });
+        } catch (NullPointerException f) {
+        }
+    }
+
+    public void get_Categorie() {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Category");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> commentList, ParseException e) {
+                    if (commentList != null) {
+                        list_categorieReal.clear();
+                        for (final ParseObject object : commentList) {
+                            final String objectId = object.getObjectId();
+                            String name=object.getString("name");
+                            ParseFile image = (ParseFile) object.getParseFile("image");
+                            try {
+                                imageByte = image.getData();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            list_categorieReal.add(new Category(objectId,name,imageByte));
+                        }
+                    }
+                }
+            });
+        } catch (NullPointerException f) {
+        }
+    }
+
+    public static ArrayList<Category> getList_categorie() {
+        return list_categorieReal;
     }
 
     @Override
