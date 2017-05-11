@@ -111,6 +111,7 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
     }
 
+    //Create historic by Transaction
     private void get_client_Historic() {
         try {
             ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("_User");

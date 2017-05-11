@@ -126,6 +126,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                              Bundle savedInstanceState) {
         inflate = inflater.inflate(R.layout.fragment_partenaire_container_client, container, false);
 
+        //We instantiate the List in first, seen by user first.
         client_Partenaire_list_fragment fragTwo = client_Partenaire_list_fragment.newInstance();
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -136,8 +137,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         return inflate;
     }
 
-    // Callback open map when user click open map.
-
+    // Callback to open map fragment when user click open map.
     @Override
     public void onOpen(ArrayList<LocationBusiness> data, boolean type) {
         FragmentManager fm = getChildFragmentManager();
@@ -153,7 +153,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     public void onClose() {
         try {
             ((ProfilActivity)getActivity()).onBackPressed();
-
         }catch (IllegalStateException e){
 
         }
@@ -200,7 +199,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
-                    Log.d("latlat", String.valueOf(latitude));
+                    Log.d("latitude", String.valueOf(latitude));
                     geoPoint = new ParseGeoPoint(latitude, longitude);
                     client_Partenaire_list_fragment list_fragment = (client_Partenaire_list_fragment) getChildFragmentManager().findFragmentByTag("client_Partenaire_list_fragment");
                     if (list_fragment!=null && list_fragment.isVisible()) {
@@ -210,7 +209,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                 }else {
 
                 }
-
                 startLocationUpdates();
             }
         }
@@ -239,6 +237,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
 
     }
 
+    // when fragment container start, we check if permission is granted and lauc
     @Override
     public void onStart() {
         if (mGoogleApiClient == null) {
@@ -255,7 +254,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
                     } else {
                         permissionRuntime.Askpermission(permissionRuntime.MY_PERMISSIONS_ACCESS_FINE_LOCATION, permissionRuntime.Code_ACCESS_FINE_LOCATION);
                     }
-
                 }
             }, 2000);
         }else {
@@ -366,8 +364,8 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     }
 
 
-    ///
 
+    //Call Business data
     public void GetBusiness(final DataCallBack dataCallBack) {
         try {
             if (mMap!=null){
@@ -441,7 +439,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         }
     }
 
-
+    //Call Promo data
     public void get_Promo(final DataCallBack dataCallBack) {
 
         try {
@@ -508,6 +506,7 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
         }
     }
 
+    //Call Category data
     public void get_Categorie(final DataCallBack callBack) {
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Category");
