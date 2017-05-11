@@ -118,9 +118,11 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
             ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Transaction");
             query1.whereMatchesQuery("customer", innerQuery);
+            query1.whereEqualTo("approved",true);
 
             ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Transaction");
             query2.whereMatchesQuery("clientDonator", innerQuery);
+            query1.whereEqualTo("approved",true);
 
             List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
             queries.add(query1);
