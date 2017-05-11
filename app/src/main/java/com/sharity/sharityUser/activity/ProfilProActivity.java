@@ -114,6 +114,9 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
+             /*
+            * set & Display nav drawer
+            **/
             drawer_layout=(DrawerLayout) findViewById(R.id.drawer_layout);
             drawersItems.add(0, new Drawer(R.drawable.logo, "", 0));
             drawersItems.add(1, new Drawer(R.drawable.logo, "Finir mon inscription", 1));
@@ -174,6 +177,9 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             }
         }
 
+            /*
+            * drawer onclick
+            **/
         myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -211,6 +217,9 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
             }
         });
 
+        /*
+            * Live QUery permit to listen in real time for Update in CISSTransaction if paiment has been approved or refused
+            **/
 
             final ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
         subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
