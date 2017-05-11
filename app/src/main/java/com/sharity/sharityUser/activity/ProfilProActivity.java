@@ -47,6 +47,7 @@ import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.Utils.Utils;
+import com.sharity.sharityUser.fragment.client.client_Container_Mission_fragment;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_Confirmation_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
@@ -285,7 +286,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
                 return Pro_Paiment_fragment.newInstance();
             }
             else if (position == 3) {
-                return History_container_fragment.newInstance();
+                return client_Container_Mission_fragment.newInstance();
             }
 
 

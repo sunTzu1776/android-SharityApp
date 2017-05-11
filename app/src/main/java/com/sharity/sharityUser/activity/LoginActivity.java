@@ -31,39 +31,39 @@ public class LoginActivity extends AppCompatActivity {
     public static LoginActivity login_activity;
 
 
-@Override
-public void onCreate( Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     /* Enabling strict mode */
-    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-    StrictMode.setThreadPolicy(policy);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.activity_login);
-        db=new DatabaseHandler(this);
-        login_activity=this;
+        db = new DatabaseHandler(this);
+        login_activity = this;
 
-    final Bundle data = this.getIntent().getExtras();
-    if (data!=null){
-        String emailVerified = data.getString("emailVerified");
-        if (emailVerified.equals("false")){
-            Toast.makeText(LoginActivity.this,"vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer",Toast.LENGTH_LONG).show();
+        final Bundle data = this.getIntent().getExtras();
+        if (data != null) {
+            String emailVerified = data.getString("emailVerified");
+            if (emailVerified.equals("false")) {
+                Toast.makeText(LoginActivity.this, "vous n'avez pas confirmé l'email d'inscription qui vous a été envoyé, veuillez le confirmer", Toast.LENGTH_LONG).show();
+            }
         }
-    }
 
 
-    /*  Context ctx = this; // for Activity, or Service. Otherwise simply get the context
+    /*  Context ctx = this; //Permit to reset Sqlite database if needed
             String dbname = "User";
             File dbpath = ctx.getDatabasePath(dbname);
             ctx.deleteDatabase(dbname);
 */
 
-    if (savedInstanceState ==null){
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+        if (savedInstanceState == null) {
+            FacebookSdk.sdkInitialize(this.getApplicationContext());
+            callbackManager = CallbackManager.Factory.create();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new Login_fragment(), "Login_fragment")
-                     .addToBackStack(null)
-                     .commit();
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -94,7 +94,7 @@ public void onCreate( Bundle savedInstanceState) {
 
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
                 && keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
@@ -108,10 +108,9 @@ public void onCreate( Bundle savedInstanceState) {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -126,7 +125,8 @@ public void onCreate( Bundle savedInstanceState) {
     public void onDestroy() {
         super.onDestroy();
     }
-    public static LoginActivity getInstance(){
+
+    public static LoginActivity getInstance() {
         return login_activity;
     }
 
@@ -138,7 +138,7 @@ public void onCreate( Bundle savedInstanceState) {
             case 103: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)   {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Charity_Inscription_container_fragment Inscription_container_fragment = (Charity_Inscription_container_fragment) getSupportFragmentManager().findFragmentByTag("Charity_Inscription_container_fragment");
                     if (Inscription_container_fragment != null && Inscription_container_fragment.isVisible()) {
                         Inscription_container_fragment.CallGetPicture();
