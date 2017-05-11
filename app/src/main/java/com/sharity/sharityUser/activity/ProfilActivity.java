@@ -135,6 +135,22 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (actionBarDrawerToggle != null) {
+            actionBarDrawerToggle.syncState();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (actionBarDrawerToggle != null) {
+            actionBarDrawerToggle.onConfigurationChanged(newConfig);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
@@ -151,6 +167,9 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             bottomBar = (BottomBar) findViewById(R.id.bottomBar);
             toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
+            /*
+            * Get local database to display nav drawer including Profil picture etc
+            **/
             DatabaseHandler db = new DatabaseHandler(ProfilActivity.this);
                 String objectId = getUserObjectId(ProfilActivity.this);
                 User user = db.getUser(objectId);
@@ -180,20 +199,15 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             mViewPagerAdapter.notifyDataSetChanged();
             buildTabs();
 
-            //   pager.setPageTransformer(true, new CrossfadePageTransformer());
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             actionBarDrawerToggle = new ActionBarDrawerToggle(ProfilActivity.this, drawer_layout,
                     toolbar, R.string.open, R.string.close) {
-
-                /** Called when a drawer has settled in a completely closed state. */
                 public void onDrawerClosed(View view) {
                     supportInvalidateOptionsMenu();
                 }
-
-                /** Called when a drawer has settled in a completely open state. */
                 public void onDrawerOpened(View drawerView) {
                     supportInvalidateOptionsMenu();
                 }
@@ -203,6 +217,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.green));
             actionBarDrawerToggle.syncState();
 
+            //Navigation draw item Click
             myDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -231,6 +246,11 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                     }
                 }
             });
+
+            /*
+            * Parse Live Query permit to listen live Update on CISSTransaction.
+            * if a payment transaction is approved, it inform the user
+            * */
 
             final ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
             subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
@@ -278,7 +298,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             pager.setBackgroundColor(getResources().getColor(R.color.white));
-
             if (start) {
                 mViewPagerAdapter.notifyDataSetChanged();
                 start = false;
@@ -300,6 +319,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
               final client_Profil_fragment clientProfilFragment=(client_Profil_fragment)mViewPagerAdapter.getRegisteredFragment(position);
                if (clientProfilFragment!=null){
                    if (clientProfilFragment.isAdded()){
+                       //Permit to call the update function in fragment to reanimate circleprogress
                        new Handler().postDelayed(new Runnable() {
                            @Override
                            public void run() {
@@ -348,23 +368,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     }
 
-    @Override
-    public void onStop() {
-        if (locationUser != null) {
-            if (locationUser.mGoogleApiClient.isConnected()) {
-                locationUser.mGoogleApiClient.disconnect();
-            }
-        }
-        super.onStop();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (pager != null) {
-            pager.clearOnPageChangeListeners();
-        }
-    }
 
     private void setIndicator(int index) {
         bottomBar.selectTabAtPosition(index);
@@ -466,37 +470,6 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         return clientProfilActivity;
     }
 
-    public void updateProfil() {
-        ProfilActivity.this.runOnUiThread(new Runnable() {
-            public void run() {
-                mViewPagerAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    public void onNotificationReceived_Display() {
-        if (bottomBar.getId() != R.id.tab_profil) {
-            mPageChangeListener.onPageSelected(1);
-        }
-    }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (actionBarDrawerToggle != null) {
-            actionBarDrawerToggle.syncState();
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (actionBarDrawerToggle != null) {
-            actionBarDrawerToggle.onConfigurationChanged(newConfig);
-        }
-    }
-
     //Notification handler
     public void setProfilListener(ProfilActivity.OnNotificationUpdateProfil activityListener) {
         this.onNotificationUpdateProfil = activityListener;
@@ -523,6 +496,8 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         super.onPause();
     }
 
+    //Broadcast which trigger Task in profil when Live Query update
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -537,18 +512,11 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
             }else {
                 onNotificationUpdateProfil.TaskOnNotification(business, sharepoints);
             }
-//            onNotificationUpdateHistoric.TaskOnNotification(business, sharepoints);
-            //onNotificationReceived_Display();
-
-            // ((ProfilActivity)getActivity()).onNotificationReceived_Display();
-            // Popup_onNotification onNotification=new Popup_onNotification();
-            // onNotification.displayPopupWindow(do_donationTV,getActivity(),business,sharepoints);
         }
     };
 
 
     protected class MyPagerAdapter extends FragmentStatePagerAdapter {
-
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
         public MyPagerAdapter(FragmentManager fm) {
@@ -595,17 +563,16 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
 
         @Override
-        // To update fragment in ViewPager, we should override getItemPosition() method,
-        // in this method, we call the fragment's public updating method
-        // To update fragment in ViewPager, we should override getItemPosition() method,
-        // in this method, we call the fragment's public updating method.
         public int getItemPosition(Object object) {
             return super.getItemPosition(object);
         };
     }
 
-    ;
-
+    private String getUserObjectId(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
+        final String accountDisconnect = pref.getString("User_ObjectId", "");         // getting String
+        return accountDisconnect;
+    }
 
     @Override
     public void onBackPressed() {
@@ -631,10 +598,19 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         }
     }
 
-    private String getUserObjectId(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("Pref", context.MODE_PRIVATE);
-        final String accountDisconnect = pref.getString("User_ObjectId", "");         // getting String
-        return accountDisconnect;
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pager != null) {
+            pager.clearOnPageChangeListeners();
+        }
     }
 }
 
