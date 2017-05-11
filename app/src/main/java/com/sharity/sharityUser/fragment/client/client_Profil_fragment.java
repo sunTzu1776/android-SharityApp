@@ -130,6 +130,11 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         circularProgressBar.setProgressWithAnimation(0);
 
         onItemDonateClickListener = this;
+        points.setText(String.valueOf(0) + " : " + String.valueOf(sharepoints_user_temp));
+        ShowDonateView();
+        do_donationTV.setText("faire un don");
+        donation=true;
+
         do_donationTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
