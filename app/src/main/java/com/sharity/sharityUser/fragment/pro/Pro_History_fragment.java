@@ -89,8 +89,10 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
         try {
             ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("Business");
             innerQuery.whereEqualTo("objectId", db.getBusinessId());
+
             ParseQuery<ParseObject> query3 = ParseQuery.getQuery("Transaction");
             query3.whereMatchesQuery("business", innerQuery);
+
             query3.orderByDescending("createdAt");
             query3.include("_User");
             query3.findInBackground(new FindCallback<ParseObject>() {
@@ -129,6 +131,7 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
                                 recipientName = String.valueOf(object.getString("recipient_name"));
                             }
 
+                            boolean approved = object.getBoolean("approved");
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
                             Date date = (object.getCreatedAt());
@@ -149,13 +152,13 @@ public class Pro_History_fragment extends Fragment implements Updateable, SwipeR
 
                             if (transactionType==1){
                                 if (indice.equals("payements")){
-                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName,approved, newDate, prix,1));
                                 }
                             }
 
                             if (transactionType==2){
                                 if (indice.equals("dons")){
-                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName,approved, newDate, prix,1));
                                 }
                             }
                         }

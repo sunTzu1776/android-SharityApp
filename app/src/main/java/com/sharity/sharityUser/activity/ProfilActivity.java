@@ -56,6 +56,7 @@ import com.parse.ParseUser;
 import com.parse.SubscriptionHandling;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.CISSTransaction;
 import com.sharity.sharityUser.BO.Drawer;
 import com.sharity.sharityUser.BO.History;
@@ -81,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.parse.SubscriptionHandling.Event.UPDATE;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
 import static com.sharity.sharityUser.BO.CISSTransaction.transactionType;
@@ -258,20 +260,27 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                     SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
                         @Override
                         public void onEvent(ParseQuery<CISSTransaction> query, CISSTransaction object) {
-                            if (object.getBoolean("approved") == true && object.getInt("transactionType")==1) {
-                                if (object.getString("customer").equalsIgnoreCase(parseUser.getObjectId())){
+                            if (object.getBoolean("processed") == true) {
+                                if (object.getString("customer").equalsIgnoreCase(parseUser.getObjectId())) {
+                                        boolean isApproved= object.getBoolean("approved");
                                     Intent intent = new Intent("custom-event-name");
-                                    intent.putExtra("message", "This is my message!");
+                                    intent.putExtra("approved", isApproved);
                                     intent.putExtra("sharepoints", "");
                                     intent.putExtra("business", "");
                                     LocalBroadcastManager.getInstance(ProfilActivity.this).sendBroadcast(intent);
+                                    final int amount = object.getInt("amount");
 
-                                    final int amount=object.getInt("amount");
+                                    final String text;
+                                    if (isApproved){
+                                        text="Votre paiment d'un montant de " + amount / 100 + "€ à bien été validé";
+                                    }else {
+                                        text="Votre paiment d'un montant de " + amount / 100 + "€ à été refusé";
 
-                                    if(!ProfilActivity.this.isFinishing()){
+                                    }
+                                    if (!ProfilActivity.this.isFinishing()) {
                                         ProfilActivity.this.runOnUiThread(new Runnable() {
                                             public void run() {
-                                                Utils.showDialog3(ProfilActivity.this, "Votre paiment d'un montant de "+amount/100+"€ à bien été validé", "Paiement", true, new Utils.Click() {
+                                                Utils.showDialog3(ProfilActivity.this, text, "Paiement", true, new Utils.Click() {
                                                     @Override
                                                     public void Ok() {
                                                     }
@@ -286,6 +295,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
                                     }
                                     Log.d("AEOEO", object.getString("transactionId"));
                                 }
+
                             }
                         }
                     });
@@ -502,7 +512,7 @@ public class ProfilActivity extends AppCompatActivity implements OnTabSelectList
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            String message = intent.getStringExtra("message");
+            boolean approved = intent.getBooleanExtra("approved",false);
             String sharepoints = intent.getStringExtra("sharepoints");
             String business = intent.getStringExtra("business");
             int item = pager.getCurrentItem();

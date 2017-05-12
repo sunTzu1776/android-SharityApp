@@ -425,12 +425,10 @@ public class client_PartenaireMap_fragment extends Fragment implements
 
         }else {
             for (Object business : list_shop) {
-                if (Utils.distance(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude(), latitude, longitude) <= 500000) {
                     LatLng delhi = new LatLng(((LocationBusiness) business).get_latitude(), ((LocationBusiness) business).get_longitude());
                     IconGenerator iconFactory = new IconGenerator(getActivity());
                     addIcon(iconFactory, ((LocationBusiness) business).getReduction(), delhi);
-                } else {
-                }
+
             }
         }
     }

@@ -152,6 +152,7 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
                             prix  = String.valueOf(object.getInt("amount")/100);
                             recipientName = String.valueOf(object.getString("recipient_name"));
 
+                            boolean approved = object.getBoolean("approved");
                             String business = String.valueOf(object.getString("sender_name"));
                             String id = String.valueOf(object.getString("objectId"));
                             int transactionType = (object.getInt("transactionType"));
@@ -172,13 +173,13 @@ public class client_Historique_fragment extends Fragment implements Updateable, 
 
                             if (transactionType==1){
                                 if (indice.equals("payements")){
-                                    payment_value.add(new History(id, recipientName, newDate, prix,1));
+                                    payment_value.add(new History(id, recipientName,approved, newDate, prix,1));
                                 }
                                 }
 
                             if (transactionType==2){
                                 if (indice.equals("dons")){
-                                    payment_value.add(new History(id, recipientName, newDate, sharepoints,3));
+                                    payment_value.add(new History(id, recipientName,approved, newDate, sharepoints,3));
                                 }
                             }
                         }

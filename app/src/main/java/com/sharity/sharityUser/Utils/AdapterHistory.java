@@ -65,6 +65,7 @@ public class AdapterHistory extends BaseAdapter {
                 holder.date_payment = (TextView) convertView
                         .findViewById(R.id.date);
                 holder.price_payment=(TextViewGeoManis)convertView.findViewById(R.id.price);
+                holder.approved=(TextView)convertView.findViewById(R.id.approved);
             }
             if (listViewItemType == 2) {
                 convertView = inflat.inflate(R.layout.row_dons_header_listview, null);
@@ -76,6 +77,8 @@ public class AdapterHistory extends BaseAdapter {
                 holder.date_dons = (TextView) convertView
                         .findViewById(R.id.date_dons);
                 holder.price_dons=(TextView)convertView.findViewById(R.id.price_dons);
+                holder.approved=(TextView)convertView.findViewById(R.id.approved);
+
             }
             convertView.setTag(holder);
 
@@ -101,6 +104,16 @@ public class AdapterHistory extends BaseAdapter {
                 if(holder.price_payment!= null) {
                     holder.price_payment.setText(it.get_prix()+"€");
                 }
+
+                if(holder.approved!= null) {
+                    if (it.isApproved()){
+                        holder.approved.setVisibility(View.INVISIBLE);
+                        holder.approved.setText("accepté");
+                    }else {
+                        holder.approved.setVisibility(View.INVISIBLE);
+                        holder.approved.setText("refusé");
+                    }
+                }
             }
             else if(listViewItemType == 2) {
             }
@@ -118,6 +131,16 @@ public class AdapterHistory extends BaseAdapter {
                 }
                 if(holder.price_dons!= null) {
                     holder.price_dons.setText(it.get_prix()+"€");
+                }
+
+                if(holder.approved!= null) {
+                    if (it.isApproved()){
+                        holder.approved.setVisibility(View.INVISIBLE);
+                        holder.approved.setText("accepté");
+                    }else {
+                        holder.approved.setVisibility(View.INVISIBLE);
+                        holder.approved.setText("refusé");
+                    }
                 }
             }
         }
@@ -143,7 +166,7 @@ public class AdapterHistory extends BaseAdapter {
         TextView payment;
         TextView date_payment;
         TextViewGeoManis price_payment;
-        TextView dons,date_dons,price_dons;
+        TextView dons,date_dons,price_dons,approved;
 
         ImageView logo;
 

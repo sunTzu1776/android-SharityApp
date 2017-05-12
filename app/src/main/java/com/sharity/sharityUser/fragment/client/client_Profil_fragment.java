@@ -195,11 +195,16 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         username.setText(String.valueOf(sharepoints_user_temp));
         int animationDuration = 3000; // 2500ms = 2,5s
         circularProgressBar.setProgress(0);
-        if (sharepoints_user_temp<=1000){
+        if (sharepoints_user_temp<=100) {
+            circularProgressBar.setProgressWithAnimation(sharepoints_user_temp/1,animationDuration);
+        }
+        else if (sharepoints_user_temp>100 && sharepoints_user_temp <=1000){
             circularProgressBar.setProgressWithAnimation(sharepoints_user_temp/10,animationDuration);
         }else if(sharepoints_user_temp>1000 && sharepoints_user_temp<10000){
             circularProgressBar.setProgressWithAnimation(sharepoints_user_temp/100,animationDuration);
         }
+
+
         circularProgressBar.invalidate();
     }
 
@@ -228,6 +233,9 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
     }
 
 
+    /*
+     * Get local database to display nav drawer including Profil picture etc
+     **/
     private void getTransaction() {
         try {
             ParseQuery<ParseObject> innerQuery = ParseQuery.getQuery("_User");
@@ -262,7 +270,10 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
                         points.setText(String.valueOf(sharepoints));
                         username.setText(String.valueOf(sharepoints));
                         int animationDuration = 3000; // 2500ms = 2,5s
-                        if (sharepoints<=1000){
+                        if (sharepoints<=100) {
+                            circularProgressBar.setProgressWithAnimation(sharepoints/1,animationDuration);
+                        }
+                        else if (sharepoints<=1000){
                             circularProgressBar.setProgressWithAnimation(sharepoints/10,animationDuration);
                         }else if(sharepoints>1000 && sharepoints<10000){
                             circularProgressBar.setProgressWithAnimation(sharepoints/100,animationDuration);
@@ -362,6 +373,7 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         object.put("clientDonator", ParseObject.createWithoutData("_User", parseUser.getObjectId()));
         object.put("recipient_name", charityName);
         object.put("sharepoints", num);
+        object.put("amount", Integer.parseInt(price)*100);
         object.put("status", 2);
         object.put("transactionType", 2);
         object.put("currency_code", "EUR");
