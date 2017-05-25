@@ -15,7 +15,7 @@
     <item name="black" type="color">#000000</item>
 
 
-    <item name="blue" type="color">#3b5998</item>
+
     <item name="bleuclair" type="color">#6899D3</item>
     <item name="bleutrèsclair" type="color">#996899D3</item>
     <item name="greylight" type="color">#a8a8a8</item>
@@ -50,4 +50,5 @@
     <color name="fbutton_color_wisteria">#8e44ad</color>
     <color name="fbutton_default_color">#3eadeb</color>
     <color name="fbutton_default_shadow_color">#ff3493c8</color>
+    <color name="blue">#72ba6c</color>
 </resources>

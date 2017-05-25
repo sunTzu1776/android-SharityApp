@@ -1,11 +1,9 @@
 package com.sharity.sharityUser.fragment.client;
 
 
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,7 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,11 +35,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -57,24 +50,14 @@ import com.sharity.sharityUser.BO.Category;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
-import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
-import com.sharity.sharityUser.Utils.GPSservice;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.ProfilActivity;
-import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
-import com.sharity.sharityUser.fragment.pro.Pro_Paiment_StepTwo_Classique_fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
-import static com.sharity.sharityUser.R.id.latitude;
-import static com.sharity.sharityUser.R.id.nom;
-import static com.sharity.sharityUser.R.id.swipeContainer;
-import static com.sharity.sharityUser.R.id.user;
 import static com.sharity.sharityUser.activity.ProfilActivity.isShop;
 import static com.sharity.sharityUser.activity.ProfilActivity.permissionRuntime;
 
@@ -320,7 +303,6 @@ public class client_Container_Partenaire_fragment extends Fragment implements Go
     public void ChangeTitleActivity(String title){
         ((ProfilActivity) getActivity()).toolbarTitle.setText(title);
     }
-
 
 
     //Call Business data

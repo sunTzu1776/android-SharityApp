@@ -4,13 +4,9 @@ package com.sharity.sharityUser.fragment.client;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.CursorIndexOutOfBoundsException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,21 +34,17 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sharity.sharityUser.BO.CharityDons;
 import com.sharity.sharityUser.LocalDatabase.DatabaseHandler;
-import com.sharity.sharityUser.BO.User;
 import com.sharity.sharityUser.R;
-import com.sharity.sharityUser.Utils.GPSservice;
-import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.StoreAdapter2;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.activity.LoginActivity;
 import com.sharity.sharityUser.activity.ProfilActivity;
 import com.sharity.sharityUser.fonts.TextViewGeoManis;
-import com.sharity.sharityUser.fonts.TextViewMontserraThin;
 import com.sharity.sharityUser.fragment.Updateable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.animationDuration;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -132,22 +124,20 @@ public class client_Profil_fragment extends Fragment implements Updateable,Profi
         onItemDonateClickListener = this;
         points.setText(String.valueOf(0) + " : " + String.valueOf(sharepoints_user_temp));
         ShowDonateView();
-        do_donationTV.setText("faire un don");
+        do_donationTV.setText("Faire un don");
         donation=true;
 
         do_donationTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!donation){
-                    points.setText(String.valueOf(0) + " : " + String.valueOf(sharepoints_user_temp));
+                    do_donationTV.setText(String.valueOf(0) + " : " + String.valueOf(sharepoints_user_temp));
                     ShowDonateView();
-                    do_donationTV.setText("faire un don");
+                    do_donationTV.setText("Faire un don");
                     donation=true;
                 }
             }
         });
-
-
 
         sharepoints_moins.setOnClickListener(new View.OnClickListener() {
             @Override

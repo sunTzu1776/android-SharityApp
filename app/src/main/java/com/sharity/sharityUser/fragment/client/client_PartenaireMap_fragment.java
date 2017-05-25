@@ -3,9 +3,7 @@ package com.sharity.sharityUser.fragment.client;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,18 +31,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import com.google.maps.android.ui.IconGenerator;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.sharity.sharityUser.BO.LocationBusiness;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.AdapterGridViewCategorie;
-import com.sharity.sharityUser.Utils.AdapterPartenaireClient;
 import com.sharity.sharityUser.Utils.AdapterPartenaireMapClient;
 import com.sharity.sharityUser.Utils.PermissionRuntime;
 import com.sharity.sharityUser.Utils.Utils;
@@ -52,24 +42,13 @@ import com.sharity.sharityUser.fragment.MapCallback;
 import com.sharity.sharityUser.fragment.Updateable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import okhttp3.internal.Util;
 
 import static android.graphics.Typeface.BOLD;
 import static android.graphics.Typeface.ITALIC;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.sharity.sharityUser.R.id.swipeContainer;
-import static com.sharity.sharityUser.R.id.userlist;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.frameCategorie;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.geoPoint;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.getList_categorie;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.gridViewCategorie;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.images;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.isLocationUpdate;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.latitude;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.list_categorieReal;
@@ -79,7 +58,6 @@ import static com.sharity.sharityUser.fragment.client.client_Container_Partenair
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mGoogleApiClient;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mMap;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.mViewcategorieColapse;
-import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.on;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.recyclerFrame;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.search_layout;
 import static com.sharity.sharityUser.fragment.client.client_Container_Partenaire_fragment.vinflater;
@@ -353,6 +331,8 @@ public class client_PartenaireMap_fragment extends Fragment implements
                     }
                     break;
                 case R.id.shop_BT:
+                    shop_BT.setBackgroundDrawable(getResources().getDrawable(R.drawable.shopbtselec));
+
                     isShop=true;
                     if (!isLocationUpdate()){
                         ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();
@@ -360,6 +340,8 @@ public class client_PartenaireMap_fragment extends Fragment implements
                     ShowShop();
                     break;
                 case R.id.promo_BT:
+                    promo_BT.setBackgroundDrawable(getResources().getDrawable(R.drawable.promobuttonselect));
+                    shop_BT.setBackgroundDrawable(getResources().getDrawable(R.drawable.shopbutton));
                     isShop=false;
                     if (!isLocationUpdate()){
                         ((client_Container_Partenaire_fragment) getParentFragment()).startLocationUpdates();

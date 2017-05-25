@@ -25,15 +25,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.2"
+        android:layout_weight="0.87"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:background="@drawable/elipse">
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"></View>
+
+        <com.sharity.sharityUser.fonts.TextViewSegoeUi
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:Segoeui="segoeui.ttf"
+            android:textAllCaps="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="SharePoints"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,8 +68,8 @@
                     android:id="@+id/circularprogress"
                     app:cpb_background_progressbar_color="#FFCDD2"
                     app:cpb_background_progressbar_width="5dp"
-                    app:cpb_progressbar_color="#F44336"
-                    app:cpb_progressbar_width="9dp" />
+                    app:cpb_progressbar_color="#FFFF"
+                    app:cpb_progressbar_width="10dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,8 +77,8 @@
                     android:layout_centerInParent="true"
                     android:id="@+id/username_login"
                     tools:text="nom"
-                    android:textColor="@color/blue"
-                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
                     android:gravity="center_vertical|center_horizontal" />
             </RelativeLayout>
 
@@ -90,106 +103,16 @@
                 android:layout_gravity="bottom"
                 android:layout_marginTop="4dp"
                 android:background="@color/green"
-                >
+                android:visibility="gone">
             </View>
-        </LinearLayout>
+
+        </LinearLayout><![CDATA[
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.5"
-            android:layout_marginTop="13dp"
-            android:orientation="vertical"
-            android:weightSum="3">
+        > ]]>
+    </LinearLayout>
 
-
-            <com.sharity.sharityUser.fonts.TextViewSegoeUi
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:Segoeui="segoeui.ttf"
-                android:textAllCaps="true"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="SharePoints"
-                android:textColor="@color/green"
-                android:textSize="22dp" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|center_vertical"
-                android:weightSum="4"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:textSize="24dp"
-                    android:id="@+id/sharepoints_moins"
-                    android:visibility="invisible"
-                    android:text="-"/>
-
-                <com.sharity.sharityUser.fonts.TextViewGeoManis
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal|center_vertical"
-                    tools:text="Points"
-                    app:GeomanisRegular="geomanistregular.ttf"
-                    android:layout_weight="2"
-                    android:id="@+id/points"
-                    android:textStyle="bold"
-                    android:textSize="25dp" />
-
-                <com.sharity.sharityUser.fonts.TextViewMontSerra
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="24dp"
-                    app:Montserra="montserra.ttf"
-                    android:visibility="invisible"
-                    android:id="@+id/sharepoints_plus"
-                    android:text="+"/>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/dummyanchor"
-                    android:layout_toLeftOf="@+id/do_donationTV"
-                    android:layout_marginLeft="20dp"
-                    android:layout_alignParentLeft="true"
-                    tools:text="fff"
-                    android:visibility="invisible">
-                </TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:text="faire un don"
-                    android:textColor="@color/green"
-                    android:id="@+id/do_donationTV"
-                    android:textSize="17dp" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        > </LinearLayout>
-
-<RelativeLayout
+    <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="0.8"
@@ -223,7 +146,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/charity_description"
-            android:text=""/>
+            android:text=""
+            android:visibility="visible"/>
 
 
     </LinearLayout>
@@ -273,6 +197,83 @@
     </LinearLayout>
 
 </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="0.12"
+        android:background="@drawable/donbutton">
+
+        <com.sharity.sharityUser.fonts.TextViewMontSerra
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="24dp"
+            app:Montserra="montserra.ttf"
+            android:visibility="visible"
+            android:id="@+id/sharepoints_plus"
+            android:text="+"
+            android:textStyle="bold"
+            android:layout_alignTop="@+id/sharepoints_moins"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#ffffff"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dummyanchor"
+            tools:text="fff"
+            android:visibility="invisible"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/do_donationTV"
+            android:layout_toEndOf="@+id/do_donationTV">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="Faire un don"
+            android:textColor="@color/white"
+            android:id="@+id/do_donationTV"
+            android:textSize="17dp"
+            android:layout_marginTop="25dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textSize="24dp"
+            android:id="@+id/sharepoints_moins"
+            android:visibility="visible"
+            android:text="-"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:layout_alignTop="@+id/do_donationTV"
+            android:layout_toRightOf="@+id/do_donationTV"
+            android:layout_toEndOf="@+id/do_donationTV"/>
+
+        <com.sharity.sharityUser.fonts.TextViewGeoManis
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            tools:text="Points"
+            app:GeomanisRegular="geomanistregular.ttf"
+            android:layout_weight="2.5"
+            android:id="@+id/points"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:textColor="#ffffff"
+            android:layout_alignTop="@+id/sharepoints_plus"
+            android:layout_toRightOf="@+id/sharepoints_moins"
+            android:layout_toEndOf="@+id/sharepoints_moins"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
     </RelativeLayout>

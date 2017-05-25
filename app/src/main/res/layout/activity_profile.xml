@@ -27,7 +27,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:background="@color/white"
+            android:background="#68ba8b"
             app:contentInsetEnd="0dp"
             app:contentInsetStart="0dp"
             android:layout_height="match_parent">
@@ -40,7 +40,8 @@
                 android:textSize="@dimen/profil_fragment_title"
                 android:textColor="@color/green"
                 android:layout_gravity="center"
-                android:id="@+id/toolbar_title" />
+                android:id="@+id/toolbar_title"
+                android:visibility="gone"/>
 
 
         </android.support.v7.widget.Toolbar>
@@ -109,7 +110,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center_horizontal|center_vertical"
             android:layout_gravity="center"
-            android:background="@drawable/gradient_bluebar"
+            android:background="@drawable/bottomtab"
             android:weightSum="3">
 
             <LinearLayout
