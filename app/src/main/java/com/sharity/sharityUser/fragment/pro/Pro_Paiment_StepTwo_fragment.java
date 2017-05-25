@@ -1,12 +1,9 @@
 package com.sharity.sharityUser.fragment.pro;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,61 +18,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SubscriptionHandling;
 import com.sharity.sharityUser.BO.BusinessTransaction;
 import com.sharity.sharityUser.BO.CISSTransaction;
-import com.sharity.sharityUser.BO.TPE;
-import com.sharity.sharityUser.BO.TPEBO;
 import com.sharity.sharityUser.BO.UserLocation;
-import com.sharity.sharityUser.ParsePushNotification.SendNotification;
 import com.sharity.sharityUser.R;
 import com.sharity.sharityUser.Utils.Dialog_TPE_Businness;
 import com.sharity.sharityUser.Utils.ToastInterface;
 import com.sharity.sharityUser.Utils.Utils;
-import com.sharity.sharityUser.activity.LocationUserActivity;
-import com.sharity.sharityUser.activity.ProfilActivity;
-import com.sharity.sharityUser.activity.ProfilProActivity;
 import com.sharity.sharityUser.fragment.Updateable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
-import static android.R.attr.name;
-import static android.R.id.message;
 import static android.util.Log.d;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
-
-import static com.sharity.sharityUser.Application.getContext;
-import static com.sharity.sharityUser.Application.parseLiveQueryClient;
-import static com.sharity.sharityUser.Application.subscriptionHandling;
-import static com.sharity.sharityUser.R.id.price;
-import static com.sharity.sharityUser.R.id.top;
-import static com.sharity.sharityUser.R.id.user;
-import static com.sharity.sharityUser.activity.LocationUserActivity.Pro_Location;
-import static com.sharity.sharityUser.activity.LocationUserActivity.parseUser;
 import static com.sharity.sharityUser.activity.ProfilProActivity.db;
-import static com.sharity.sharityUser.fragment.pro.Pro_History_fragment.JSON;
 
 
 /**
@@ -243,7 +208,7 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
         final Number amount_cents = amount;
         final CISSTransaction object = new CISSTransaction();
         object.put("approved", false);
-        object.put("needsProcessing", true);
+        object.put("needsProcessing", false);
         object.put("amount", amount_cents);
         object.put("transaction", ParseObject.createWithoutData("Transaction", transaction.getObjectId()));
         object.put("transactionId", transactionId);
@@ -258,11 +223,13 @@ public class Pro_Paiment_StepTwo_fragment extends Fragment implements Updateable
                     Log.d("TPE",tpeObject.getObjectId());
                     ParseRelation<ParseObject> relation = object.getRelation("tpes");
                     relation.add(tpeObject);
+                    object.put("needsProcessing", true);
                     object.saveInBackground();
 
                     BusinessTransaction transaction = new BusinessTransaction(transactionId, "false", String.valueOf(amount_cents), client.getUsername(), "Payment");
                     db.addBusinessTransaction(transaction);
                     UpdateBusiness();
+
                 } else {
                     d(TAG, "ex" + e.getMessage());
                 }
