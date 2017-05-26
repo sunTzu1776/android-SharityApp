@@ -49,7 +49,6 @@ import com.sharity.sharityUser.Utils.AdapterNews;
 import com.sharity.sharityUser.Utils.Utils;
 import com.sharity.sharityUser.fragment.client.client_Container_Mission_fragment;
 import com.sharity.sharityUser.fragment.pro.History_container_fragment;
-import com.sharity.sharityUser.fragment.pro.Pro_Paiment_Confirmation_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Paiment_fragment;
 import com.sharity.sharityUser.fragment.pro.Pro_Profil_Container_fragment;
 
@@ -58,10 +57,6 @@ import java.util.ArrayList;
 import static com.parse.SubscriptionHandling.Event.UPDATE;
 import static com.sharity.sharityUser.Application.parseLiveQueryClient;
 import static com.sharity.sharityUser.Application.subscriptionHandling;
-import static com.sharity.sharityUser.BO.CISSTransaction.amount;
-import static com.sharity.sharityUser.BO.CISSTransaction.transaction;
-import static com.sharity.sharityUser.R.id.montant_SP;
-import static com.sharity.sharityUser.R.id.montant_recue;
 import static com.sharity.sharityUser.R.id.tab_historique;
 import static com.sharity.sharityUser.R.id.tab_mission;
 import static com.sharity.sharityUser.R.id.tab_utilisateur;
@@ -224,6 +219,7 @@ public class ProfilProActivity extends AppCompatActivity implements OnTabSelectL
 
             final ParseQuery<CISSTransaction> parseQuery = ParseQuery.getQuery(CISSTransaction.class);
         subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+
         subscriptionHandling.handleEvent(UPDATE, new
                 SubscriptionHandling.HandleEventCallback<CISSTransaction>() {
                     @Override
